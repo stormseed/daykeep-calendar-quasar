@@ -1,0 +1,44 @@
+{
+    "name": "quasar-calendar",
+    "version": "0.2.0",
+    "description": "A full display calendar for the Quasar vue.js framework",
+    "keywords": [
+        "vue",
+        "quasar",
+        "quasar-framework",
+        "calendar"
+    ],
+    "url": "https://github.com/stormseed/quasar-calendar",
+    "bugs": "https://github.com/stormseed/quasar-calendar/issues",
+    "repository": "https://github.com/stormseed/quasar-calendar",
+    "homepage": "https://github.com/stormseed/quasar-calendar",
+    "author": "Chris Benjamin <cbenjamin@stormseed.com>",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "files": [
+        "dist/index.js",
+        "src/**/*js",
+        "package.json"
+    ],
+    "scripts": {
+        "lint": "eslint src/**/*.js",
+        "build": "webpack"
+    },
+    "devDependencies": {
+        "buble": "^0.15.2",
+        "buble-loader": "^0.4.1",
+        "eslint": "^3.18.0",
+        "eslint-config-standard": "^7.1.0",
+        "eslint-plugin-promise": "^3.5.0",
+        "eslint-plugin-standard": "^2.1.1",
+        "webpack": "^2.3.2"
+    },
+    "dependencies": {
+        "lodash.isempty": "^4.4.0",
+        "moment": "^2.19.2",
+        "moment-range": "^3.1.0"
+    },
+    "peerDependencies": {
+        "quasar-framework": "^0.14.7"
+    }
+}
