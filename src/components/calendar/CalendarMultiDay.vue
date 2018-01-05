@@ -1,5 +1,5 @@
 <template>
-    <div class="calendar-week-component column fit">
+    <div class="calendar-multi-day-component column fit">
         <!-- week nav -->
         <template v-if="numDays === 1">
             <calendar-header-nav
@@ -74,7 +74,7 @@
     QScrollArea
   } from 'quasar'
   export default {
-    name: 'CalendarWeek',
+    name: 'CalendarMultiDay',
     props: {
       startMonth: {
         type: Number,
@@ -216,7 +216,7 @@
     $borderThin = 1px dotted silver
     $dayTimeLabelWidth = 4em
 
-    .calendar-week-component
+    .calendar-multi-day-component
         .calendar-day-labels
         .calendar-day-label
         // width $sevenCellWidth

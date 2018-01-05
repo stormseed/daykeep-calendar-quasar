@@ -1,6 +1,7 @@
 import Moment from 'moment'
 import { extendMoment } from 'moment-range'
-import _ from 'lodash'
+import dashHas from 'lodash.has'
+import dashGet from 'lodash.get'
 import { Events } from 'quasar'
 const moment = extendMoment(Moment)
 export default {
@@ -86,9 +87,9 @@ export default {
       }
       else if (typeof params === 'object') {
         thisDateObject = moment()
-          .year(_.get(params, 'year', this.yearNumber))
-          .month(_.get(params, 'month', this.monthNumber - 1))
-          .date(_.get(params, 'date', this.dayNumber))
+          .year(dashGet(params, 'year', this.yearNumber))
+          .month(dashGet(params, 'month', this.monthNumber - 1))
+          .date(dashGet(params, 'date', this.dayNumber))
       }
       else if (typeof params === 'undefined') {
         thisDateObject = moment()
@@ -112,14 +113,14 @@ export default {
     },
     hasAllDayEvents: function (params) {
       let thisDateObject = this.parseDateParams(params)
-      return _.has(
+      return dashHas(
         this.parsed.byAllDayStartDate,
         this.formatToSqlDate(thisDateObject)
       )
     },
     hasEvents: function (params) {
       let thisDateObject = this.parseDateParams(params)
-      return _.has(
+      return dashHas(
         this.parsed.byStartDate,
         this.formatToSqlDate(thisDateObject)
       )
@@ -139,7 +140,7 @@ export default {
 
         // get all-day events
         if (thisEvent.start.isAllDay) {
-          if (!_.has(this.parsed.byAllDayStartDate, thisStartDate)) {
+          if (!dashHas(this.parsed.byAllDayStartDate, thisStartDate)) {
             this.parsed.byAllDayStartDate[thisStartDate] = []
           }
           this.parsed.byAllDayStartDate[thisStartDate].push(thisEvent.id)
@@ -148,7 +149,7 @@ export default {
         // get events with a start and end time
         else {
           thisEvent.duration = this.parseGetDurationMinutes(thisEvent)
-          if (!_.has(this.parsed.byStartDate, thisStartDate)) {
+          if (!dashHas(this.parsed.byStartDate, thisStartDate)) {
             this.parsed.byStartDate[thisStartDate] = []
           }
           this.parsed.byStartDate[thisStartDate].push(thisEvent.id)
@@ -254,7 +255,7 @@ export default {
     },
     mountSetDate: function () {
       // console.debug('mountSetDate called')
-      // if (_.has(this, 'startDateObject')) {
+      // if (dashHas(this, 'startDateObject')) {
       if (this.startDateObject !== undefined) {
         if (this.workingDateObject !== undefined) {
           this.workingDateObject = this.startDateObject

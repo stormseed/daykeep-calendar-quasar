@@ -42,7 +42,7 @@
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
-                <calendar-week
+                <calendar-multi-day
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
@@ -53,7 +53,7 @@
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
-                <calendar-week
+                <calendar-multi-day
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
@@ -64,7 +64,7 @@
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
-                <calendar-week
+                <calendar-multi-day
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
@@ -93,7 +93,7 @@
   import CalendarMixin from './CalendarMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarMonth from './CalendarMonth'
-  import CalendarWeek from './CalendarWeek'
+  import CalendarMultiDay from './CalendarMultiDay'
   import CalendarAgenda from './CalendarAgenda'
   import CalendarDayColumn from './CalendarDayColumn'
   import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
@@ -129,7 +129,7 @@
       QuantityBubble,
       CalendarEvent,
       CalendarMonth,
-      CalendarWeek,
+      CalendarMultiDay,
       CalendarAgenda,
       CalendarDayColumn,
       CalendarTimeLabelColumn,
@@ -342,7 +342,7 @@
                     font-size 1.1em
                 .calendar-day-label-current
                     font-weight bold
-            .calendar-week
+            .calendar-multi-day
                 border-bottom 1px solid silver
                 :last-child
                     border-bottom none
@@ -360,8 +360,8 @@
                 .calendar-day-current
                     background-color: red
     .calendar-day,
-    .calendar-week,
-    .calendar-week .calendar-multiple-days
+    .calendar-multi-day,
+    .calendar-multi-day .calendar-multiple-days
         .calendar-day-cell-height
             height 5rem
             max-height 5rem

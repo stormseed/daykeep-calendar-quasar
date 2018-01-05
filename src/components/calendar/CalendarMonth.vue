@@ -23,7 +23,7 @@
             <div
                 v-for="(thisWeek, index) in weekArray"
                 :class="{
-                    'calendar-week': true,
+                    'calendar-multi-day': true,
                     'row': true,
                     'no-wrap': true,
                     'items-start': true,
@@ -197,7 +197,7 @@
                     font-size 1.1em
                 .calendar-day-label-current
                     font-weight bold
-            .calendar-week
+            .calendar-multi-day
                 border-bottom 1px solid silver
                 :last-child
                     border-bottom none
