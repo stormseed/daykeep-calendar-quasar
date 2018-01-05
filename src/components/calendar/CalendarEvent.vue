@@ -19,7 +19,7 @@
     QBtn,
     QTooltip
   } from 'quasar'
-  import QuantityBubble from '../QuantityBubble'
+  import QuantityBubble from './QuantityBubble'
   export default {
     name: 'CalendarEvent',
     props: {

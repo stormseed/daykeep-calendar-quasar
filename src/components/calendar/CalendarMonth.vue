@@ -70,7 +70,7 @@
     QTabPane,
     QScrollArea
   } from 'quasar'
-  import QuantityBubble from '../QuantityBubble'
+  import QuantityBubble from './QuantityBubble'
   import CalendarEvent from './CalendarEvent'
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'

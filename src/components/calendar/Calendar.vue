@@ -108,7 +108,7 @@
     QTabPane,
     QScrollArea
   } from 'quasar'
-  import QuantityBubble from '../QuantityBubble'
+  import QuantityBubble from './QuantityBubble'
   export default {
     name: 'Calendar',
     props: {
