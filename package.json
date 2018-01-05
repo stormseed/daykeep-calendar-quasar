@@ -8,9 +8,11 @@
         "quasar-framework",
         "calendar"
     ],
-    "url": "https://git.stormseed.com/cbenjamin/quasar-calendar.git",
     "bugs": "https://github.com/stormseed/quasar-calendar/issues",
-    "repository": "https://git.stormseed.com/cbenjamin/quasar-calendar",
+    "repository": {
+        "type": "git",
+        "url": "https://git.stormseed.com/cbenjamin/quasar-calendar.git"
+    },
     "homepage": "https://git.stormseed.com/cbenjamin/quasar-calendar",
     "author": "Chris Benjamin <cbenjamin@stormseed.com>",
     "license": "MIT",
