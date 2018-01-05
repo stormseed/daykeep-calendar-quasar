@@ -10,6 +10,7 @@ import CalendarHeaderNav from './components/calendar/CalendarHeaderNav'
 import CalendarMonth from './components/calendar/CalendarMonth'
 import CalendarTimeLabelColumn from './components/calendar/CalendarTimeLabelColumn'
 import CalendarWeek from './components/calendar/CalendarWeek'
+import QuantityBubble from './components/calendar/QuantityBubble'
 
 export {
   Calendar,
@@ -23,5 +24,6 @@ export {
   CalendarHeaderNav,
   CalendarMonth,
   CalendarTimeLabelColumn,
-  CalendarWeek
+  CalendarWeek,
+  QuantityBubble
 }
