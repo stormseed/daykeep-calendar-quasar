@@ -8,16 +8,17 @@
         "quasar-framework",
         "calendar"
     ],
-    "url": "https://github.com/stormseed/quasar-calendar",
+    "url": "https://git.stormseed.com/cbenjamin/quasar-calendar.git",
     "bugs": "https://github.com/stormseed/quasar-calendar/issues",
-    "repository": "https://github.com/stormseed/quasar-calendar",
-    "homepage": "https://github.com/stormseed/quasar-calendar",
+    "repository": "https://git.stormseed.com/cbenjamin/quasar-calendar",
+    "homepage": "https://git.stormseed.com/cbenjamin/quasar-calendar",
     "author": "Chris Benjamin <cbenjamin@stormseed.com>",
     "license": "MIT",
-    "main": "dist/index.js",
+    "main": "src/index.js",
     "files": [
-        "dist/index.js",
+        "src/index.js",
         "src/**/*js",
+        "src/**/*vue",
         "package.json"
     ],
     "scripts": {
