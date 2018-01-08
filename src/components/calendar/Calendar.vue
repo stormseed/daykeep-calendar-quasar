@@ -38,7 +38,7 @@
                     :startYear="yearNumber"
                     :startMonth="monthNumber"
                     :startDay="dayNumber"
-                    :parsed="parsed"
+                    :parsed-events="parsed"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
@@ -46,7 +46,7 @@
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
-                    :parsed="parsed"
+                    :parsed-events="parsed"
                     :num-days="7"
                     :nav-days="7"
                     :force-start-of-week="true"
@@ -57,7 +57,7 @@
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
-                    :parsed="parsed"
+                    :parsed-events="parsed"
                     :num-days="3"
                     :nav-days="1"
                     :force-start-of-week="false"
@@ -68,7 +68,7 @@
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
-                    :parsed="parsed"
+                    :parsed-events="parsed"
                     :num-days="1"
                     :nav-days="1"
                     :force-start-of-week="false"
@@ -123,6 +123,10 @@
       startDay: {
         type: Number,
         default: moment().date()
+      },
+      eventArray: {
+        type: Array,
+        default: []
       }
     },
     components: {
@@ -152,113 +156,6 @@
         weekNumber: moment().week(),
         dayNumber: moment().date(),
         // weekArray: [],
-        eventArray: [
-          {
-            id: 1,
-            summary: 'Test event',
-            description: 'Some extra info goes here',
-            start: {
-              dateTime: '2018-01-16 14:00:00',
-              isAllDay: false,
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: '2018-01-16 16:30:00',
-              isAllDay: false,
-              timeZone: 'American/New_York'
-            }
-          },
-          {
-            id: 3,
-            summary: 'Test event 2',
-            description: 'Some extra info goes here',
-            start: {
-              dateTime: '2018-01-16 17:30:00',
-              isAllDay: false,
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: '2018-01-16 18:30:00',
-              isAllDay: false,
-              timeZone: 'American/New_York'
-            }
-          },
-          {
-            id: 4,
-            summary: 'Test event 3',
-            description: 'Some extra info goes here',
-            start: {
-              dateTime: '2018-01-20 10:30:00',
-              isAllDay: false,
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: '2018-01-20 13:00:00',
-              isAllDay: false,
-              timeZone: 'American/New_York'
-            }
-          },
-          {
-            id: 5,
-            summary: 'All day event',
-            description: 'Some extra info goes here',
-            start: {
-              dateTime: '2018-01-20 00:00:00',
-              isAllDay: true,
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: '2018-01-20 00:00:00',
-              isAllDay: true,
-              timeZone: 'American/New_York'
-            }
-          },
-          {
-            id: 6,
-            summary: 'Overlapping event',
-            description: 'Some extra info goes here',
-            start: {
-              dateTime: '2018-01-20 11:30:00',
-              isAllDay: false,
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: '2018-01-20 12:30:00',
-              isAllDay: false,
-              timeZone: 'American/New_York'
-            }
-          },
-          {
-            id: 7,
-            summary: 'Some event',
-            description: 'Some extra info goes here',
-            start: {
-              dateTime: '2018-01-20 06:30:00',
-              isAllDay: false,
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: '2018-01-20 07:30:00',
-              isAllDay: false,
-              timeZone: 'American/New_York'
-            }
-          },
-          {
-            id: 8,
-            summary: 'Some other event',
-            description: 'Some extra info goes here',
-            start: {
-              dateTime: '2018-01-20 16:00:00',
-              isAllDay: false,
-              timeZone: 'America/New_York'
-            },
-            end: {
-              dateTime: '2018-01-20 17:00:00',
-              isAllDay: false,
-              timeZone: 'American/New_York'
-            }
-          }
-        ],
         parsed: {
           byAllDayStartDate: {},
           byStartDate: {},
@@ -267,8 +164,7 @@
         dayRowArray: []
       }
     },
-    computed: {
-    },
+    computed: {},
     methods: {
       setupEventsHandling: function () {
         Events.$on('calendar:navMovePeriod', this.moveTimePeriod)
@@ -283,6 +179,7 @@
       // console.debug('props = ', this.startMonth, this.startYear, this.startDay)
       this.mountSetDate()
       // this.generateCalendarCellArray()
+      console.debug('calendar about to call parseEventList')
       this.parseEventList()
       this.setupEventsHandling()
     }
@@ -342,10 +239,10 @@
                     font-size 1.1em
                 .calendar-day-label-current
                     font-weight bold
-            .calendar-multi-day
-                border-bottom 1px solid silver
-                :last-child
-                    border-bottom none
+            //.calendar-multi-day
+            //    border-bottom 1px solid silver
+            //    :last-child
+            //        border-bottom none
             .calendar-day
                 background-color none
                 height $cellHeight

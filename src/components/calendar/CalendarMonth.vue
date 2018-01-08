@@ -89,9 +89,17 @@
         type: Number,
         default: moment().date()
       },
-      parsed: {
+      eventArray: {
+        type: Array,
+        // default: []
+        default: () => []
+      },
+      parsedEvents: {
         type: Object,
-        default: {}
+        // default: this.getDefaultParsed()
+        default: function () {
+          return {}
+        }
       }
     },
     components: {
@@ -115,7 +123,8 @@
         monthNumber: moment().month() + 1,
         weekNumber: moment().week(),
         dayNumber: moment().date(),
-        weekArray: []
+        weekArray: [],
+        parsed: this.getDefaultParsed()
       }
     },
     computed: {},
@@ -168,11 +177,29 @@
     },
     mounted () {
       this.doUpdate()
+      console.debug('calendarMonth about to call handlePassedInEvents')
+      this.handlePassedInEvents()
+      // if (this.parsedEvents.length > 0) {
+      //   this.getPassedInParsedEvents()
+      // }
+      // else if (this.eventArray.length > 0) {
+      //   this.getPassedInEventArray()
+      // }
     },
     watch: {
       startYear: 'handleStartChange',
       startMonth: 'handleStartChange',
-      startDay: 'handleStartChange'
+      startDay: 'handleStartChange',
+      // eventArray: 'getPassedInEventArray',
+      eventArray: function () {
+        console.debug('watch eventArray hit')
+        this.getPassedInEventArray()
+      },
+      // parsedEvents: 'getPassedInParsedEvents'
+      parsedEvents: function () {
+        console.debug('watch parsedEvents hit')
+        this.getPassedInParsedEvents()
+      }
     }
   }
 </script>

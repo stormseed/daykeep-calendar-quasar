@@ -4,11 +4,7 @@
         <!-- content -->
         <!--<q-scroll-area class="col">-->
 
-            <q-infinite-scroll
-                inline
-                :handler="loadMore"
-                style="height: 100%; overflow:auto"
-            >
+            <!--<q-infinite-scroll inline :handler="loadMore" style="height: 100%; overflow:auto">-->
 
                 <div
                     v-for="daysForward in localNumDays"
@@ -69,7 +65,7 @@
                 </div>
 
                 <q-spinner-dots slot="message" :size="40" />
-            </q-infinite-scroll>
+            <!--</q-infinite-scroll>-->
 
         <!--</q-scroll-area>-->
     </div>
@@ -101,14 +97,14 @@
         type: Number,
         default: moment().date()
       },
-      parsed: {
-        type: Object,
-        default: {
-          byAllDayStartDate: {},
-          byStartDate: {},
-          byId: {}
-        }
-      },
+      // parsed: {
+      //   type: Object,
+      //   default: {
+      //     byAllDayStartDate: {},
+      //     byStartDate: {},
+      //     byId: {}
+      //   }
+      // },
       numDays: {
         type: Number,
         default: 7
@@ -116,6 +112,17 @@
       leftMargin: {
         type: String,
         default: '4rem'
+      },
+      eventArray: {
+        type: Array,
+        default: []
+      },
+      parsedEvents: {
+        type: Object,
+        // default: this.getDefaultParsed()
+        default: function () {
+          return {}
+        }
       }
     },
     components: {
@@ -130,12 +137,13 @@
     data () {
       return {
         yearNumber: moment().year(),
-        monthNumber: moment().month(),
+        monthNumber: moment().month() + 1,
         weekNumber: moment().week(),
         dayNumber: moment().date(),
         localNumDays: 30,
         dayRowArray: [],
-        dayCounter: []
+        dayCounter: [],
+        parsed: this.getDefaultParsed()
       }
     },
     computed: {},
@@ -193,11 +201,14 @@
     mounted () {
       this.localNumDays = this.numDays
       this.doUpdate()
+      this.handlePassedInEvents()
     },
     watch: {
       startYear: 'handleStartChange',
       startMonth: 'handleStartChange',
-      startDay: 'handleStartChange'
+      startDay: 'handleStartChange',
+      eventArray: 'getPassedInEventArray',
+      parsedEvents: 'getPassedInParsedEvents'
     }
   }
 </script>

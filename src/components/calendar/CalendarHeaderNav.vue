@@ -42,7 +42,11 @@
         type: Number,
         default: 1
       },
-      moveTimePeriodFunction: Object
+      moveTimePeriodFunction: Object,
+      moveTimePeriodEmit: {
+        type: String,
+        default: 'calendar:navMovePeriod'
+      }
     },
     components: {
       QBtn
@@ -55,7 +59,11 @@
     methods: {
       doMoveTimePeriod (timePeriodUnit, timePeriodAmount) {
         // console.debug('doMoveTimePeriod called, this = ', this)
-        Events.$emit('calendar:navMovePeriod', timePeriodUnit, timePeriodAmount)
+        Events.$emit(
+          this.moveTimePeriodEmit,
+          timePeriodUnit,
+          timePeriodAmount
+        )
         // if (this.moveFunction !== undefined) {
         //   this.moveFunction(timePeriodUnit, timePeriodAmount)
         // }

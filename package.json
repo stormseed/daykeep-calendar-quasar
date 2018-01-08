@@ -39,6 +39,7 @@
     "dependencies": {
         "lodash.get": "^4.4.2",
         "lodash.has": "^4.5.2",
+        "lodash.isfunction": "^3.0.8",
         "moment": "^2.19.2",
         "moment-range": "^3.1.0"
     },

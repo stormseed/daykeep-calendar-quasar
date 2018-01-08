@@ -1,6 +1,5 @@
 <template>
     <div :class="columnCss()">
-
         <!-- underlying cells -->
         <!--<div v-for="thisHour in 24" :style="{ 'height': dayCellHeight, 'max-height': dayCellHeight }">-->
         <div v-for="thisHour in 24" :style="getCellStyle">

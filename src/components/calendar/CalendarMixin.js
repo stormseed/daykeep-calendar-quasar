@@ -2,8 +2,15 @@ import Moment from 'moment'
 import { extendMoment } from 'moment-range'
 import dashHas from 'lodash.has'
 import dashGet from 'lodash.get'
+import dashIsFunction from 'lodash.isfunction'
 import { Events } from 'quasar'
 const moment = extendMoment(Moment)
+const defaultEventArray = []
+const defaultParsed = {
+  byAllDayStartDate: {},
+  byStartDate: {},
+  byId: {}
+}
 export default {
   computed: {},
   methods: {
@@ -131,8 +138,10 @@ export default {
     },
     parseEventList: function () {
       // let thisStart = {}
+      console.debug('parseEventList called', this)
+      // this.parsed = defaultParsed
       for (let thisEvent of this.eventArray) {
-        console.debug(thisEvent)
+        // console.debug(thisEvent)
         this.parsed.byId[thisEvent.id] = thisEvent
         let thisStartDateTime = moment(thisEvent.start.dateTime)
         // console.debug('parseEventList about to call formatSql')
@@ -239,12 +248,12 @@ export default {
       // console.debug('test = ', test.format('YYYY-MM-DD'))
       return now.isSame(test, 'day')
     },
-    isCurrentWeekday: function (thisDayNum) {
-      return (moment().weekday() === thisDayNum)
-    },
-    dayNameFromLocaleNumber: function (dayNumber) {
-      return moment().weekday(dayNumber).format('dddd')
-    },
+    // isCurrentWeekday: function (thisDayNum) {
+    //   return (moment().weekday() === thisDayNum)
+    // },
+    // dayNameFromLocaleNumber: function (dayNumber) {
+    //   return moment().weekday(dayNumber).format('dddd')
+    // },
     dayNameAbbreviation: function (dayName, numLetters) {
       if (typeof dayName === 'string') {
         return dayName.slice(0, numLetters)
@@ -301,15 +310,80 @@ export default {
       value = value.toString().split('e')
       return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp))
     },
-    floor10: function (value, exp) {
-      return this.decimalAdjust('floor', value, exp)
-    },
     calculateDayCellWidth: function (numberOfDays) {
       return this.decimalAdjust(
         'floor',
         100 / numberOfDays,
         -3
       ) + '%'
+    },
+    getPassedInParsedEvents: function () {
+      if (
+        this.parsedEvents !== undefined &&
+        this.parsedEvents.byId !== undefined &&
+        Object.keys(this.parsedEvents).length > 0
+      ) {
+        this.parsed = this.parsedEvents
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    getPassedInEventArray: function () {
+      if (this.eventArray !== undefined && this.eventArray.length > 0) {
+        this.parseEventList()
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    getDefaultParsed: function () {
+      return defaultParsed
+    },
+    emptyParsedEvents: function (doneFunction) {
+      console.debug('emptyParsedEvents called, doneFunction = ', doneFunction)
+      this.parsed = defaultParsed
+      if (doneFunction !== undefined && dashIsFunction(doneFunction)) {
+        doneFunction()
+      }
+      else {
+        console.debug('emptyParsedEvents else hit')
+      }
+    },
+    isParsedEventsEmpty: function () {
+      return !(
+        this.parsedEvents !== undefined &&
+        this.parsedEvents.byId !== undefined &&
+        Object.keys(this.parsedEvents).length > 0
+      )
+    },
+    isEventArrayEmpty: function () {
+      return !(this.eventArray !== undefined && this.eventArray.length > 0)
+    },
+    handlePassedInEvents: function () {
+      console.debug(
+        'handlePassedInEvents called',
+        this.parsedEvents.length,
+        this.eventArray.length,
+        this.parsedEvents
+      )
+      if (!this.isParsedEventsEmpty()) {
+        console.debug('about to call getPassedInParsedEvents')
+        this.emptyParsedEvents(function () { this.getPassedInParsedEvents() })
+      }
+      else if (!this.isEventArrayEmpty()) {
+        console.debug('about to call getPassedInEventArray')
+        this.emptyParsedEvents(function () { this.getPassedInEventArray() })
+      }
+      console.debug('handlePassedInEvents done.')
+    },
+    createNewNavEventName: function () {
+      return 'calendar:navMovePeriod:' + this.createRandomString()
+    },
+    createRandomString: function () {
+      return Math.random().toString(36).substring(2, 15);
     }
   },
   mounted () {}

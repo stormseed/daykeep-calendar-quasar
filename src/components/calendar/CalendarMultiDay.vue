@@ -33,28 +33,33 @@
         <div class="calendar-time-margin">
             <calendar-all-day-events
                 :number-of-days="numDays"
-                :startYear="getStartNumber('year')"
-                :startMonth="getStartNumber('month')"
-                :startDay="getStartNumber('day')"
+                :start-year="getStartNumber('year')"
+                :start-month="getStartNumber('month')"
+                :start-day="getStartNumber('day')"
                 :parsed="parsed"
             />
         </div>
 
         <!-- content -->
-        <q-scroll-area class="col">
-            <div class="calendar-day row">
-                <calendar-time-label-column />
-                <div class="calendar-multiple-days col row">
-                    <calendar-day-column
-                        v-for="daysForward in numDays"
-                        :key="daysForward"
-                        :startDateObject="getStartDateObject(daysForward)"
-                        :dateEvents="getDateEvents(daysForward)"
-                        columnCssClass="calendar-day-column-content"
-                        :style="{ 'width': dayCellWidth }"
-                    />
+        <q-scroll-area
+            :style="getScrollStyle"
+        >
+            <div class="col">
+                <div class="calendar-day row">
+                    <calendar-time-label-column />
+                    <div class="calendar-multiple-days col row">
+                        <calendar-day-column
+                            v-for="daysForward in numDays"
+                            :key="daysForward"
+                            :start-date-object="getStartDateObject(daysForward)"
+                            :date-events="getDateEvents(daysForward)"
+                            column-css-class="calendar-day-column-content"
+                            :style="{ 'width': dayCellWidth }"
+                        />
+                    </div>
                 </div>
             </div>
+
         </q-scroll-area>
     </div>
 </template>
@@ -88,12 +93,15 @@
         type: Number,
         default: moment().date()
       },
-      parsed: {
+      eventArray: {
+        type: Array,
+        default: []
+      },
+      parsedEvents: {
         type: Object,
-        default: {
-          byAllDayStartDate: {},
-          byStartDate: {},
-          byId: {}
+        // default: this.getDefaultParsed()
+        default: function () {
+          return {}
         }
       },
       numDays: {
@@ -115,6 +123,16 @@
       dayCellHeightUnit: {
         type: String,
         default: 'rem'
+      },
+      scrollStyle: {
+        type: Object,
+        default: function () {
+          return {}
+        }
+      },
+      scrollHeight: {
+        type: String,
+        default: '400px'
       }
     },
     components: {
@@ -135,15 +153,26 @@
         // dayCellHeight: 5,
         // dayCellHeightUnit: 'rem',
         yearNumber: moment().year(),
-        monthNumber: moment().month(),
+        monthNumber: moment().month() + 1,
         weekNumber: moment().week(),
         dayNumber: moment().date(),
-        dayRowArray: []
+        dayRowArray: [],
+        parsed: this.getDefaultParsed()
       }
     },
     computed: {
       dayCellWidth: function () {
         return (100 / this.numDays).toFixed(3) + '%'
+      },
+      getScrollStyle: function () {
+        if (this.scrollStyle.length > 0) {
+          return this.scrollStyle
+        }
+        else {
+          return {
+            'height': this.scrollHeight
+          }
+        }
       }
     },
     methods: {
@@ -200,11 +229,15 @@
     },
     mounted () {
       this.doUpdate()
+      console.debug('calendarMultiDay about to call handlePassedInEvents')
+      this.handlePassedInEvents()
     },
     watch: {
       startYear: 'handleStartChange',
       startMonth: 'handleStartChange',
-      startDay: 'handleStartChange'
+      startDay: 'handleStartChange',
+      eventArray: 'getPassedInEventArray',
+      parsedEvents: 'getPassedInParsedEvents'
     }
   }
 </script>
