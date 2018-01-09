@@ -111,6 +111,7 @@
         border-radius .25em
         margin 1px 0
         font-size 0.8em
+        cursor pointer
     .calendar-event-month
         white-space nowrap
 

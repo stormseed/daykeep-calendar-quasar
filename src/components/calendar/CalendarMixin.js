@@ -17,32 +17,39 @@ export default {
     formatTimeFromNumber: function (hourNumber) {
       return moment().hour(hourNumber).format('ha')
     },
-    moveTimePeriod: function (unitType, amount) {
-      // console.debug('moveTimePeriod called with', unitType, amount)
+    moveTimePeriod: function (params) {
+      // this.moveTimePeriodOld(params.unitType, params.amount)
       let currentMom = this.createThisDate(this.dayNumber)
-      // console.debug('currentMom = ', currentMom)
-      currentMom.add(amount, unitType)
-      // console.debug('new currentMom = ', currentMom)
-      // console.debug('moveTimePeriod add done')
-      // if (amount > 0) {
-      //   currentMom.add(amount, unitType)
-      // }
-      // else {
-      //   currentMom.subtract(Math.abs(amount), unitType)
-      // }
-      // console.debug('old year, month, day = ', this.yearNumber, this.monthNumber, this.dayNumber)
+      currentMom.add(params.amount, params.unitType)
       this.yearNumber = currentMom.year()
       this.monthNumber = currentMom.month() + 1
-      // this.monthNumber = currentMom.month()
       this.weekNumber = currentMom.week()
       this.dayNumber = currentMom.date()
-      // if (this.generateCalendarCellArray !== undefined) {
-      //   this.generateCalendarCellArray()
-      // }
-      // console.debug('new year, month, day = ', this.yearNumber, this.monthNumber, this.dayNumber)
-      Events.$emit('calendar:startDatesChanged')
-      // console.debug('leaving moveTimePeriod')
+      Events.$emit(
+        'calendar:startDatesChanged',
+        {
+          yearNumber: this.yearNumber,
+          monthNumber: this.monthNumber,
+          dayNumber: this.dayNumber
+        }
+      )
+      this.$emit('startYear', this.startYear)
+      this.$emit('startMonth', this.startMonth)
+      this.$emit('startDay', this.startDay)
+
+      this.$emit('start-year', this.startYear)
+      this.$emit('start-month', this.startMonth)
+      this.$emit('start-day', this.startDay)
     },
+    // moveTimePeriodOld: function (unitType, amount) {
+    //   let currentMom = this.createThisDate(this.dayNumber)
+    //   currentMom.add(amount, unitType)
+    //   this.yearNumber = currentMom.year()
+    //   this.monthNumber = currentMom.month() + 1
+    //   this.weekNumber = currentMom.week()
+    //   this.dayNumber = currentMom.date()
+    //   Events.$emit('calendar:startDatesChanged')
+    // },
     getMonthNameFromMonthNumber: function () {
       return this.createThisDate(1).format('MMMM')
     },
@@ -136,10 +143,25 @@ export default {
       return this.parseDateParams(dateNum)
       // return moment().year(this.yearNumber).month(this.monthNumber - 1).date(dateNum)
     },
+    clearParsed: function () {
+      // console.debug('clearParsed called')
+      this.parsed = {}
+      // console.debug('clearParsed1 = ', JSON.stringify(this.parsed))
+      this.parsed = {
+        byAllDayStartDate: {},
+        byStartDate: {},
+        byId: {}
+      }
+      // console.debug('clearParsed2 = ', JSON.stringify(this.parsed))
+      return true
+    },
     parseEventList: function () {
       // let thisStart = {}
-      console.debug('parseEventList called', this)
+      // console.debug('parseEventList called', this)
+      // console.debug('parseEventList called, this.parsed = ', JSON.stringify(this.parsed))
       // this.parsed = defaultParsed
+      this.clearParsed()
+      // console.debug('after clear, this.parsed = ', JSON.stringify(this.parsed))
       for (let thisEvent of this.eventArray) {
         // console.debug(thisEvent)
         this.parsed.byId[thisEvent.id] = thisEvent
@@ -165,9 +187,7 @@ export default {
         }
       }
 
-      // console.debug('this.parsed.byStartDate = ', this.parsed.byStartDate)
       for (let thisDate in this.parsed.byStartDate) {
-        console.debug(thisDate)
         this.parsed.byStartDate[thisDate] = this.sortDateEvents(this.parsed.byStartDate[thisDate])
         this.parseDateEvents(this.parsed.byStartDate[thisDate])
       }
@@ -318,6 +338,7 @@ export default {
       ) + '%'
     },
     getPassedInParsedEvents: function () {
+      this.parsed = defaultParsed
       if (
         this.parsedEvents !== undefined &&
         this.parsedEvents.byId !== undefined &&
@@ -331,6 +352,7 @@ export default {
       }
     },
     getPassedInEventArray: function () {
+      this.parsed = defaultParsed
       if (this.eventArray !== undefined && this.eventArray.length > 0) {
         this.parseEventList()
         return true
@@ -341,16 +363,6 @@ export default {
     },
     getDefaultParsed: function () {
       return defaultParsed
-    },
-    emptyParsedEvents: function (doneFunction) {
-      console.debug('emptyParsedEvents called, doneFunction = ', doneFunction)
-      this.parsed = defaultParsed
-      if (doneFunction !== undefined && dashIsFunction(doneFunction)) {
-        doneFunction()
-      }
-      else {
-        console.debug('emptyParsedEvents else hit')
-      }
     },
     isParsedEventsEmpty: function () {
       return !(
@@ -363,21 +375,21 @@ export default {
       return !(this.eventArray !== undefined && this.eventArray.length > 0)
     },
     handlePassedInEvents: function () {
-      console.debug(
-        'handlePassedInEvents called',
-        this.parsedEvents.length,
-        this.eventArray.length,
-        this.parsedEvents
-      )
+      // console.debug(
+      //   'handlePassedInEvents called',
+      //   this.parsedEvents.length,
+      //   this.eventArray.length,
+      //   this.parsedEvents
+      // )
       if (!this.isParsedEventsEmpty()) {
-        console.debug('about to call getPassedInParsedEvents')
-        this.emptyParsedEvents(function () { this.getPassedInParsedEvents() })
+        // console.debug('about to call getPassedInParsedEvents')
+        this.getPassedInParsedEvents()
       }
       else if (!this.isEventArrayEmpty()) {
-        console.debug('about to call getPassedInEventArray')
-        this.emptyParsedEvents(function () { this.getPassedInEventArray() })
+        // console.debug('about to call getPassedInEventArray')
+        this.getPassedInEventArray()
       }
-      console.debug('handlePassedInEvents done.')
+      // console.debug('handlePassedInEvents done.')
     },
     createNewNavEventName: function () {
       return 'calendar:navMovePeriod:' + this.createRandomString()

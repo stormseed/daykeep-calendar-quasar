@@ -5,9 +5,10 @@
         <calendar-header-nav
             time-period-unit="months"
             :time-period-amount="1"
-            :startYear="startYear"
-            :startMonth="startMonth"
-            :startDay="startDay"
+            :start-year="startYear"
+            :start-month="startMonth"
+            :start-day="startDay"
+            :move-time-period-emit="eventRef + ':navMovePeriod'"
         >
             {{ getMonthNameFromMonthNumber() }} {{ yearNumber }}
         </calendar-header-nav>
@@ -62,7 +63,7 @@
   import moment from 'moment'
   import CalendarMixin from './CalendarMixin'
   import {
-    // Events,
+    Events,
     QBtn,
     QTooltip,
     QTabs,
@@ -91,15 +92,15 @@
       },
       eventArray: {
         type: Array,
-        // default: []
         default: () => []
       },
       parsedEvents: {
         type: Object,
-        // default: this.getDefaultParsed()
-        default: function () {
-          return {}
-        }
+        default: () => {}
+      },
+      eventRef: {
+        type: String,
+        default: 'calendar'
       }
     },
     components: {
@@ -124,12 +125,14 @@
         weekNumber: moment().week(),
         dayNumber: moment().date(),
         weekArray: [],
-        parsed: this.getDefaultParsed()
+        parsed: this.getDefaultParsed(),
+        thisNavRef: this.createNewNavEventName()
       }
     },
     computed: {},
     methods: {
       handleStartChange: function (val, oldVal) {
+        console.debug('calendarMonth handleStartChange called')
         this.doUpdate()
       },
       doUpdate: function () {
@@ -173,18 +176,40 @@
       },
       generateCalendarCellArray: function () {
         this.weekArray = this.getCalendarCellArray(this.monthNumber, this.yearNumber)
+      },
+      handleNavMove: function (unitType, amount) {
+        this.moveTimePeriod(unitType, amount)
+        this.$emit(
+          this.eventRef + ':navMovePeriod',
+          {
+            unitType: unitType,
+            amount: amount
+          }
+        )
+        this.$emit(
+          this.eventRef + ':changeDates',
+          {
+            yearNumber: this.yearNumber,
+            monthNumber: this.monthNumber,
+            dayNumber: this.dayNumber
+          }
+        )
       }
     },
     mounted () {
       this.doUpdate()
       console.debug('calendarMonth about to call handlePassedInEvents')
       this.handlePassedInEvents()
-      // if (this.parsedEvents.length > 0) {
-      //   this.getPassedInParsedEvents()
-      // }
-      // else if (this.eventArray.length > 0) {
-      //   this.getPassedInEventArray()
-      // }
+      // Events.$on(
+      //   this.eventRef + ':navMovePeriod:' + this.thisNavRef,
+      //   // this.moveTimePeriod
+      //   this.handleNavMove
+      // )
+      Events.$on(
+        this.eventRef + ':navMovePeriod',
+        // this.moveTimePeriod
+        this.handleNavMove
+      )
     },
     watch: {
       startYear: 'handleStartChange',

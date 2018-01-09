@@ -35,14 +35,17 @@
 
             <q-tab-pane name="tab-month" class="calendar-tab-pane-month">
                 <calendar-month
+                    :ref="'month-' + thisRefName"
                     :startYear="yearNumber"
                     :startMonth="monthNumber"
                     :startDay="dayNumber"
                     :parsed-events="parsed"
+                    :event-ref="thisEventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
                 <calendar-multi-day
+                    :ref="'week-' + thisRefName"
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
@@ -50,10 +53,12 @@
                     :num-days="7"
                     :nav-days="7"
                     :force-start-of-week="true"
+                    :event-ref="thisEventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
                 <calendar-multi-day
+                    :ref="'days-' + thisRefName"
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
@@ -61,10 +66,12 @@
                     :num-days="3"
                     :nav-days="1"
                     :force-start-of-week="false"
+                    :event-ref="thisEventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
                 <calendar-multi-day
+                    :ref="'day-' + thisRefName"
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
@@ -72,15 +79,18 @@
                     :num-days="1"
                     :nav-days="1"
                     :force-start-of-week="false"
+                    :event-ref="thisEventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
                 <calendar-agenda
+                    :ref="'agenda-' + thisRefName"
                     :start-day="dayNumber"
                     :start-month="monthNumber"
                     :start-year="yearNumber"
-                    :parsed="parsed"
+                    :parsed-events="parsed"
                     :num-days="30"
+                    :event-ref="thisEventRef"
                 />
             </q-tab-pane>
 
@@ -161,17 +171,38 @@
           byStartDate: {},
           byId: {}
         },
-        dayRowArray: []
+        dayRowArray: [],
+        thisRefName: this.createRandomString(),
+        thisNavRef: this.createNewNavEventName(),
+        thisEventRef: 'cal-' + this.createRandomString()
       }
     },
     computed: {},
     methods: {
       setupEventsHandling: function () {
-        Events.$on('calendar:navMovePeriod', this.moveTimePeriod)
-      }
+        // Events.$on(
+        //   'calendar:navMovePeriod',
+        //   this.moveTimePeriod
+        // )
+        // Events.$on(
+        //   this.thisNavRef,
+        //   this.moveTimePeriod
+        // )
+        Events.$on(
+          this.thisEventRef + ':navMovePeriod',
+          this.calPackageMoveTimePeriod
+        )
+      },
       // doMoveTimePeriod (unitType, amount) {
       //   console.debug('calendar.doMoveTimePeriod triggered')
       // }
+      calPackageMoveTimePeriod: function (params) {
+        this.moveTimePeriod(params)
+        this.$emit(
+          'calendar' + ':navMovePeriod',
+          params
+        )
+      }
     },
     mounted () {
       // console.debug('thisMonth = ', moment().month())

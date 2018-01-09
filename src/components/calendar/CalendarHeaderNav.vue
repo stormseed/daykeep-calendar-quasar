@@ -61,8 +61,10 @@
         // console.debug('doMoveTimePeriod called, this = ', this)
         Events.$emit(
           this.moveTimePeriodEmit,
-          timePeriodUnit,
-          timePeriodAmount
+          {
+            unitType: timePeriodUnit,
+            amount: timePeriodAmount
+          }
         )
         // if (this.moveFunction !== undefined) {
         //   this.moveFunction(timePeriodUnit, timePeriodAmount)

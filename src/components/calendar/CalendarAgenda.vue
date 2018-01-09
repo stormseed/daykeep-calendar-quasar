@@ -97,14 +97,6 @@
         type: Number,
         default: moment().date()
       },
-      // parsed: {
-      //   type: Object,
-      //   default: {
-      //     byAllDayStartDate: {},
-      //     byStartDate: {},
-      //     byId: {}
-      //   }
-      // },
       numDays: {
         type: Number,
         default: 7
@@ -115,14 +107,15 @@
       },
       eventArray: {
         type: Array,
-        default: []
+        default: () => []
       },
       parsedEvents: {
         type: Object,
-        // default: this.getDefaultParsed()
-        default: function () {
-          return {}
-        }
+        default: () => {}
+      },
+      eventRef: {
+        type: String,
+        default: 'calendar'
       }
     },
     components: {

@@ -5,6 +5,7 @@
             <calendar-header-nav
                 time-period-unit="days"
                 :time-period-amount="navDays"
+                :move-time-period-emit="eventRef + ':navMovePeriod'"
             >
                 {{ getDayOfWeek() }}, {{ getMonthNameFromMonthNumber() }} {{ dayNumber }}, {{ yearNumber }}
             </calendar-header-nav>
@@ -13,6 +14,7 @@
             <calendar-header-nav
                 time-period-unit="days"
                 :time-period-amount="navDays"
+                :move-time-period-emit="eventRef + ':navMovePeriod'"
             >
                 {{ getMonthNameFromMonthNumber() }} {{ yearNumber }}
             </calendar-header-nav>
@@ -74,6 +76,7 @@
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarAllDayEvents from './CalendarAllDayEvents'
   import {
+    Events,
     QBtn,
     QTooltip,
     QScrollArea
@@ -95,14 +98,15 @@
       },
       eventArray: {
         type: Array,
-        default: []
+        default: () => []
       },
       parsedEvents: {
         type: Object,
-        // default: this.getDefaultParsed()
-        default: function () {
-          return {}
-        }
+        default: () => {}
+      },
+      eventRef: {
+        type: String,
+        default: 'calendar'
       },
       numDays: {
         type: Number,
@@ -157,12 +161,14 @@
         weekNumber: moment().week(),
         dayNumber: moment().date(),
         dayRowArray: [],
-        parsed: this.getDefaultParsed()
+        parsed: this.getDefaultParsed(),
+        thisNavRef: this.createNewNavEventName()
       }
     },
     computed: {
       dayCellWidth: function () {
-        return (100 / this.numDays).toFixed(3) + '%'
+        return this.calculateDayCellWidth(this.numDays)
+        // return (100 / this.numDays).toFixed(3) + '%'
       },
       getScrollStyle: function () {
         if (this.scrollStyle.length > 0) {
@@ -225,12 +231,35 @@
               return this.createThisDate().date()
           }
         }
+      },
+      handleNavMove: function (unitType, amount) {
+        this.moveTimePeriod(unitType, amount)
+        this.$emit(
+          this.eventRef + ':navMovePeriod',
+          {
+            unitType: unitType,
+            amount: amount
+          }
+        )
+        this.$emit(
+          this.eventRef + ':changeDates',
+          {
+            yearNumber: this.yearNumber,
+            monthNumber: this.monthNumber,
+            dayNumber: this.dayNumber
+          }
+        )
       }
     },
     mounted () {
       this.doUpdate()
       console.debug('calendarMultiDay about to call handlePassedInEvents')
       this.handlePassedInEvents()
+      Events.$on(
+        this.eventRef + ':navMovePeriod',
+        // this.moveTimePeriod
+        this.handleNavMove
+      )
     },
     watch: {
       startYear: 'handleStartChange',
