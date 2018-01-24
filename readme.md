@@ -91,3 +91,4 @@ In addition, each individual components have the following properties:
 
 - [ ] Pass in visual properties for individual events
 - [ ] Allow a custom function or component to display events
+- [ ] Use existing Quasar components to select the dates currently viewable on the calendar

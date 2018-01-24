@@ -53,6 +53,7 @@
                             >
                                 <calendar-agenda-event
                                     v-for="thisEvent in dateGetEvents(startDateObject)"
+                                    :key="id"
                                     class="col-12"
                                     :event-object="thisEvent"
                                 />

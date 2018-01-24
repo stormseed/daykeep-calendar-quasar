@@ -121,6 +121,7 @@
   import QuantityBubble from './QuantityBubble'
   export default {
     name: 'Calendar',
+    // name: 'calendar',
     props: {
       startMonth: {
         type: Number,

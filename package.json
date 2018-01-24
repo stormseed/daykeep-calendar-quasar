@@ -23,19 +23,6 @@
         "src/**/*vue",
         "package.json"
     ],
-    "scripts": {
-        "lint": "eslint src/**/*.js",
-        "build": "webpack"
-    },
-    "devDependencies": {
-        "buble": "^0.15.2",
-        "buble-loader": "^0.4.1",
-        "eslint": "^3.18.0",
-        "eslint-config-standard": "^7.1.0",
-        "eslint-plugin-promise": "^3.5.0",
-        "eslint-plugin-standard": "^2.1.1",
-        "webpack": "^2.3.2"
-    },
     "dependencies": {
         "lodash.get": "^4.4.2",
         "lodash.has": "^4.5.2",
