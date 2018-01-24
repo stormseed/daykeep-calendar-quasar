@@ -3,32 +3,32 @@
         <q-tabs class="calendar-tabs" inverted>
             <q-tab
                 name="tab-month"
-                icon="message"
+                icon="view_module"
                 label="Month"
                 default
                 slot="title"
             />
             <q-tab
                 name="tab-week-component"
-                icon="message"
+                icon="view_week"
                 label="Week"
                 slot="title"
             />
             <q-tab
                 name="tab-days-component"
-                icon="message"
+                icon="view_column"
                 label="3 Day"
                 slot="title"
             />
             <q-tab
                 name="tab-single-day-component"
-                icon="message"
-                label="Single Day"
+                icon="view_day"
+                label="Day"
                 slot="title"
             />
             <q-tab
                 name="tab-agenda"
-                icon="message"
+                icon="view_agenda"
                 label="Agenda"
                 slot="title"
             />
