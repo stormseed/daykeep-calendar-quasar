@@ -17,7 +17,7 @@
                 v-if="showDates"
                 class="calendar-day-label-date"
             >
-                {{ getDateObject.clone().add((thisDayNum - 1), 'days').date() }}
+                {{ getDateObject().clone().add((thisDayNum - 1), 'days').date() }}
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
     props: {
       startMonth: {
         type: Number,
-        default: moment().month()
+        default: moment().month() + 1
       },
       startYear: {
         type: Number,
@@ -72,13 +72,13 @@
     computed: {
       cellWidth: function () {
         return this.calculateDayCellWidth(this.numberOfDays)
-      },
-      getDateObject: function () {
-        return moment()
-          .year(this.startYear)
-          .month(this.startMonth - 1)
-          .date(this.startDay)
       }
+      // getDateObject: function () {
+      //   return moment()
+      //     .year(this.startYear)
+      //     .month(this.startMonth - 1)
+      //     .date(this.startDay)
+      // }
     },
     methods: {
       handleStartChange: function (val, oldVal) {
@@ -88,18 +88,27 @@
         this.mountSetDate()
       },
       isCurrentDayLabel: function (thisDayNum) {
-        return this.isCurrentDate(this.getDateObject.clone().add((thisDayNum - 1), 'days').date())
+        let now = moment()
+        let test = moment()
+          .year(this.yearNumber)
+          .month(this.monthNumber - 1)
+          .date(15)
+          .day(thisDayNum - 1)
+        // console.debug('isCurrentDayLabel called,', thisDayNum, now, test)
+        // return (moment().add((thisDayNum - 1), 'days').date())
+        // TODO: take out debugging and simplify
+        return (now.day() === test.day())
       },
       getDayName (thisDayNum) {
         let dateVal = {}
         if (this.forceStartOfWeek) {
-          dateVal = this.getDateObject
+          dateVal = this.getDateObject()
             .clone()
             .date(15) // just somewhere in the middle of the month
             .weekday(thisDayNum - 1)
         }
         else {
-          dateVal = this.getDateObject
+          dateVal = this.getDateObject()
             .clone()
             .add((thisDayNum - 1), 'days')
         }

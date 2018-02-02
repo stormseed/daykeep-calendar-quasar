@@ -1,16 +1,15 @@
 <template>
     <div class="calendar-all-day-events row no-wrap justify-end items-start">
         <div
-            v-for="(thisDayNum, index) in numberOfDays"
+            v-for="(addDays, index) in numberOfDays"
             :style="{
               'width': cellWidth,
               'max-width': cellWidth,
             }"
         >
             <div
-                v-if="thisDayObject(thisDayNum)"
-                v-for="thisEvent in dateGetEvents(thisDayObject(thisDayNum))
-            ">
+                v-for="thisEvent in dateGetEvents(thisDayObject(addDays))"
+            >
                 <calendar-event
                     v-if="thisEvent.start.isAllDay"
                     :event-object="thisEvent"
@@ -70,12 +69,12 @@
       cellWidth: function () {
         return (100 / this.numberOfDays).toFixed(3) + '%'
       },
-      getDateObject: function () {
-        return moment()
-          .year(this.startYear)
-          .month(this.startMonth)
-          .date(this.startDay)
-      }
+      // getDateObject: function () {
+      //   return moment()
+      //     .year(this.startYear)
+      //     .month(this.startMonth)
+      //     .date(this.startDay)
+      // }
     },
     methods: {
       handleStartChange: function (val, oldVal) {
@@ -85,10 +84,10 @@
         this.mountSetDate()
       },
       isCurrentDayLabel: function (thisDayNum) {
-        return this.isCurrentDate(this.getDateObject.clone().add((thisDayNum - 1), 'days').date())
+        return this.isCurrentDate(this.getDateObject().clone().add((thisDayNum - 1), 'days').date())
       },
       thisDayObject: function (thisDayNum) {
-        return this.getDateObject.clone().add((thisDayNum - 1), 'days')
+        return this.getDateObject().clone().add((thisDayNum - 1), 'days')
       }
     },
     mounted () {

@@ -14,6 +14,12 @@ const defaultParsed = {
 export default {
   computed: {},
   methods: {
+    getDateObject: function () {
+      return moment()
+        .year(dashGet(this, 'yearNumber', this.startYear))
+        .month(dashGet(this, 'monthNumber', this.startMonth) - 1)
+        .date(dashGet(this, 'dayNumber', this.startDay))
+    },
     formatTimeFromNumber: function (hourNumber) {
       return moment().hour(hourNumber).format('ha')
     },
@@ -41,15 +47,6 @@ export default {
       this.$emit('start-month', this.startMonth)
       this.$emit('start-day', this.startDay)
     },
-    // moveTimePeriodOld: function (unitType, amount) {
-    //   let currentMom = this.createThisDate(this.dayNumber)
-    //   currentMom.add(amount, unitType)
-    //   this.yearNumber = currentMom.year()
-    //   this.monthNumber = currentMom.month() + 1
-    //   this.weekNumber = currentMom.week()
-    //   this.dayNumber = currentMom.date()
-    //   Events.$emit('calendar:startDatesChanged')
-    // },
     getMonthNameFromMonthNumber: function () {
       return this.createThisDate(1).format('MMMM')
     },
@@ -114,7 +111,7 @@ export default {
       else {
         thisDateObject = moment()
       }
-      // console.debug('parseDateParams returning = ', thisDateObject)
+      console.debug('parseDateParams returning = ', thisDateObject)
       return thisDateObject
     },
     hasAnyEvents: function (params) {
@@ -290,7 +287,8 @@ export default {
           this.workingDateObject = this.startDateObject
         }
         this.dayNumber = this.startDateObject.date()
-        this.monthNumber = this.startDateObject.month() + 1
+        // this.monthNumber = this.startDateObject.month() + 1
+        this.monthNumber = this.startDateObject.month()
         this.yearNumber = this.startDateObject.year()
       }
       else {

@@ -91,6 +91,7 @@
                     :parsed-events="parsed"
                     :num-days="30"
                     :event-ref="thisEventRef"
+                    scroll-height="300px"
                 />
             </q-tab-pane>
 
@@ -232,8 +233,8 @@
 
     .calendar-tabs
         .calendar-tab-pane-day,
-        .calendar-tab-pane-week,
-        .calendar-tab-pane-agenda
+        .calendar-tab-pane-week
+        /*.calendar-tab-pane-agenda*/
             height 60vh
             max-height 60vh
             overflow hidden

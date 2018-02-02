@@ -4,7 +4,7 @@
         :style="getEventStyle()"
         @mouseup="handleClick"
     >
-        <span v-if="showTime" class="calendar-event-start-time">
+        <span v-if="!isAllDayEvent() && showTime" class="calendar-event-start-time">
             {{ formatTime(eventObject.start.dateTime) }}
         </span>
         <span class="calendar-event-summary">
@@ -79,6 +79,9 @@
         }
         returnString += thisMoment.format('a').slice(0, 1)
         return returnString
+      },
+      isAllDayEvent: function () {
+        return this.eventObject.start.isAllDay
       },
       getEventClass: function () {
         return {

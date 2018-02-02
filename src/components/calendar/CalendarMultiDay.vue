@@ -16,7 +16,7 @@
                 :time-period-amount="navDays"
                 :move-time-period-emit="eventRef + ':navMovePeriod'"
             >
-                {{ getMonthNameFromMonthNumber() }} {{ yearNumber }}
+                {{ getHeaderLabel() }}
             </calendar-header-nav>
         </template>
 
@@ -45,6 +45,7 @@
         <!-- content -->
         <q-scroll-area
             :style="getScrollStyle"
+            :class="getScrollClass"
         >
             <div class="col">
                 <div class="calendar-day row">
@@ -136,7 +137,7 @@
       },
       scrollHeight: {
         type: String,
-        default: '400px'
+        default: 'auto'
       }
     },
     components: {
@@ -179,9 +180,41 @@
             'height': this.scrollHeight
           }
         }
+      },
+      getScrollClass: function () {
+        if (this.scrollHeight === 'auto') {
+          return {
+            'col': true,
+            'testmarker': true
+          }
+        }
+        else {
+          return {}
+        }
       }
     },
     methods: {
+      getHeaderLabel: function () {
+        if (this.forceStartOfWeek) {
+          let dateReturn = ''
+          let firstDate = this.getDateObject().clone().weekday(0)
+          let lastDate = this.getDateObject().clone().weekday(6)
+          // console.debug('getHeaderLabel called', this.getDateObject(), firstDate, lastDate)
+
+          if (firstDate.month() !== lastDate.month()) {
+            dateReturn += firstDate.format('MMM')
+            if (firstDate.year() !== lastDate.year()) {
+              dateReturn += firstDate.format(' YYYY')
+            }
+            dateReturn += ' - '
+          }
+          dateReturn += lastDate.format('MMM YYYY')
+          return dateReturn
+        }
+        else {
+          return this.getMonthNameFromMonthNumber() + ' ' + this.yearNumber
+        }
+      },
       handleStartChange: function (val, oldVal) {
         this.doUpdate()
       },
@@ -216,7 +249,7 @@
             case 'year':
               return this.createThisDate().weekday(0).year()
             case 'month':
-              return this.createThisDate().weekday(0).month()
+              return this.createThisDate().weekday(0).month() + 1
             case 'day':
               return this.createThisDate().weekday(0).date()
           }

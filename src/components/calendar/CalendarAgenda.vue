@@ -1,21 +1,21 @@
 <template>
     <div class="calendar-agenda column fit">
-
         <!-- content -->
         <!--<q-scroll-area class="col">-->
-
-            <!--<q-infinite-scroll inline :handler="loadMore" style="height: 100%; overflow:auto">-->
-
+            <q-infinite-scroll
+                inline
+                :handler="loadMore"
+                :style="{ 'height': scrollHeight, 'overflow':'auto' }">
                 <div
                     v-for="daysForward in localNumDays"
                     :key="daysForward"
                 >
-                    <div v-if="startDateObject = getStartDateObject(daysForward)">
+                    <div v-if="startDateObject = getStartDateObject(daysForward - 1)">
 
                         <!--month marker-->
                         <div
                             v-if="startDateObject.date() === 1"
-                            class="calendar-agenda-month"
+                            class="row calendar-agenda-month"
                             :style="{ 'padding-left': leftMargin }"
                         >
                             {{ startDateObject.format('MMMM YYYY') }}
@@ -24,7 +24,7 @@
                         <!--week marker-->
                         <div
                             v-if="startDateObject.day() === 0"
-                            class="calendar-agenda-week"
+                            class="row calendar-agenda-week"
                             :style="{ 'margin-left': leftMargin }"
                         >
                             {{ getWeekTitle(startDateObject) }}
@@ -33,8 +33,7 @@
                         <!--individual day-->
                         <div
                             v-if="dateGetEvents(startDateObject).length > 0"
-                            class="calendar-agenda-day row items-start">
-
+                            class="col row items-start calendar-agenda-day">
                             <div
                                 class="col-auto calendar-agenda-side"
                                 :style="{ 'width': leftMargin, 'max-width': leftMargin }"
@@ -46,28 +45,28 @@
                                     {{ startDateObject.format('ddd') }}
                                 </div>
                             </div>
-
-                            <div
-
-                                class="col row calendar-agenda-events"
-                            >
-                                <calendar-agenda-event
+                            <!--<div class="col row calendar-agenda-events">-->
+                                <!--<calendar-agenda-event-->
+                                    <!--v-if="dateGetEvents(startDateObject)"-->
+                                    <!--v-for="thisEvent in dateGetEvents(startDateObject)"-->
+                                    <!--:key="id"-->
+                                    <!--class="col-12"-->
+                                    <!--:event-object="thisEvent"-->
+                                <!--/>-->
+                            <!--</div>-->
+                            <div class="col row calendar-agenda-events">
+                                <template
+                                    v-if="dateGetEvents(startDateObject)"
                                     v-for="thisEvent in dateGetEvents(startDateObject)"
-                                    :key="id"
-                                    class="col-12"
-                                    :event-object="thisEvent"
-                                />
+                                >
+                                    <calendar-agenda-event :event-object="thisEvent"/>
+                                </template>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
                 <q-spinner-dots slot="message" :size="40" />
-            <!--</q-infinite-scroll>-->
-
+            </q-infinite-scroll>
         <!--</q-scroll-area>-->
     </div>
 </template>
@@ -117,6 +116,10 @@
       eventRef: {
         type: String,
         default: 'calendar'
+      },
+      scrollHeight: {
+        type: String,
+        default: '200px'
       }
     },
     components: {
@@ -149,6 +152,7 @@
         done()
       },
       handleStartChange: function (val, oldVal) {
+        // console.debug('handleStartChange called, val, oldVal = ', val, oldVal)
         this.doUpdate()
       },
       doUpdate: function () {
@@ -156,8 +160,9 @@
         // this.localNumDays = this.numDays
       },
       getStartDateObject: function (daysForward) {
-        console.debug('getStartDateObject called, ', daysForward)
-        return this.createThisDate().add(daysForward - 1, 'days')
+        let returnValue = this.createThisDate().add(daysForward - 1, 'days')
+        // console.debug('getStartDateObject called, ', daysForward, returnValue, returnValue.format('MMMM Do YYYY'))
+        return returnValue
       },
       getStartNumber: function (periodType) {
         if (this.forceStartOfWeek) {
@@ -183,7 +188,7 @@
       },
       getWeekTitle: function (firstMoment) {
         let lastMoment = firstMoment.clone().add(6, 'days')
-        console.debug('getWeekTitle, ', firstMoment, lastMoment)
+        // console.debug('getWeekTitle, ', firstMoment, lastMoment)
         if (firstMoment.month() === lastMoment.month()) {
           return firstMoment.format('MMM D - ') + lastMoment.format('D')
         }
