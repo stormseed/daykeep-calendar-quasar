@@ -292,7 +292,7 @@ export default {
         this.yearNumber = this.startDateObject.year()
       }
       else {
-        console.debug('startDateObject not defined')
+        // console.debug('startDateObject not defined')
         if (this.workingDateObject !== undefined) {
           this.workingDateObject = moment()
             .year(this.startYear)

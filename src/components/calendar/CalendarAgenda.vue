@@ -147,7 +147,7 @@
     computed: {},
     methods: {
       loadMore: function (index, done) {
-        console.debug('loadMore called, index = ', index)
+        // console.debug('loadMore called, index = ', index)
         this.localNumDays += 30
         // this.doUpdate()
         done()

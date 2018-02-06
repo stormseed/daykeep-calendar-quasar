@@ -287,7 +287,7 @@
     },
     mounted () {
       this.doUpdate()
-      console.debug('calendarMultiDay about to call handlePassedInEvents')
+      // console.debug('calendarMultiDay about to call handlePassedInEvents')
       this.handlePassedInEvents()
       Events.$on(
         this.eventRef + ':navMovePeriod',

@@ -97,7 +97,7 @@
         return retVal
       },
       handleClick: function (e) {
-        console.debug('event clicked')
+        // console.debug('event clicked')
         this.$emit('click', this.eventObject)
       }
     },

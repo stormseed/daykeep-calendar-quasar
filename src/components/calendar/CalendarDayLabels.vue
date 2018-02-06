@@ -96,7 +96,7 @@
           // .day(thisDayNum - 1)
           .date(this.dayNumber)
           .day(thisDayNum - 1)
-        console.debug('isCurrentDayLabel called,', thisDayNum, now, test)
+        // console.debug('isCurrentDayLabel called,', thisDayNum, now, test)
         // return (moment().add((thisDayNum - 1), 'days').date())
         // TODO: take out debugging and simplify
         // return (now.day() === test.day())

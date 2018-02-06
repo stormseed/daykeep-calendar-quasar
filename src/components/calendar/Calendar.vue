@@ -216,7 +216,7 @@
       // console.debug('props = ', this.startMonth, this.startYear, this.startDay)
       this.mountSetDate()
       // this.generateCalendarCellArray()
-      console.debug('calendar about to call parseEventList')
+      // console.debug('calendar about to call parseEventList')
       this.parseEventList()
       this.setupEventsHandling()
     }

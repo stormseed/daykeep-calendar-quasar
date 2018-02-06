@@ -142,12 +142,12 @@
     computed: {},
     methods: {
       handleStartChange: function (val, oldVal) {
-        console.debug('calendarMonth handleStartChange called')
+        // console.debug('calendarMonth handleStartChange called')
         debounce(this.doUpdate, 300)
         // this.doUpdate()
       },
       doUpdate: function () {
-        console.debug('calendarMonth doUpdate called')
+        // console.debug('calendarMonth doUpdate called')
         this.mountSetDate()
         this.generateCalendarCellArray()
       },
@@ -187,11 +187,11 @@
         return weekArray
       },
       generateCalendarCellArray: function () {
-        console.debug('generateCalendarCellArray called')
+        // console.debug('generateCalendarCellArray called')
         this.weekArray = this.getCalendarCellArray(this.monthNumber, this.yearNumber)
       },
       handleNavMove: function (unitType, amount) {
-        console.debug('calendarMonth called handleNavMove', unitType, amount)
+        // console.debug('calendarMonth called handleNavMove', unitType, amount)
         this.moveTimePeriod(unitType, amount)
         this.$emit(
           this.eventRef + ':navMovePeriod',
@@ -213,7 +213,7 @@
     },
     mounted () {
       this.doUpdate()
-      console.debug('calendarMonth about to call handlePassedInEvents')
+      // console.debug('calendarMonth about to call handlePassedInEvents')
       this.handlePassedInEvents()
       // Events.$on(
       //   this.eventRef + ':navMovePeriod:' + this.thisNavRef,
@@ -232,12 +232,12 @@
       startDay: 'handleStartChange',
       // eventArray: 'getPassedInEventArray',
       eventArray: function () {
-        console.debug('watch eventArray hit')
+        // console.debug('watch eventArray hit')
         this.getPassedInEventArray()
       },
       // parsedEvents: 'getPassedInParsedEvents'
       parsedEvents: function () {
-        console.debug('watch parsedEvents hit')
+        // console.debug('watch parsedEvents hit')
         this.getPassedInParsedEvents()
       }
     }

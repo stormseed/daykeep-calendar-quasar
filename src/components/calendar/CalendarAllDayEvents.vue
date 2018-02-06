@@ -77,7 +77,7 @@
     computed: {
       cellWidth: function () {
         // return (100 / this.numberOfDays).toFixed(3) + '%'
-        console.debug('cellWidth returning', this.calculateDayCellWidth(this.numberOfDays))
+        // console.debug('cellWidth returning', this.calculateDayCellWidth(this.numberOfDays))
         return this.calculateDayCellWidth(this.numberOfDays)
       },
       // getDateObject: function () {

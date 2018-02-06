@@ -121,8 +121,8 @@
         if (thisEvent.numberOfOverlaps > 0) {
           let thisWidth = (100 / (thisEvent.numberOfOverlaps + 1)).toFixed(2)
           let thisShift = thisWidth * (thisEvent.overlapIteration - 1)
-          console.debug('thisWidth = ', thisWidth)
-          console.debug('thisShift = ', thisShift)
+          // console.debug('thisWidth = ', thisWidth)
+          // console.debug('thisShift = ', thisShift)
           style['width'] = thisWidth + '%'
           style['max-width'] = thisWidth + '%'
           style['left'] = thisShift + '%'
@@ -131,7 +131,7 @@
         return style
       },
       calculateDayEventPosition: function (startDateTime, endDateTime) {
-        console.debug('calculateDayEventTop called, dateTime = ', startDateTime)
+        // console.debug('calculateDayEventTop called, dateTime = ', startDateTime)
         let startMom = moment(startDateTime)
         let endMom = moment(endDateTime)
         let momMidnight = startMom.clone().startOf('day')
@@ -149,7 +149,7 @@
           .year(this.yearNumber)
           .month(this.monthNumber - 1)
           .date(this.dayNumber)
-        console.debug('isCurrentDate2 called, now/test=', now, test)
+        // console.debug('isCurrentDate2 called, now/test=', now, test)
         return now.isSame(test, 'day')
       }
     },
