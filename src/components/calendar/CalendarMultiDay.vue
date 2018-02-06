@@ -1,5 +1,5 @@
 <template>
-    <div class="calendar-multi-day-component column fit">
+    <div class="calendar-multi-day-component column fit no-wrap">
         <!-- week nav -->
         <template v-if="numDays === 1">
             <calendar-header-nav
@@ -107,7 +107,8 @@
       },
       eventRef: {
         type: String,
-        default: 'calendar'
+        // default: 'calendar'
+        default: 'cal-' + Math.random().toString(36).substring(2, 15)
       },
       numDays: {
         type: Number,
@@ -274,14 +275,14 @@
             amount: amount
           }
         )
-        this.$emit(
-          this.eventRef + ':changeDates',
-          {
-            yearNumber: this.yearNumber,
-            monthNumber: this.monthNumber,
-            dayNumber: this.dayNumber
-          }
-        )
+        // this.$emit(
+        //   this.eventRef + ':changeDates',
+        //   {
+        //     yearNumber: this.yearNumber,
+        //     monthNumber: this.monthNumber,
+        //     dayNumber: this.dayNumber
+        //   }
+        // )
       }
     },
     mounted () {
@@ -310,6 +311,7 @@
     $borderOuter = 1px solid silver
     $borderThin = 1px dotted silver
     $dayTimeLabelWidth = 4em
+    $currentDayBackgroundColor = #eeeeee
 
     .calendar-multi-day-component
         .calendar-day-labels

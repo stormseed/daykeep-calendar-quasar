@@ -31,21 +31,21 @@ export default {
       this.monthNumber = currentMom.month() + 1
       this.weekNumber = currentMom.week()
       this.dayNumber = currentMom.date()
-      Events.$emit(
-        'calendar:startDatesChanged',
-        {
-          yearNumber: this.yearNumber,
-          monthNumber: this.monthNumber,
-          dayNumber: this.dayNumber
-        }
-      )
-      this.$emit('startYear', this.startYear)
-      this.$emit('startMonth', this.startMonth)
-      this.$emit('startDay', this.startDay)
-
-      this.$emit('start-year', this.startYear)
-      this.$emit('start-month', this.startMonth)
-      this.$emit('start-day', this.startDay)
+      // Events.$emit(
+      //   'calendar:startDatesChanged',
+      //   {
+      //     yearNumber: this.yearNumber,
+      //     monthNumber: this.monthNumber,
+      //     dayNumber: this.dayNumber
+      //   }
+      // )
+      // this.$emit('startYear', this.startYear)
+      // this.$emit('startMonth', this.startMonth)
+      // this.$emit('startDay', this.startDay)
+      //
+      // this.$emit('start-year', this.startYear)
+      // this.$emit('start-month', this.startMonth)
+      // this.$emit('start-day', this.startDay)
     },
     getMonthNameFromMonthNumber: function () {
       return this.createThisDate(1).format('MMMM')
@@ -111,7 +111,7 @@ export default {
       else {
         thisDateObject = moment()
       }
-      console.debug('parseDateParams returning = ', thisDateObject)
+      // console.debug('parseDateParams returning = ', thisDateObject)
       return thisDateObject
     },
     hasAnyEvents: function (params) {
@@ -287,12 +287,12 @@ export default {
           this.workingDateObject = this.startDateObject
         }
         this.dayNumber = this.startDateObject.date()
-        // this.monthNumber = this.startDateObject.month() + 1
-        this.monthNumber = this.startDateObject.month()
+        this.monthNumber = this.startDateObject.month() + 1
+        // this.monthNumber = this.startDateObject.month()
         this.yearNumber = this.startDateObject.year()
       }
       else {
-        // console.debug('startDateObject not defined')
+        console.debug('startDateObject not defined')
         if (this.workingDateObject !== undefined) {
           this.workingDateObject = moment()
             .year(this.startYear)
@@ -393,7 +393,7 @@ export default {
       return 'calendar:navMovePeriod:' + this.createRandomString()
     },
     createRandomString: function () {
-      return Math.random().toString(36).substring(2, 15);
+      return Math.random().toString(36).substring(2, 15)
     }
   },
   mounted () {}

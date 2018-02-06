@@ -40,7 +40,7 @@
                     :startMonth="monthNumber"
                     :startDay="dayNumber"
                     :parsed-events="parsed"
-                    :event-ref="thisEventRef"
+                    :event-ref="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
@@ -53,7 +53,7 @@
                     :num-days="7"
                     :nav-days="7"
                     :force-start-of-week="true"
-                    :event-ref="thisEventRef"
+                    :event-ref="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
@@ -66,7 +66,7 @@
                     :num-days="3"
                     :nav-days="1"
                     :force-start-of-week="false"
-                    :event-ref="thisEventRef"
+                    :event-ref="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
@@ -79,7 +79,7 @@
                     :num-days="1"
                     :nav-days="1"
                     :force-start-of-week="false"
-                    :event-ref="thisEventRef"
+                    :event-ref="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
@@ -90,7 +90,7 @@
                     :start-year="yearNumber"
                     :parsed-events="parsed"
                     :num-days="30"
-                    :event-ref="thisEventRef"
+                    :event-ref="eventRef"
                     scroll-height="300px"
                 />
             </q-tab-pane>
@@ -139,6 +139,10 @@
       eventArray: {
         type: Array,
         default: []
+      },
+      eventRef: {
+        type: String,
+        default: 'cal-' + Math.random().toString(36).substring(2, 15)
       }
     },
     components: {
@@ -174,9 +178,9 @@
           byId: {}
         },
         dayRowArray: [],
-        thisRefName: this.createRandomString(),
-        thisNavRef: this.createNewNavEventName(),
-        thisEventRef: 'cal-' + this.createRandomString()
+        thisRefName: this.createRandomString()
+        // thisNavRef: this.createNewNavEventName(),
+        // thisEventRef: 'cal-' + this.createRandomString()
       }
     },
     computed: {},
@@ -191,7 +195,7 @@
         //   this.moveTimePeriod
         // )
         Events.$on(
-          this.thisEventRef + ':navMovePeriod',
+          this.eventRef + ':navMovePeriod',
           this.calPackageMoveTimePeriod
         )
       },
@@ -255,6 +259,7 @@
                 .calendar-header-label
                     font-size 1.25em
                     font-weight bold
+    /*
     .calendar-month
         .calendar-header
             .calendar-month-year
@@ -289,6 +294,7 @@
                     padding-left .25em
                 .calendar-day-current
                     background-color: red
+    */
     .calendar-day,
     .calendar-multi-day,
     .calendar-multi-day .calendar-multiple-days

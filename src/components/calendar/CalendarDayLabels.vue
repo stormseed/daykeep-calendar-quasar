@@ -87,17 +87,25 @@
       doUpdate: function () {
         this.mountSetDate()
       },
-      isCurrentDayLabel: function (thisDayNum) {
+      isCurrentDayLabel: function (thisDayNum, checkMonthOnly) {
         let now = moment()
         let test = moment()
           .year(this.yearNumber)
           .month(this.monthNumber - 1)
-          .date(15)
+          // .date(15)
+          // .day(thisDayNum - 1)
+          .date(this.dayNumber)
           .day(thisDayNum - 1)
-        // console.debug('isCurrentDayLabel called,', thisDayNum, now, test)
+        console.debug('isCurrentDayLabel called,', thisDayNum, now, test)
         // return (moment().add((thisDayNum - 1), 'days').date())
         // TODO: take out debugging and simplify
-        return (now.day() === test.day())
+        // return (now.day() === test.day())
+        if (checkMonthOnly === true) {
+          return (now.IsSame(test, 'month') && now.day() === test.day())
+        }
+        else {
+          return now.isSame(test, 'day')
+        }
       },
       getDayName (thisDayNum) {
         let dateVal = {}
@@ -140,6 +148,7 @@
     .calendar-day-labels
         .calendar-day-label
             font-size 1.1em
+            padding-left 4px
             .calendar-day-label-date
                 font-size 1.75em
         .calendar-day-label-current

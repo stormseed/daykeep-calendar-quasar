@@ -135,9 +135,10 @@
       return {
         yearNumber: moment().year(),
         monthNumber: moment().month() + 1,
-        weekNumber: moment().week(),
+        // weekNumber: moment().week(),
         dayNumber: moment().date(),
-        localNumDays: 30,
+        // localNumDays: 30,
+        localNumDays: 0,
         dayRowArray: [],
         dayCounter: [],
         parsed: this.getDefaultParsed()

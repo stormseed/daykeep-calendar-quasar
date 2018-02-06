@@ -68,10 +68,13 @@
         // dayCellHeight: 5,
         // dayCellHeightUnit: 'rem',
         yearNumber: moment().year(),
-        monthNumber: moment().month(),
+        monthNumber: moment().month() + 1,
         weekNumber: moment().week(),
         dayNumber: moment().date()
       }
+    },
+    watch: {
+      startDateObject: 'mountSetDate'
     },
     computed: {
       getCellStyle: function () {
@@ -85,7 +88,9 @@
       columnCss: function () {
         let returnVal = {
           'calendar-day-column-content': true,
-          'relative-position': true
+          'relative-position': true,
+          // 'calendar-day-column-current': this.isCurrentDate(this.startDay)
+          'calendar-day-column-current': this.isCurrentDate2()
         }
         returnVal[this.columnCssClass] = true
         return returnVal
@@ -137,6 +142,15 @@
           top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,
           height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
         }
+      },
+      isCurrentDate2: function () {
+        let now = moment()
+        let test = moment()
+          .year(this.yearNumber)
+          .month(this.monthNumber - 1)
+          .date(this.dayNumber)
+        console.debug('isCurrentDate2 called, now/test=', now, test)
+        return now.isSame(test, 'day')
       }
     },
     mounted () {
@@ -150,6 +164,7 @@
     $cellHeight = 5em
     $borderOuter = 1px solid silver
     $borderThin = 1px dotted silver
+    $currentDayBackgroundColor = #eeeeee
 
     .calendar-day
         position relative
@@ -161,6 +176,8 @@
         .calendar-day-column-content
             // border-right $borderOuter
             position relative
+        .calendar-day-column-current
+            background-color $currentDayBackgroundColor
         .calendar-day-time
             padding-right .5em
             border-right $borderOuter

@@ -32,7 +32,14 @@
                     'justify-start': index === (weekArray.length - 1)
                 }"
             >
-                <div class="calendar-day calendar-cell" v-for="thisDay in thisWeek">
+                <div
+                    :class="{
+                        'calendar-day': true,
+                        'calendar-cell': true,
+                        'calendar-day-current': isCurrentDate(thisDay.date)
+                        }"
+                    v-for="thisDay in thisWeek"
+                >
                     <quantity-bubble
                         v-if="isCurrentDate(thisDay.date)"
                         :quantity="thisDay.date"
@@ -69,7 +76,8 @@
     QTabs,
     QTab,
     QTabPane,
-    QScrollArea
+    QScrollArea,
+    debounce
   } from 'quasar'
   import QuantityBubble from './QuantityBubble'
   import CalendarEvent from './CalendarEvent'
@@ -77,6 +85,19 @@
   import CalendarHeaderNav from './CalendarHeaderNav'
   export default {
     name: 'CalendarMonth',
+    components: {
+      QuantityBubble,
+      CalendarEvent,
+      CalendarDayLabels,
+      CalendarHeaderNav,
+      QBtn,
+      QTooltip,
+      QTabs,
+      QTab,
+      QTabPane,
+      QScrollArea
+    },
+    mixins: [CalendarMixin],
     props: {
       startMonth: {
         type: Number,
@@ -100,22 +121,11 @@
       },
       eventRef: {
         type: String,
-        default: 'calendar'
+        // default: 'calendar'
+        // default: 'cal-' + this.createRandomString()
+        default: 'cal-' + Math.random().toString(36).substring(2, 15)
       }
     },
-    components: {
-      QuantityBubble,
-      CalendarEvent,
-      CalendarDayLabels,
-      CalendarHeaderNav,
-      QBtn,
-      QTooltip,
-      QTabs,
-      QTab,
-      QTabPane,
-      QScrollArea
-    },
-    mixins: [CalendarMixin],
     data () {
       return {
         dayCellHeight: 5,
@@ -125,17 +135,19 @@
         weekNumber: moment().week(),
         dayNumber: moment().date(),
         weekArray: [],
-        parsed: this.getDefaultParsed(),
-        thisNavRef: this.createNewNavEventName()
+        parsed: this.getDefaultParsed()
+        // thisNavRef: this.createNewNavEventName()
       }
     },
     computed: {},
     methods: {
       handleStartChange: function (val, oldVal) {
         console.debug('calendarMonth handleStartChange called')
-        this.doUpdate()
+        debounce(this.doUpdate, 300)
+        // this.doUpdate()
       },
       doUpdate: function () {
+        console.debug('calendarMonth doUpdate called')
         this.mountSetDate()
         this.generateCalendarCellArray()
       },
@@ -175,9 +187,11 @@
         return weekArray
       },
       generateCalendarCellArray: function () {
+        console.debug('generateCalendarCellArray called')
         this.weekArray = this.getCalendarCellArray(this.monthNumber, this.yearNumber)
       },
       handleNavMove: function (unitType, amount) {
+        console.debug('calendarMonth called handleNavMove', unitType, amount)
         this.moveTimePeriod(unitType, amount)
         this.$emit(
           this.eventRef + ':navMovePeriod',
@@ -186,14 +200,15 @@
             amount: amount
           }
         )
-        this.$emit(
-          this.eventRef + ':changeDates',
-          {
-            yearNumber: this.yearNumber,
-            monthNumber: this.monthNumber,
-            dayNumber: this.dayNumber
-          }
-        )
+        this.generateCalendarCellArray()
+        // this.$emit(
+        //   this.eventRef + ':changeDates',
+        //   {
+        //     yearNumber: this.yearNumber,
+        //     monthNumber: this.monthNumber,
+        //     dayNumber: this.dayNumber
+        //   }
+        // )
       }
     },
     mounted () {
@@ -232,6 +247,8 @@
 <style lang="stylus">
     $cellWidth = 14.285%
     $cellHeight = 5em
+    $currentDayBackgroundColor = #eeeeee
+
     .calendar-month
         .calendar-header
             .calendar-header-label
@@ -242,7 +259,7 @@
             .calendar-cell
                 width $cellWidth
                 max-width $cellWidth
-                margin 1px
+                /*margin 1px*/
                 padding 2px
             .calendar-day-labels
                 .calendar-day-label
@@ -265,7 +282,7 @@
                     vertical-align middle
                     padding-top .25em
                     padding-left .25em
-                .calendar-day-current
-                    background-color: red
+            .calendar-day-current
+                background-color $currentDayBackgroundColor
 
 </style>

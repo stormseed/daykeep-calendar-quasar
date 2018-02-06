@@ -4,18 +4,27 @@
             v-for="(addDays, index) in numberOfDays"
             :style="{
               'width': cellWidth,
-              'max-width': cellWidth,
+              'max-width': cellWidth
             }"
         >
-            <div
+            <!--<div-->
+                <!--v-for="thisEvent in dateGetEvents(thisDayObject(addDays))"-->
+            <!--&gt;-->
+                <!--<calendar-event-->
+                    <!--v-if="thisEvent.start.isAllDay"-->
+                    <!--:event-object="thisEvent"-->
+                    <!--:show-time="false"-->
+                <!--/>-->
+            <!--</div>-->
+            <template
                 v-for="thisEvent in dateGetEvents(thisDayObject(addDays))"
+                v-if="thisEvent.start.isAllDay"
             >
                 <calendar-event
-                    v-if="thisEvent.start.isAllDay"
                     :event-object="thisEvent"
                     :show-time="false"
                 />
-            </div>
+            </template>
         </div>
     </div>
 </template>
@@ -67,7 +76,9 @@
     },
     computed: {
       cellWidth: function () {
-        return (100 / this.numberOfDays).toFixed(3) + '%'
+        // return (100 / this.numberOfDays).toFixed(3) + '%'
+        console.debug('cellWidth returning', this.calculateDayCellWidth(this.numberOfDays))
+        return this.calculateDayCellWidth(this.numberOfDays)
       },
       // getDateObject: function () {
       //   return moment()
