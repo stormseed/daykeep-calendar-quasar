@@ -1,11 +1,11 @@
 <template>
     <div
-        :class="getEventClass()"
-        :style="getEventStyle()"
+        :class="getEventClass"
+        :style="getEventStyle"
         @mouseup="handleClick"
     >
         <span v-if="!isAllDayEvent() && showTime" class="calendar-event-start-time">
-            {{ formatTime(eventObject.start.dateTime) }}
+            {{ formatTime(eventObject.start.dateObject) }}
         </span>
         <span class="calendar-event-summary">
             {{ eventObject.summary }}
@@ -14,8 +14,8 @@
 </template>
 
 <script>
-  import moment from 'moment'
   import {
+    date,
     QBtn,
     QTooltip
   } from 'quasar'
@@ -68,20 +68,12 @@
         }
       }
     },
-    computed: {},
-    methods: {
-      formatTime: function (dateTimeString) {
-        let thisMoment = moment(dateTimeString)
-        let returnString = ''
-        returnString += thisMoment.format('h')
-        if (thisMoment.minute() > 0) {
-          returnString += ':' + thisMoment.format('mm')
+    computed: {
+      getEventStyle: function () {
+        return {
+          'background-color': this.backgroundColor,
+          'color': this.textColor
         }
-        returnString += thisMoment.format('a').slice(0, 1)
-        return returnString
-      },
-      isAllDayEvent: function () {
-        return this.eventObject.start.isAllDay
       },
       getEventClass: function () {
         return {
@@ -89,15 +81,21 @@
           'calendar-event-month': this.monthStyle
         }
       },
-      getEventStyle: function () {
-        let retVal = {
-          'background-color': this.backgroundColor,
-          'color': this.textColor
+    },
+    methods: {
+      formatTime: function (dateObject) {
+        let returnString = ''
+        returnString += date.formatDate(dateObject, 'h')
+        if (dateObject.getMinutes() > 0) {
+          returnString += ':' + date.formatDate(dateObject, 'mm')
         }
-        return retVal
+        returnString += date.formatDate(dateObject, 'a').slice(0, 1)
+        return returnString
+      },
+      isAllDayEvent: function () {
+        return this.eventObject.start.isAllDay
       },
       handleClick: function (e) {
-        // console.debug('event clicked')
         this.$emit('click', this.eventObject)
       }
     },

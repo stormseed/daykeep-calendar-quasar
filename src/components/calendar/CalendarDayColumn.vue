@@ -1,7 +1,6 @@
 <template>
     <div :class="columnCss">
         <!-- underlying cells -->
-        <!--<div v-for="thisHour in 24" :style="{ 'height': dayCellHeight, 'max-height': dayCellHeight }">-->
         <div v-for="thisHour in 24" :style="getCellStyle">
             <div class="calendar-day-time-content"></div>
         </div>
@@ -23,7 +22,6 @@
 </template>
 
 <script>
-  import moment from 'moment'
   import CalendarEvent from './CalendarEvent'
   import CalendarMixin from './CalendarMixin'
   import { date } from 'quasar'
@@ -57,13 +55,7 @@
     mixins: [CalendarMixin],
     data () {
       return {
-        // dayCellHeight: 5,
-        // dayCellHeightUnit: 'rem',
         workingDate: new Date()
-        // yearNumber: moment().year(),
-        // monthNumber: moment().month() + 1,
-        // weekNumber: moment().week(),
-        // dayNumber: moment().date()
       }
     },
     watch: {
@@ -74,7 +66,6 @@
         let returnVal = {
           'calendar-day-column-content': true,
           'relative-position': true,
-          // 'calendar-day-column-current': this.isCurrentDate(this.startDay)
           'calendar-day-column-current': this.isCurrentDate(this.workingDate)
         }
         returnVal[this.columnCssClass] = true
@@ -88,16 +79,6 @@
       }
     },
     methods: {
-      columnCssNO: function () {
-        let returnVal = {
-          'calendar-day-column-content': true,
-          'relative-position': true,
-          // 'calendar-day-column-current': this.isCurrentDate(this.startDay)
-          'calendar-day-column-current': this.isCurrentDate(this.workingDate)
-        }
-        returnVal[this.columnCssClass] = true
-        return returnVal
-      },
       calculateDayEventClass: function (thisEvent) {
         let classes = {}
         if (thisEvent.numberOfOverlaps > 0) {
@@ -109,23 +90,20 @@
         return classes
       },
       calculateDayEventStyle: function (thisEvent) {
-        // let thisEvent = this.getEventById(event)
         let style = {
           position: 'absolute',
           'z-index': 10,
           width: '100%'
         }
         let positions = this.calculateDayEventPosition(
-          thisEvent.start.dateTime,
-          thisEvent.end.dateTime
+          thisEvent.start.dateObject,
+          thisEvent.end.dateObject
         )
         style['top'] = positions.top
         style['height'] = positions.height
         if (thisEvent.numberOfOverlaps > 0) {
           let thisWidth = (100 / (thisEvent.numberOfOverlaps + 1)).toFixed(2)
           let thisShift = thisWidth * (thisEvent.overlapIteration - 1)
-          // console.debug('thisWidth = ', thisWidth)
-          // console.debug('thisShift = ', thisShift)
           style['width'] = thisWidth + '%'
           style['max-width'] = thisWidth + '%'
           style['left'] = thisShift + '%'
@@ -133,28 +111,21 @@
         }
         return style
       },
-      calculateDayEventPosition: function (startDateTime, endDateTime) {
-        console.debug('calculateDayEventTop called, dateTime = ', startDateTime, endDateTime)
-        let startMom = moment(startDateTime)
-        let endMom = moment(endDateTime)
-        let momMidnight = startMom.clone().startOf('day')
-        let topMinuteCount = startMom.diff(momMidnight, 'minutes')
-        let heightMinuteCount = endMom.diff(startMom, 'minutes')
+      calculateDayEventPosition: function (startDateObject, endDateObject) {
+        let startMidnight = date.adjustDate(startDateObject, {
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0
+        })
+        let topMinuteCount = date.getDateDiff(startDateObject, startMidnight, 'minutes')
+        let heightMinuteCount = date.getDateDiff(endDateObject, startDateObject, 'minutes')
         let sizePerMinute = this.dayCellHeight / 60
         return {
           top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,
           height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
         }
       },
-      // isCurrentDate2: function () {
-      //   let now = moment()
-      //   let test = moment()
-      //     .year(this.yearNumber)
-      //     .month(this.monthNumber - 1)
-      //     .date(this.dayNumber)
-      //   // console.debug('isCurrentDate2 called, now/test=', now, test)
-      //   return now.isSame(test, 'day')
-      // }
     },
     mounted () {
       this.mountSetDate()

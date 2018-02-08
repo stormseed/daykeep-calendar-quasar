@@ -1,7 +1,6 @@
 <template>
     <div class="calendar-agenda column fit">
         <!-- content -->
-        <!--<q-scroll-area class="col">-->
             <q-infinite-scroll
                 inline
                 :handler="loadMore"
@@ -10,18 +9,15 @@
                     v-for="daysForward in localNumDays"
                     :key="daysForward"
                 >
-                    <!--<div NOv-if="startDateObject = getStartDateObject(daysForward - 1)">-->
                     <div v-if="forwardDate = getDaysForwardDate(daysForward - 1)">
 
                         <!--month marker-->
                         <div
-                            NOv-if="startDateObject.date() === 1"
                             v-if="isFirstOfMonth(forwardDate)"
                             class="row calendar-agenda-month"
                             :style="{ 'padding-left': leftMargin }"
                         >
-                            {{ formatDate(forwardDate, 'MMMM YYYY')}}
-                            <!--{{ getDaysForwardFormat(daysForward, 'MMMM YYYY') }}-->
+                            {{ formatDate(forwardDate, 'MMMM YYYY') }}
                         </div>
 
                         <!--week marker-->
@@ -48,15 +44,6 @@
                                     {{ formatDate(forwardDate, 'ddd') }}
                                 </div>
                             </div>
-                            <!--<div class="col row calendar-agenda-events">-->
-                                <!--<calendar-agenda-event-->
-                                    <!--v-if="dateGetEvents(startDateObject)"-->
-                                    <!--v-for="thisEvent in dateGetEvents(startDateObject)"-->
-                                    <!--:key="id"-->
-                                    <!--class="col-12"-->
-                                    <!--:event-object="thisEvent"-->
-                                <!--/>-->
-                            <!--</div>-->
                             <div class="col row calendar-agenda-events">
                                 <template
                                     v-if="dateGetEvents(forwardDate)"
@@ -70,7 +57,6 @@
                 </div>
                 <q-spinner-dots slot="message" :size="40" />
             </q-infinite-scroll>
-        <!--</q-scroll-area>-->
     </div>
 </template>
 
@@ -141,61 +127,24 @@
       getDaysForwardDate: function (daysForward) {
         return date.addToDate(this.workingDate, { days: daysForward })
       },
-      getDaysForwardFormat: function (thisDate, format) {
-        return date.formatDate(thisDate, format)
-      },
       isFirstOfMonth: function (thisDate) {
         return thisDate.getDate() === 1
       },
       isFirstDayOfWeek: function (thisDate) {
         return date.getDayOfWeek(thisDate) === 1
       },
-
       loadMore: function (index, done) {
-        // console.debug('loadMore called, index = ', index)
         this.localNumDays += 30
-        // this.doUpdate()
         done()
       },
       handleStartChange: function (val, oldVal) {
-        // console.debug('handleStartChange called, val, oldVal = ', val, oldVal)
         this.doUpdate()
       },
       doUpdate: function () {
         this.mountSetDate()
-        // this.localNumDays = this.numDays
-      },
-      getStartDateObject: function (daysForward) {
-        let returnValue = this.createThisDate().add(daysForward - 1, 'days')
-        // console.debug('getStartDateObject called, ', daysForward, returnValue, returnValue.format('MMMM Do YYYY'))
-        return returnValue
-      },
-      getStartNumber: function (periodType) {
-        if (this.forceStartOfWeek) {
-          switch (periodType) {
-            case 'year':
-              return this.createThisDate().weekday(0).year()
-            case 'month':
-              return this.createThisDate().weekday(0).month()
-            case 'day':
-              return this.createThisDate().weekday(0).date()
-          }
-        }
-        else {
-          switch (periodType) {
-            case 'year':
-              return this.createThisDate().year()
-            case 'month':
-              return this.createThisDate().month()
-            case 'day':
-              return this.createThisDate().date()
-          }
-        }
       },
       getWeekTitle: function (firstDate) {
         let lastDate = date.addToDate(firstDate, { days: 6 })
-        // let lastMoment = firstMoment.clone().add(6, 'days')
-        // console.debug('getWeekTitle, ', firstMoment, lastMoment)
         if (firstDate.getMonth() === lastDate.getMonth()) {
           return date.formatDate(firstDate, 'MMM D - ') + date.formatDate(lastDate, 'D')
         }
@@ -203,16 +152,6 @@
           return date.formatDate(firstDate, 'MMM D - ') + date.formatDate(lastDate, 'MMM D')
         }
       },
-      // getWeekTitleOld: function (firstMoment) {
-      //   let lastMoment = firstMoment.clone().add(6, 'days')
-      //   // console.debug('getWeekTitle, ', firstMoment, lastMoment)
-      //   if (firstMoment.month() === lastMoment.month()) {
-      //     return firstMoment.format('MMM D - ') + lastMoment.format('D')
-      //   }
-      //   else {
-      //     return firstMoment.format('MMM D - ') + lastMoment.format('MMM D')
-      //   }
-      // }
     },
     mounted () {
       this.localNumDays = this.numDays

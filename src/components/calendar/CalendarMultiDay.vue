@@ -7,8 +7,6 @@
                 :time-period-amount="navDays"
                 :move-time-period-emit="eventRef + ':navMovePeriod'"
             >
-                <!--{{ getDayOfWeek() }}, {{ getMonthNameFromMonthNumber() }} {{ dayNumber }}, {{ yearNumber }}-->
-                <!--{{ workingDate.formatDate('dddd') }}, {{ workingDate.formatDate('MMMM') }} {{ workingDate.formatDate('D') }}, {{ workingDate.formatDate('YYYY') }}-->
                 {{ formatDate(workingDate, 'dddd, MMMM D YYYY')}}
             </calendar-header-nav>
         </template>
@@ -57,14 +55,6 @@
                             column-css-class="calendar-day-column-content"
                             :style="{ 'width': dayCellWidth }"
                         />
-                        <!--<calendar-day-column-->
-                            <!--v-for="daysForward in numDays"-->
-                            <!--:key="daysForward"-->
-                            <!--:start-date-object="getStartDateObject(daysForward)"-->
-                            <!--:date-events="getDateEvents(daysForward)"-->
-                            <!--column-css-class="calendar-day-column-content"-->
-                            <!--:style="{ 'width': dayCellWidth }"-->
-                        <!--/>-->
                     </div>
                 </div>
             </div>
@@ -141,7 +131,6 @@
       }
     },
     components: {
-      // QuantityBubble,
       CalendarEvent,
       CalendarDayColumn,
       CalendarTimeLabelColumn,
@@ -155,12 +144,6 @@
     mixins: [CalendarMixin],
     data () {
       return {
-        // dayCellHeight: 5,
-        // dayCellHeightUnit: 'rem',
-        // yearNumber: moment().year(),
-        // monthNumber: moment().month() + 1,
-        // weekNumber: moment().week(),
-        // dayNumber: moment().date(),
         workingDate: new Date(),
         weekDateArray: [],
         dayRowArray: [],
@@ -171,7 +154,6 @@
     computed: {
       dayCellWidth: function () {
         return this.calculateDayCellWidth(this.numDays)
-        // return (100 / this.numDays).toFixed(3) + '%'
       },
       getScrollStyle: function () {
         if (this.scrollStyle.length > 0) {
@@ -187,7 +169,6 @@
         if (this.scrollHeight === 'auto') {
           return {
             'col': true,
-            'testmarker': true
           }
         }
         else {
@@ -199,16 +180,7 @@
       getHeaderLabel: function () {
         if (this.forceStartOfWeek) {
           let dateReturn = ''
-          // let middleOfMonthDate = date.adjustDate(workingDate, { date: 21 })
-          // let middleOfMonthDate = this.workingDate
-          // let firstDate = this.getDateObject().clone().weekday(0)
-          // let lastDate = this.getDateObject().clone().weekday(6)
-          // let firstDate = this.dateAdjustWeekday(middleOfMonthDate, -1)
-          // let lastDate = this.dateAdjustWeekday(middleOfMonthDate, 7)
-          // let lastDate = this.dateAdjustWeekday(middleOfMonthDate, 7)
           let bookendDates = this.getForcedWeekBookendDates()
-          // console.debug('getHeaderLabel called', firstDate, lastDate)
-
           if (bookendDates.first.getMonth() !== bookendDates.last.getMonth()) {
             dateReturn += date.formatDate(bookendDates.first, 'MMM')
             if (bookendDates.first.getFullYear() !== bookendDates.last.getFullYear()) {
@@ -230,60 +202,6 @@
         this.mountSetDate()
         this.buildWeekDateArray()
       },
-      getStartDateObject: function (daysForward) {
-        let returnVal = {}
-        if (this.forceStartOfWeek) {
-          // returnVal = this.createThisDate().weekday(0).add(daysForward - 1, 'days')
-          returnVal = date.addToDate(
-            this.dateAdjustWeekday(this.workingDate, 1),
-            { days: daysForward }
-          )
-        }
-        else {
-          // returnVal = this.createThisDate().add(daysForward - 1, 'days')
-          returnVal = date.addToDate(
-            this.workingDate,
-            { days: daysForward }
-          )
-        }
-        // console.debug('getStartDateObject returnVal = ', returnVal)
-        return returnVal
-      },
-      getDateEvents: function (daysForward) {
-        // let returnVal = []
-        return this.dateGetEvents(
-          this.getStartDateObject(daysForward)
-        )
-        // if (this.forceStartOfWeek) {
-        //   returnVal = this.dateGetEvents(this.createThisDate().weekday(0).add(daysForward - 1, 'days'))
-        // }
-        // else {
-        //   returnVal = this.dateGetEvents(this.createThisDate().add(daysForward - 1, 'days'))
-        // }
-        // return returnVal
-      },
-      getStartNumber: function (periodType) {
-        if (this.forceStartOfWeek) {
-          switch (periodType) {
-            case 'year':
-              return this.createThisDate().weekday(0).year()
-            case 'month':
-              return this.createThisDate().weekday(0).month() + 1
-            case 'day':
-              return this.createThisDate().weekday(0).date()
-          }
-        }
-        else {
-          switch (periodType) {
-            case 'year':
-              return this.createThisDate().year()
-            case 'month':
-              return this.createThisDate().month()
-            case 'day':
-              return this.createThisDate().date()
-          }
-        }
-      },
       handleNavMove: function (unitType, amount) {
         this.moveTimePeriod(unitType, amount)
         this.$emit(
@@ -294,23 +212,13 @@
           }
         )
         this.buildWeekDateArray()
-        // this.$emit(
-        //   this.eventRef + ':changeDates',
-        //   {
-        //     yearNumber: this.yearNumber,
-        //     monthNumber: this.monthNumber,
-        //     dayNumber: this.dayNumber
-        //   }
-        // )
       }
     },
     mounted () {
       this.doUpdate()
-      // console.debug('calendarMultiDay about to call handlePassedInEvents')
       this.handlePassedInEvents()
       Events.$on(
         this.eventRef + ':navMovePeriod',
-        // this.moveTimePeriod
         this.handleNavMove
       )
     },

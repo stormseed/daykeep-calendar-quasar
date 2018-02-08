@@ -90,7 +90,6 @@
 </template>
 
 <script>
-  import moment from 'moment'
   import CalendarMixin from './CalendarMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarMonth from './CalendarMonth'
@@ -114,20 +113,7 @@
   import './calendar.universal.styl'
   export default {
     name: 'Calendar',
-    // name: 'calendar',
     props: {
-      // startMonth: {
-      //   type: Number,
-      //   default: moment().month() + 1
-      // },
-      // startYear: {
-      //   type: Number,
-      //   default: moment().year()
-      // },
-      // startDay: {
-      //   type: Number,
-      //   default: moment().date()
-      // },
       startDate: {
         type: Date,
         default: () => { return new Date() }
@@ -164,11 +150,6 @@
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
         workingDate: new Date(),
-        // yearNumber: moment().year(),
-        // monthNumber: moment().month() + 1,
-        // weekNumber: moment().week(),
-        // dayNumber: moment().date(),
-        // weekArray: [],
         parsed: {
           byAllDayStartDate: {},
           byStartDate: {},
@@ -176,29 +157,16 @@
         },
         dayRowArray: [],
         thisRefName: this.createRandomString()
-        // thisNavRef: this.createNewNavEventName(),
-        // thisEventRef: 'cal-' + this.createRandomString()
       }
     },
     computed: {},
     methods: {
       setupEventsHandling: function () {
-        // Events.$on(
-        //   'calendar:navMovePeriod',
-        //   this.moveTimePeriod
-        // )
-        // Events.$on(
-        //   this.thisNavRef,
-        //   this.moveTimePeriod
-        // )
         Events.$on(
           this.eventRef + ':navMovePeriod',
           this.calPackageMoveTimePeriod
         )
       },
-      // doMoveTimePeriod (unitType, amount) {
-      //   console.debug('calendar.doMoveTimePeriod triggered')
-      // }
       calPackageMoveTimePeriod: function (params) {
         this.moveTimePeriod(params)
         this.$emit(
@@ -208,12 +176,7 @@
       }
     },
     mounted () {
-      // console.debug('thisMonth = ', moment().month())
-      // console.debug('thisMoment = ', moment())
-      // console.debug('props = ', this.startMonth, this.startYear, this.startDay)
       this.mountSetDate()
-      // this.generateCalendarCellArray()
-      // console.debug('calendar about to call parseEventList')
       this.parseEventList()
       this.setupEventsHandling()
     }

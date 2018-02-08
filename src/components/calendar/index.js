@@ -2,7 +2,6 @@ import Calendar from './Calendar'
 import CalendarAgenda from './CalendarAgenda'
 import CalendarAgendaEvent from './CalendarAgendaEvent'
 import CalendarAllDayEvents from './CalendarAllDayEvents'
-import CalendarCell from './CalendarCell'
 import CalendarDayColumn from './CalendarDayColumn'
 import CalendarDayLabels from './CalendarDayLabels'
 import CalendarEvent from './CalendarEvent'
@@ -17,7 +16,6 @@ export {
   CalendarAgenda,
   CalendarAgendaEvent,
   CalendarAllDayEvents,
-  CalendarCell,
   CalendarDayColumn,
   CalendarDayLabels,
   CalendarEvent,

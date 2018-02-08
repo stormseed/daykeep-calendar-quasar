@@ -25,8 +25,6 @@
 </template>
 
 <script>
-  // import moment from 'moment'
-  // import CalendarMixin from './CalendarMixin'
   import {
     QBtn,
     Events
@@ -51,7 +49,6 @@
     components: {
       QBtn
     },
-    // mixins: [CalendarMixin],
     data () {
       return {}
     },
