@@ -36,9 +36,7 @@
             <q-tab-pane name="tab-month" class="calendar-tab-pane-month">
                 <calendar-month
                     :ref="'month-' + thisRefName"
-                    :startYear="yearNumber"
-                    :startMonth="monthNumber"
-                    :startDay="dayNumber"
+                    :start-date="workingDate"
                     :parsed-events="parsed"
                     :event-ref="eventRef"
                 />
@@ -46,9 +44,7 @@
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
                 <calendar-multi-day
                     :ref="'week-' + thisRefName"
-                    :start-day="dayNumber"
-                    :start-month="monthNumber"
-                    :start-year="yearNumber"
+                    :start-date="workingDate"
                     :parsed-events="parsed"
                     :num-days="7"
                     :nav-days="7"
@@ -59,9 +55,7 @@
             <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
                 <calendar-multi-day
                     :ref="'days-' + thisRefName"
-                    :start-day="dayNumber"
-                    :start-month="monthNumber"
-                    :start-year="yearNumber"
+                    :start-date="workingDate"
                     :parsed-events="parsed"
                     :num-days="3"
                     :nav-days="1"
@@ -72,9 +66,7 @@
             <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
                 <calendar-multi-day
                     :ref="'day-' + thisRefName"
-                    :start-day="dayNumber"
-                    :start-month="monthNumber"
-                    :start-year="yearNumber"
+                    :start-date="workingDate"
                     :parsed-events="parsed"
                     :num-days="1"
                     :nav-days="1"
@@ -85,9 +77,7 @@
             <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
                 <calendar-agenda
                     :ref="'agenda-' + thisRefName"
-                    :start-day="dayNumber"
-                    :start-month="monthNumber"
-                    :start-year="yearNumber"
+                    :start-date="workingDate"
                     :parsed-events="parsed"
                     :num-days="30"
                     :event-ref="eventRef"
@@ -111,6 +101,7 @@
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import {
+    date,
     Events,
     QBtn,
     QTooltip,
@@ -120,21 +111,26 @@
     QScrollArea
   } from 'quasar'
   import QuantityBubble from './QuantityBubble'
+  import './calendar.universal.styl'
   export default {
     name: 'Calendar',
     // name: 'calendar',
     props: {
-      startMonth: {
-        type: Number,
-        default: moment().month() + 1
-      },
-      startYear: {
-        type: Number,
-        default: moment().year()
-      },
-      startDay: {
-        type: Number,
-        default: moment().date()
+      // startMonth: {
+      //   type: Number,
+      //   default: moment().month() + 1
+      // },
+      // startYear: {
+      //   type: Number,
+      //   default: moment().year()
+      // },
+      // startDay: {
+      //   type: Number,
+      //   default: moment().date()
+      // },
+      startDate: {
+        type: Date,
+        default: () => { return new Date() }
       },
       eventArray: {
         type: Array,
@@ -167,10 +163,11 @@
       return {
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
-        yearNumber: moment().year(),
-        monthNumber: moment().month() + 1,
-        weekNumber: moment().week(),
-        dayNumber: moment().date(),
+        workingDate: new Date(),
+        // yearNumber: moment().year(),
+        // monthNumber: moment().month() + 1,
+        // weekNumber: moment().week(),
+        // dayNumber: moment().date(),
         // weekArray: [],
         parsed: {
           byAllDayStartDate: {},

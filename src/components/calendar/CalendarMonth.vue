@@ -3,22 +3,18 @@
 
         <!-- calendar header -->
         <calendar-header-nav
-            time-period-unit="months"
+            time-period-unit="month"
             :time-period-amount="1"
-            :start-year="startYear"
-            :start-month="startMonth"
-            :start-day="startDay"
             :move-time-period-emit="eventRef + ':navMovePeriod'"
         >
-            {{ getMonthNameFromMonthNumber() }} {{ yearNumber }}
+            <!--{{ getMonthNameFromMonthNumber() }} {{ workingDate.formatDate('YYYY') }}-->
+            {{ formatDate(workingDate, 'MMMM') }} {{ formatDate(workingDate, 'YYYY') }}
         </calendar-header-nav>
 
         <div class="calendar-content">
             <calendar-day-labels
                 :number-of-days="7"
-                :start-year="yearNumber"
-                :start-month="monthNumber"
-                :start-day="1"
+                :start-date="workingDate"
                 :force-start-of-week="true"
             />
             <div
@@ -36,23 +32,25 @@
                     :class="{
                         'calendar-day': true,
                         'calendar-cell': true,
-                        'calendar-day-current': isCurrentDate(thisDay.date)
+                        'calendar-day-current': isCurrentDate(thisDay.dateObject)
                         }"
                     v-for="thisDay in thisWeek"
                 >
                     <quantity-bubble
-                        v-if="isCurrentDate(thisDay.date)"
-                        :quantity="thisDay.date"
+                        v-if="isCurrentDate(thisDay.dateObject)"
+                        :quantity="thisDay.dateObject.getDate()"
                         :offset="false"
                     />
                     <div v-else class="calendar-day-number">
-                        {{ thisDay.date }}
+                        <!--{{ thisDay.date }}-->
+                        {{ thisDay.dateObject.getDate() }}
                     </div>
                     <div class="calendar-day-content">
+
                         <div
-                            v-if="hasAnyEvents(thisDay.date)"
-                            v-for="thisEvent in dateGetEvents(thisDay.date)
-                        ">
+                            v-if="hasAnyEvents(thisDay.dateObject)"
+                            v-for="thisEvent in dateGetEvents(thisDay.dateObject)"
+                        >
                             <calendar-event
                                 :event-object="thisEvent"
                                 :monthStyle="true"
@@ -67,9 +65,9 @@
 </template>
 
 <script>
-  import moment from 'moment'
   import CalendarMixin from './CalendarMixin'
   import {
+    date,
     Events,
     QBtn,
     QTooltip,
@@ -83,6 +81,7 @@
   import CalendarEvent from './CalendarEvent'
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
+  import './calendar.universal.styl'
   export default {
     name: 'CalendarMonth',
     components: {
@@ -99,17 +98,9 @@
     },
     mixins: [CalendarMixin],
     props: {
-      startMonth: {
-        type: Number,
-        default: moment().month() + 1
-      },
-      startYear: {
-        type: Number,
-        default: moment().year()
-      },
-      startDay: {
-        type: Number,
-        default: moment().date()
+      startDate: {
+        type: Date,
+        default: () => { return new Date() }
       },
       eventArray: {
         type: Array,
@@ -130,10 +121,7 @@
       return {
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
-        yearNumber: moment().year(),
-        monthNumber: moment().month() + 1,
-        weekNumber: moment().week(),
-        dayNumber: moment().date(),
+        workingDate: new Date(),
         weekArray: [],
         parsed: this.getDefaultParsed()
         // thisNavRef: this.createNewNavEventName()
@@ -152,31 +140,52 @@
         this.generateCalendarCellArray()
       },
       getCalendarCellArray: function (monthNumber, yearNumber) {
-        let currentDay = moment().year(yearNumber).month(monthNumber - 1).date(1)
-        let currentWeekOfYear = currentDay.week()
+        // let currentDay = moment().year(yearNumber).month(monthNumber - 1).date(1)
+        let currentDay = date.buildDate({
+          year: yearNumber,
+          month: monthNumber + 1, // TODO: is this correct? This should be in the Quasar docs
+          date: 1
+        })
+        // console.debug('getCalendarCellArray called,', monthNumber, yearNumber, currentDay)
+        // let currentWeekOfYear = currentDay.week()
+        let currentWeekOfYear = date.getWeekOfYear(currentDay)
         let weekArray = []
         let currentWeekArray = []
         let thisDayObject = {}
         for (let thisDateOfMonth = 1; thisDateOfMonth <= 31; thisDateOfMonth++) {
           // console.debug('dateOfMonth = ' + thisDateOfMonth)
-          currentDay = moment().year(yearNumber).month(monthNumber - 1).date(thisDateOfMonth)
-          // console.debug('currentDay.year() = ', currentDay.year())
-          // console.debug('currentDay.month() = ', currentDay.month(), monthNumber)
-          if (currentDay.year() === yearNumber && currentDay.month() === monthNumber - 1) {
-            // console.debug('past first IF, ', currentDay.week(), currentWeekOfYear)
-            if (currentDay.week() !== currentWeekOfYear) {
+          // currentDay = moment().year(yearNumber).month(monthNumber - 1).date(thisDateOfMonth)
+          currentDay = date.buildDate({
+            year: yearNumber,
+            // month: monthNumber,
+            month: monthNumber + 1,
+            date: thisDateOfMonth
+          })
+          // console.debug('currentDay = ', currentDay)
+          // console.debug('currentDay.year() = ', currentDay.getFullYear())
+          // console.debug('currentDay.month() = ', currentDay.getMonth(), monthNumber)
+          if (
+            currentDay.getFullYear() === yearNumber &&
+            currentDay.getMonth() === monthNumber
+          ) {
+          // if (currentDay.year() === yearNumber && currentDay.month() === monthNumber - 1) {
+          //   console.debug('past first IF, ', date.getWeekOfYear(currentDay), currentWeekOfYear)
+            if (date.getWeekOfYear(currentDay) !== currentWeekOfYear) {
+            // if (currentDay.week() !== currentWeekOfYear) {
               weekArray.push(currentWeekArray)
-              currentWeekOfYear = currentDay.week()
+              // currentWeekOfYear = currentDay.week()
+              currentWeekOfYear = date.getWeekOfYear(currentDay)
               currentWeekArray = []
             }
             thisDayObject = {
               moment: currentDay,
-              year: currentDay.year(),
-              month: currentDay.month() + 1,
-              date: currentDay.date(),
+              dateObject: currentDay,
+              year: currentDay.getFullYear(),
+              month: currentDay.getMonth(),
+              date: currentDay.getDate(),
               // dayName: currentDay.day(),
-              dayName: currentDay.format('dddd'),
-              dayNumber: currentDay.weekday()
+              dayName: date.formatDate(currentDay, 'dddd'),
+              dayNumber: date.getDayOfWeek(currentDay)
             }
             currentWeekArray.push(thisDayObject)
           }
@@ -184,20 +193,26 @@
         if (weekArray.length > 0) {
           weekArray.push(currentWeekArray)
         }
+        console.debug('getCallendarCellArray about to return weekArray', weekArray)
         return weekArray
       },
       generateCalendarCellArray: function () {
-        // console.debug('generateCalendarCellArray called')
-        this.weekArray = this.getCalendarCellArray(this.monthNumber, this.yearNumber)
+        console.debug('generateCalendarCellArray called')
+        this.weekArray = this.getCalendarCellArray(
+          this.workingDate.getMonth(),
+          this.workingDate.getFullYear()
+        )
       },
-      handleNavMove: function (unitType, amount) {
-        // console.debug('calendarMonth called handleNavMove', unitType, amount)
-        this.moveTimePeriod(unitType, amount)
+      // handleNavMove: function (unitType, amount) {
+      handleNavMove: function (params) {
+        console.debug('calendarMonth called handleNavMove', params.unitType, params.amount)
+        // this.moveTimePeriod(params.unitType, params.amount)
+        this.moveTimePeriod(params)
         this.$emit(
           this.eventRef + ':navMovePeriod',
           {
-            unitType: unitType,
-            amount: amount
+            unitType: params.unitType,
+            amount: params.amount
           }
         )
         this.generateCalendarCellArray()
@@ -227,15 +242,11 @@
       )
     },
     watch: {
-      startYear: 'handleStartChange',
-      startMonth: 'handleStartChange',
-      startDay: 'handleStartChange',
-      // eventArray: 'getPassedInEventArray',
+      startDate: 'handleStartChange',
       eventArray: function () {
         // console.debug('watch eventArray hit')
         this.getPassedInEventArray()
       },
-      // parsedEvents: 'getPassedInParsedEvents'
       parsedEvents: function () {
         // console.debug('watch parsedEvents hit')
         this.getPassedInParsedEvents()

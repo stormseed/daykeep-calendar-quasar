@@ -10,39 +10,42 @@
                     v-for="daysForward in localNumDays"
                     :key="daysForward"
                 >
-                    <div v-if="startDateObject = getStartDateObject(daysForward - 1)">
+                    <!--<div NOv-if="startDateObject = getStartDateObject(daysForward - 1)">-->
+                    <div v-if="forwardDate = getDaysForwardDate(daysForward - 1)">
 
                         <!--month marker-->
                         <div
-                            v-if="startDateObject.date() === 1"
+                            NOv-if="startDateObject.date() === 1"
+                            v-if="isFirstOfMonth(forwardDate)"
                             class="row calendar-agenda-month"
                             :style="{ 'padding-left': leftMargin }"
                         >
-                            {{ startDateObject.format('MMMM YYYY') }}
+                            {{ formatDate(forwardDate, 'MMMM YYYY')}}
+                            <!--{{ getDaysForwardFormat(daysForward, 'MMMM YYYY') }}-->
                         </div>
 
                         <!--week marker-->
                         <div
-                            v-if="startDateObject.day() === 0"
+                            v-if="isFirstDayOfWeek(forwardDate)"
                             class="row calendar-agenda-week"
                             :style="{ 'margin-left': leftMargin }"
                         >
-                            {{ getWeekTitle(startDateObject) }}
+                            {{ getWeekTitle(forwardDate) }}
                         </div>
 
                         <!--individual day-->
                         <div
-                            v-if="dateGetEvents(startDateObject).length > 0"
+                            v-if="dateGetEvents(forwardDate).length > 0"
                             class="col row items-start calendar-agenda-day">
                             <div
                                 class="col-auto calendar-agenda-side"
                                 :style="{ 'width': leftMargin, 'max-width': leftMargin }"
                             >
                                 <div class="calendar-agenda-side-date">
-                                    {{ startDateObject.format('D') }}
+                                    {{ formatDate(forwardDate, 'D') }}
                                 </div>
                                 <div class="calendar-agenda-side-day">
-                                    {{ startDateObject.format('ddd') }}
+                                    {{ formatDate(forwardDate, 'ddd') }}
                                 </div>
                             </div>
                             <!--<div class="col row calendar-agenda-events">-->
@@ -56,8 +59,8 @@
                             <!--</div>-->
                             <div class="col row calendar-agenda-events">
                                 <template
-                                    v-if="dateGetEvents(startDateObject)"
-                                    v-for="thisEvent in dateGetEvents(startDateObject)"
+                                    v-if="dateGetEvents(forwardDate)"
+                                    v-for="thisEvent in dateGetEvents(forwardDate)"
                                 >
                                     <calendar-agenda-event :event-object="thisEvent"/>
                                 </template>
@@ -72,30 +75,23 @@
 </template>
 
 <script>
-  import moment from 'moment'
   import CalendarMixin from './CalendarMixin'
   import CalendarAgendaEvent from './CalendarAgendaEvent'
   import {
+    date,
     QBtn,
     QTooltip,
     QScrollArea,
     QInfiniteScroll,
     QSpinnerDots
   } from 'quasar'
+  import './calendar.universal.styl'
   export default {
     name: 'CalendarAgenda',
     props: {
-      startMonth: {
-        type: Number,
-        default: moment().month() + 1
-      },
-      startYear: {
-        type: Number,
-        default: moment().year()
-      },
-      startDay: {
-        type: Number,
-        default: moment().date()
+      startDate: {
+        type: Date,
+        default: () => { return new Date() }
       },
       numDays: {
         type: Number,
@@ -133,12 +129,8 @@
     mixins: [CalendarMixin],
     data () {
       return {
-        yearNumber: moment().year(),
-        monthNumber: moment().month() + 1,
-        // weekNumber: moment().week(),
-        dayNumber: moment().date(),
-        // localNumDays: 30,
-        localNumDays: 0,
+        workingDate: new Date(),
+        localNumDays: 30,
         dayRowArray: [],
         dayCounter: [],
         parsed: this.getDefaultParsed()
@@ -146,6 +138,19 @@
     },
     computed: {},
     methods: {
+      getDaysForwardDate: function (daysForward) {
+        return date.addToDate(this.workingDate, { days: daysForward })
+      },
+      getDaysForwardFormat: function (thisDate, format) {
+        return date.formatDate(thisDate, format)
+      },
+      isFirstOfMonth: function (thisDate) {
+        return thisDate.getDate() === 1
+      },
+      isFirstDayOfWeek: function (thisDate) {
+        return date.getDayOfWeek(thisDate) === 1
+      },
+
       loadMore: function (index, done) {
         // console.debug('loadMore called, index = ', index)
         this.localNumDays += 30
@@ -187,16 +192,27 @@
           }
         }
       },
-      getWeekTitle: function (firstMoment) {
-        let lastMoment = firstMoment.clone().add(6, 'days')
+      getWeekTitle: function (firstDate) {
+        let lastDate = date.addToDate(firstDate, { days: 6 })
+        // let lastMoment = firstMoment.clone().add(6, 'days')
         // console.debug('getWeekTitle, ', firstMoment, lastMoment)
-        if (firstMoment.month() === lastMoment.month()) {
-          return firstMoment.format('MMM D - ') + lastMoment.format('D')
+        if (firstDate.getMonth() === lastDate.getMonth()) {
+          return date.formatDate(firstDate, 'MMM D - ') + date.formatDate(lastDate, 'D')
         }
         else {
-          return firstMoment.format('MMM D - ') + lastMoment.format('MMM D')
+          return date.formatDate(firstDate, 'MMM D - ') + date.formatDate(lastDate, 'MMM D')
         }
-      }
+      },
+      // getWeekTitleOld: function (firstMoment) {
+      //   let lastMoment = firstMoment.clone().add(6, 'days')
+      //   // console.debug('getWeekTitle, ', firstMoment, lastMoment)
+      //   if (firstMoment.month() === lastMoment.month()) {
+      //     return firstMoment.format('MMM D - ') + lastMoment.format('D')
+      //   }
+      //   else {
+      //     return firstMoment.format('MMM D - ') + lastMoment.format('MMM D')
+      //   }
+      // }
     },
     mounted () {
       this.localNumDays = this.numDays

@@ -7,7 +7,9 @@
                 :time-period-amount="navDays"
                 :move-time-period-emit="eventRef + ':navMovePeriod'"
             >
-                {{ getDayOfWeek() }}, {{ getMonthNameFromMonthNumber() }} {{ dayNumber }}, {{ yearNumber }}
+                <!--{{ getDayOfWeek() }}, {{ getMonthNameFromMonthNumber() }} {{ dayNumber }}, {{ yearNumber }}-->
+                <!--{{ workingDate.formatDate('dddd') }}, {{ workingDate.formatDate('MMMM') }} {{ workingDate.formatDate('D') }}, {{ workingDate.formatDate('YYYY') }}-->
+                {{ formatDate(workingDate, 'dddd, MMMM D YYYY')}}
             </calendar-header-nav>
         </template>
         <template v-else>
@@ -24,9 +26,7 @@
             <calendar-day-labels
                 :number-of-days="numDays"
                 :show-dates="true"
-                :start-year="getStartNumber('year')"
-                :start-month="getStartNumber('month')"
-                :start-day="getStartNumber('day')"
+                :start-date="workingDate"
                 :force-start-of-week="forceStartOfWeek"
             />
         </div>
@@ -35,9 +35,8 @@
         <div class="calendar-time-margin">
             <calendar-all-day-events
                 :number-of-days="numDays"
-                :start-year="getStartNumber('year')"
-                :start-month="getStartNumber('month')"
-                :start-day="getStartNumber('day')"
+                :NOstart-date="workingDate"
+                :start-date="weekDateArray[0]"
                 :parsed="parsed"
             />
         </div>
@@ -52,13 +51,20 @@
                     <calendar-time-label-column />
                     <div class="calendar-multiple-days col row">
                         <calendar-day-column
-                            v-for="daysForward in numDays"
-                            :key="daysForward"
-                            :start-date-object="getStartDateObject(daysForward)"
-                            :date-events="getDateEvents(daysForward)"
+                            v-for="thisDate in weekDateArray"
+                            :start-date="thisDate"
+                            :date-events="dateGetEvents(thisDate)"
                             column-css-class="calendar-day-column-content"
                             :style="{ 'width': dayCellWidth }"
                         />
+                        <!--<calendar-day-column-->
+                            <!--v-for="daysForward in numDays"-->
+                            <!--:key="daysForward"-->
+                            <!--:start-date-object="getStartDateObject(daysForward)"-->
+                            <!--:date-events="getDateEvents(daysForward)"-->
+                            <!--column-css-class="calendar-day-column-content"-->
+                            <!--:style="{ 'width': dayCellWidth }"-->
+                        <!--/>-->
                     </div>
                 </div>
             </div>
@@ -68,7 +74,6 @@
 </template>
 
 <script>
-  import moment from 'moment'
   import CalendarMixin from './CalendarMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarDayColumn from './CalendarDayColumn'
@@ -77,25 +82,19 @@
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarAllDayEvents from './CalendarAllDayEvents'
   import {
+    date,
     Events,
     QBtn,
     QTooltip,
     QScrollArea
   } from 'quasar'
+  import './calendar.universal.styl'
   export default {
     name: 'CalendarMultiDay',
     props: {
-      startMonth: {
-        type: Number,
-        default: moment().month() + 1
-      },
-      startYear: {
-        type: Number,
-        default: moment().year()
-      },
-      startDay: {
-        type: Number,
-        default: moment().date()
+      startDate: {
+        type: Date,
+        default: () => { return new Date() }
       },
       eventArray: {
         type: Array,
@@ -158,10 +157,12 @@
       return {
         // dayCellHeight: 5,
         // dayCellHeightUnit: 'rem',
-        yearNumber: moment().year(),
-        monthNumber: moment().month() + 1,
-        weekNumber: moment().week(),
-        dayNumber: moment().date(),
+        // yearNumber: moment().year(),
+        // monthNumber: moment().month() + 1,
+        // weekNumber: moment().week(),
+        // dayNumber: moment().date(),
+        workingDate: new Date(),
+        weekDateArray: [],
         dayRowArray: [],
         parsed: this.getDefaultParsed(),
         thisNavRef: this.createNewNavEventName()
@@ -198,22 +199,28 @@
       getHeaderLabel: function () {
         if (this.forceStartOfWeek) {
           let dateReturn = ''
-          let firstDate = this.getDateObject().clone().weekday(0)
-          let lastDate = this.getDateObject().clone().weekday(6)
-          // console.debug('getHeaderLabel called', this.getDateObject(), firstDate, lastDate)
+          // let middleOfMonthDate = date.adjustDate(workingDate, { date: 21 })
+          // let middleOfMonthDate = this.workingDate
+          // let firstDate = this.getDateObject().clone().weekday(0)
+          // let lastDate = this.getDateObject().clone().weekday(6)
+          // let firstDate = this.dateAdjustWeekday(middleOfMonthDate, -1)
+          // let lastDate = this.dateAdjustWeekday(middleOfMonthDate, 7)
+          // let lastDate = this.dateAdjustWeekday(middleOfMonthDate, 7)
+          let bookendDates = this.getForcedWeekBookendDates()
+          // console.debug('getHeaderLabel called', firstDate, lastDate)
 
-          if (firstDate.month() !== lastDate.month()) {
-            dateReturn += firstDate.format('MMM')
-            if (firstDate.year() !== lastDate.year()) {
-              dateReturn += firstDate.format(' YYYY')
+          if (bookendDates.first.getMonth() !== bookendDates.last.getMonth()) {
+            dateReturn += date.formatDate(bookendDates.first, 'MMM')
+            if (bookendDates.first.getFullYear() !== bookendDates.last.getFullYear()) {
+              dateReturn += date.formatDate(bookendDates.first, ' YYYY')
             }
             dateReturn += ' - '
           }
-          dateReturn += lastDate.format('MMM YYYY')
+          dateReturn += date.formatDate(bookendDates.last, 'MMM YYYY')
           return dateReturn
         }
         else {
-          return this.getMonthNameFromMonthNumber() + ' ' + this.yearNumber
+          return date.formatDate(this.workingDate, 'MMMM YYYY')
         }
       },
       handleStartChange: function (val, oldVal) {
@@ -221,28 +228,39 @@
       },
       doUpdate: function () {
         this.mountSetDate()
+        this.buildWeekDateArray()
       },
       getStartDateObject: function (daysForward) {
         let returnVal = {}
         if (this.forceStartOfWeek) {
-          returnVal = this.createThisDate().weekday(0).add(daysForward - 1, 'days')
+          // returnVal = this.createThisDate().weekday(0).add(daysForward - 1, 'days')
+          returnVal = date.addToDate(
+            this.dateAdjustWeekday(this.workingDate, 1),
+            { days: daysForward }
+          )
         }
         else {
-          returnVal = this.createThisDate().add(daysForward - 1, 'days')
+          // returnVal = this.createThisDate().add(daysForward - 1, 'days')
+          returnVal = date.addToDate(
+            this.workingDate,
+            { days: daysForward }
+          )
         }
         // console.debug('getStartDateObject returnVal = ', returnVal)
         return returnVal
       },
       getDateEvents: function (daysForward) {
-        let returnVal = []
-        if (this.forceStartOfWeek) {
-          returnVal = this.dateGetEvents(this.createThisDate().weekday(0).add(daysForward - 1, 'days'))
-        }
-        else {
-          returnVal = this.dateGetEvents(this.createThisDate().add(daysForward - 1, 'days'))
-        }
-        // console.debug('getDateEvents returnVal = ', returnVal)
-        return returnVal
+        // let returnVal = []
+        return this.dateGetEvents(
+          this.getStartDateObject(daysForward)
+        )
+        // if (this.forceStartOfWeek) {
+        //   returnVal = this.dateGetEvents(this.createThisDate().weekday(0).add(daysForward - 1, 'days'))
+        // }
+        // else {
+        //   returnVal = this.dateGetEvents(this.createThisDate().add(daysForward - 1, 'days'))
+        // }
+        // return returnVal
       },
       getStartNumber: function (periodType) {
         if (this.forceStartOfWeek) {
@@ -275,6 +293,7 @@
             amount: amount
           }
         )
+        this.buildWeekDateArray()
         // this.$emit(
         //   this.eventRef + ':changeDates',
         //   {
@@ -296,9 +315,7 @@
       )
     },
     watch: {
-      startYear: 'handleStartChange',
-      startMonth: 'handleStartChange',
-      startDay: 'handleStartChange',
+      startDate: 'handleStartChange',
       eventArray: 'getPassedInEventArray',
       parsedEvents: 'getPassedInParsedEvents'
     }

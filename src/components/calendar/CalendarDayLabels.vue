@@ -1,46 +1,58 @@
 <template>
     <div class="calendar-day-labels row no-wrap justify-end">
         <div
-            v-for="(thisDayNum, index) in numberOfDays"
+            v-for="thisDay in weekDateArray"
             :class="{
               'calendar-day-label': true,
               'calendar-cell': true,
-              'calendar-day-label-current': isCurrentDayLabel(thisDayNum)
+              'calendar-day-label-current': isCurrentDayLabel(thisDay)
             }"
             :style="{
               'width': cellWidth,
               'max-width': cellWidth,
             }"
         >
-            {{ getDayName(thisDayNum) }}
+            {{ formatDate(thisDay, 'ddd') }}
             <div
                 v-if="showDates"
                 class="calendar-day-label-date"
             >
-                {{ getDateObject().clone().add((thisDayNum - 1), 'days').date() }}
+                {{ formatDate(thisDay, 'D') }}
             </div>
         </div>
+        <!--<div-->
+            <!--v-for="thisDayNum in numberOfDays"-->
+            <!--:class="{-->
+              <!--'calendar-day-label': true,-->
+              <!--'calendar-cell': true,-->
+              <!--'calendar-day-label-current': isCurrentDayLabel(thisDayNum)-->
+            <!--}"-->
+            <!--:style="{-->
+              <!--'width': cellWidth,-->
+              <!--'max-width': cellWidth,-->
+            <!--}"-->
+        <!--&gt;-->
+            <!--{{ getDayName(thisDayNum) }}-->
+            <!--<div-->
+                <!--v-if="showDates"-->
+                <!--class="calendar-day-label-date"-->
+            <!--&gt;-->
+                <!--{{ getDayNumDate(thisDayNum) }}-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 </template>
 
 <script>
-  import moment from 'moment'
+  // import moment from 'moment'
   import CalendarMixin from './CalendarMixin'
-  // import {} from 'quasar'
+  import { date } from 'quasar'
   export default {
     name: 'CalendarDayLabels',
     props: {
-      startMonth: {
-        type: Number,
-        default: moment().month() + 1
-      },
-      startYear: {
-        type: Number,
-        default: moment().year()
-      },
-      startDay: {
-        type: Number,
-        default: moment().date()
+      startDate: {
+        type: Date,
+        default: () => { return new Date() }
       },
       numberOfDays: {
         type: Number,
@@ -61,24 +73,14 @@
       return {
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
-        yearNumber: moment().year(),
-        monthNumber: moment().month(),
-        weekNumber: moment().week(),
-        dayNumber: moment().date(),
-        workingDateObject: {},
-        weekArray: []
+        workingDate: new Date(),
+        weekDateArray: []
       }
     },
     computed: {
       cellWidth: function () {
         return this.calculateDayCellWidth(this.numberOfDays)
       }
-      // getDateObject: function () {
-      //   return moment()
-      //     .year(this.startYear)
-      //     .month(this.startMonth - 1)
-      //     .date(this.startDay)
-      // }
     },
     methods: {
       handleStartChange: function (val, oldVal) {
@@ -86,57 +88,92 @@
       },
       doUpdate: function () {
         this.mountSetDate()
+        this.buildWeekDateArray()
       },
-      isCurrentDayLabel: function (thisDayNum, checkMonthOnly) {
-        let now = moment()
-        let test = moment()
-          .year(this.yearNumber)
-          .month(this.monthNumber - 1)
-          // .date(15)
-          // .day(thisDayNum - 1)
-          .date(this.dayNumber)
-          .day(thisDayNum - 1)
-        // console.debug('isCurrentDayLabel called,', thisDayNum, now, test)
-        // return (moment().add((thisDayNum - 1), 'days').date())
-        // TODO: take out debugging and simplify
-        // return (now.day() === test.day())
+      isCurrentDayLabel: function (thisDay, checkMonthOnly) {
+        let now = new Date()
+        // console.debug('isCurrentDayLabel called', thisDayNum, date.getDayOfWeek(now))
         if (checkMonthOnly === true) {
-          return (now.IsSame(test, 'month') && now.day() === test.day())
+          return (
+            date.getDayOfWeek(now) === date.getDayOfWeek(thisDay) &&
+            now.getMonth() === thisDay.getMonth()
+          )
         }
         else {
-          return now.isSame(test, 'day')
+          return (date.isSameDate(now, thisDay, 'day'))
         }
       },
-      getDayName (thisDayNum) {
-        let dateVal = {}
+      // isCurrentDayLabelOLD: function (thisDayNum, checkMonthOnly) {
+      //   let now = new Date()
+      //   // console.debug('isCurrentDayLabel called', thisDayNum, date.getDayOfWeek(now))
+      //   if (checkMonthOnly === true) {
+      //     return (
+      //       date.getDayOfWeek(now) === thisDayNum &&
+      //       now.getMonth() === this.workingDate.getMonth()
+      //     )
+      //   }
+      //   else {
+      //     return (
+      //       date.getDayOfWeek(now) === thisDayNum &&
+      //       now.getMonth() === this.workingDate.getMonth()
+      //     )
+      //   }
+      //   //
+      //   // let test = moment()
+      //   //   .year(this.yearNumber)
+      //   //   .month(this.monthNumber - 1)
+      //   //   // .date(15)
+      //   //   // .day(thisDayNum - 1)
+      //   //   .date(this.dayNumber)
+      //   //   .day(thisDayNum - 1)
+      //   // // console.debug('isCurrentDayLabel called,', thisDayNum, now, test)
+      //   // // return (moment().add((thisDayNum - 1), 'days').date())
+      //   // // TODO: take out debugging and simplify
+      //   // // return (now.day() === test.day())
+      //   // if (checkMonthOnly === true) {
+      //   //   return (now.IsSame(test, 'month') && now.day() === test.day())
+      //   // }
+      //   // else {
+      //   //   return now.isSame(test, 'day')
+      //   // }
+      // },
+      getDayName: function (thisDayNum) {
+        let dateVal = new Date()
         if (this.forceStartOfWeek) {
-          dateVal = this.getDateObject()
-            .clone()
-            .date(15) // just somewhere in the middle of the month
-            .weekday(thisDayNum - 1)
+          // dateVal = date.adjustDate(dateVal, { date: 15 })
+          if (thisDayNum < date.getDayOfWeek(this.workingDate)) {
+            dateVal = this.dateAdjustWeekday(dateVal, -thisDayNum)
+          }
+          else {
+            dateVal = this.dateAdjustWeekday(dateVal, thisDayNum)
+          }
+
         }
         else {
-          dateVal = this.getDateObject()
-            .clone()
-            .add((thisDayNum - 1), 'days')
+          dateVal = date.addToDate(this.workingDate, { days: thisDayNum - 1 })
         }
-        return this.dayNameAbbreviation(dateVal.format('dddd'), 3)
+        console.debug('getDayName has dateVal = ', dateVal, this.forceStartOfWeek)
+        return this.dayNameAbbreviation(date.formatDate(dateVal, 'dddd'), 3)
+      },
+      getDayNumDate: function (thisDayNum) {
+        return date.formatDate(
+          date.addToDate(this.workingDate, { 'days': thisDayNum }),
+          'D'
+        )
       }
     },
     mounted () {
       this.mountSetDate()
     },
-    updated () {
-      // this.mountSetDate()
-      this.workingDateObject
-        .year(this.startYear)
-        .month(this.startMonth - 1)
-        .date(this.startDay)
-    },
+    // updated () {
+    //   // this.mountSetDate()
+    //   this.workingDateObject
+    //     .year(this.startYear)
+    //     .month(this.startMonth - 1)
+    //     .date(this.startDay)
+    // },
     watch: {
-      startYear: 'handleStartChange',
-      startMonth: 'handleStartChange',
-      startDay: 'handleStartChange'
+      startDate: 'handleStartChange'
     }
   }
 </script>

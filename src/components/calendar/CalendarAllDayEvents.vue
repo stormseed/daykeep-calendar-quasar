@@ -17,7 +17,7 @@
                 <!--/>-->
             <!--</div>-->
             <template
-                v-for="thisEvent in dateGetEvents(thisDayObject(addDays))"
+                v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))"
                 v-if="thisEvent.start.isAllDay"
             >
                 <calendar-event
@@ -33,21 +33,13 @@
   import moment from 'moment'
   import CalendarMixin from './CalendarMixin'
   import CalendarEvent from './CalendarEvent'
-  // import {} from 'quasar'
+  import { date } from 'quasar'
   export default {
     name: 'CalendarAllDayEvents',
     props: {
-      startMonth: {
-        type: Number,
-        default: moment().month()
-      },
-      startYear: {
-        type: Number,
-        default: moment().year()
-      },
-      startDay: {
-        type: Number,
-        default: moment().date()
+      startDate: {
+        type: Date,
+        default: () => { return new Date() }
       },
       parsed: {
         type: Object,
@@ -66,10 +58,11 @@
       return {
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
-        yearNumber: moment().year(),
-        monthNumber: moment().month(),
+        // yearNumber: moment().year(),
+        // monthNumber: moment().month(),
         weekNumber: moment().week(),
-        dayNumber: moment().date(),
+        // dayNumber: moment().date(),
+        workingDate: new Date(),
         workingDateObject: {},
         weekArray: []
       }
@@ -99,6 +92,9 @@
       },
       thisDayObject: function (thisDayNum) {
         return this.getDateObject().clone().add((thisDayNum - 1), 'days')
+      },
+      addDaysToDate: function (thisDateObject, numDays) {
+        return date.addToDate(thisDateObject, { days: numDays })
       }
     },
     mounted () {
@@ -107,15 +103,14 @@
     updated () {
       // console.debug('day labels updated')
       // this.mountSetDate()
-      this.workingDateObject
-        .year(this.startYear)
-        .month(this.startMonth)
-        .date(this.startDay)
+      this.mountSetDate()
+      // this.workingDateObject
+      //   .year(this.startYear)
+      //   .month(this.startMonth)
+      //   .date(this.startDay)
     },
     watch: {
-      startYear: 'handleStartChange',
-      startMonth: 'handleStartChange',
-      startDay: 'handleStartChange'
+      startDate: 'handleStartChange'
     }
   }
 </script>

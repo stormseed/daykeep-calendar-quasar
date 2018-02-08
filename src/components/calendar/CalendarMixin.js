@@ -1,11 +1,14 @@
-import Moment from 'moment'
-import { extendMoment } from 'moment-range'
+// import Moment from 'moment'
+// import { extendMoment } from 'moment-range'
 import dashHas from 'lodash.has'
 import dashGet from 'lodash.get'
 import dashIsFunction from 'lodash.isfunction'
-import { Events } from 'quasar'
-const moment = extendMoment(Moment)
-const defaultEventArray = []
+import {
+  date,
+  Events
+} from 'quasar'
+// const moment = extendMoment(Moment)
+// const defaultEventArray = []
 const defaultParsed = {
   byAllDayStartDate: {},
   byStartDate: {},
@@ -14,23 +17,113 @@ const defaultParsed = {
 export default {
   computed: {},
   methods: {
-    getDateObject: function () {
-      return moment()
-        .year(dashGet(this, 'yearNumber', this.startYear))
-        .month(dashGet(this, 'monthNumber', this.startMonth) - 1)
-        .date(dashGet(this, 'dayNumber', this.startDay))
+    getNowDate: function () {
+      return new Date()
     },
+    formatDate: function (dateObject, formatString) {
+      return date.formatDate(dateObject, formatString)
+    },
+    dateAdjustWeekday (thisDateObject, weekdayNum) {
+      let checkDate = new Date()
+      let adjustForward = true
+      if (weekdayNum < 0) {
+        adjustForward = false
+        weekdayNum = Math.abs(weekdayNum)
+      }
+      for (let counter = 0; counter <= 6; counter++) {
+        if (adjustForward) {
+          checkDate = date.addToDate(thisDateObject, { days: counter })
+        }
+        else {
+          checkDate = date.subtractFromDate(thisDateObject, { days: counter })
+        }
+        if (date.getDayOfWeek(checkDate) === weekdayNum) {
+          return checkDate
+        }
+      }
+    },
+    buildWeekDateArray: function (numberOfDays) {
+      if (numberOfDays === undefined) {
+        if (this.numberOfDays !== undefined) {
+          numberOfDays = this.numberOfDays
+        }
+        else if (this.numDays !== undefined) {
+          numberOfDays = this.numDays
+        }
+        else {
+          numberOfDays = 7
+        }
+      }
+      if (this.forceStartOfWeek) {
+        this.weekDateArray = this.getForcedWeekDateArray(numberOfDays)
+      }
+      else {
+        this.weekDateArray = this.getWeekDateArray(numberOfDays)
+      }
+    },
+    getForcedWeekBookendDates: function (numberOfDays) {
+      if (numberOfDays === undefined) {
+        numberOfDays = 7
+      }
+      return {
+        first: this.dateAdjustWeekday(this.workingDate, -1),
+        last: this.dateAdjustWeekday(this.workingDate, numberOfDays),
+      }
+    },
+    getForcedWeekDateArray: function (numberOfDays) {
+      // if (numberOfDays === undefined) {
+      //   numberOfDays = 7
+      // }
+      let bookendDates = this.getForcedWeekBookendDates()
+      let returnArray = []
+      for (let counter = 0; counter <= numberOfDays - 1; counter++) {
+        returnArray.push(
+          date.addToDate(bookendDates.first, { days: counter })
+        )
+      }
+      return returnArray
+    },
+    getWeekDateArray: function (numberOfDays) {
+      // if (numberOfDays === undefined) {
+      //   numberOfDays = 7
+      // }
+      let returnArray = []
+      for (let counter = 0; counter <= numberOfDays - 1; counter++) {
+        returnArray.push(
+          date.addToDate(this.workingDate, { days: counter })
+        )
+      }
+      return returnArray
+    },
+    // getDateObject: function () {
+    //   return moment()
+    //     .year(dashGet(this, 'yearNumber', this.startYear))
+    //     .month(dashGet(this, 'monthNumber', this.startMonth) - 1)
+    //     .date(dashGet(this, 'dayNumber', this.startDay))
+    // },
     formatTimeFromNumber: function (hourNumber) {
-      return moment().hour(hourNumber).format('ha')
+      // TODO: this should be able to handle 24 hour and alternate time formats
+      return date.formatDate(
+        date.adjustDate(new Date(), { hours: hourNumber }),
+        'ha'
+      )
+      // return moment().hour(hourNumber).format('ha')
     },
     moveTimePeriod: function (params) {
       // this.moveTimePeriodOld(params.unitType, params.amount)
-      let currentMom = this.createThisDate(this.dayNumber)
-      currentMom.add(params.amount, params.unitType)
-      this.yearNumber = currentMom.year()
-      this.monthNumber = currentMom.month() + 1
-      this.weekNumber = currentMom.week()
-      this.dayNumber = currentMom.date()
+      console.debug('moveTimePeriod called, params = ')
+      // let currentMom = this.createThisDate(this.dayNumber)
+      // currentMom.add(params.amount, params.unitType)
+      // this.yearNumber = currentMom.year()
+      // this.monthNumber = currentMom.month() + 1
+      // this.weekNumber = currentMom.week()
+      // this.dayNumber = currentMom.date()
+
+      let paramObj = {}
+      paramObj[params.unitType] = params.amount
+      console.debug('paramObj = ', paramObj)
+      this.workingDate = date.addToDate(this.workingDate, paramObj)
+
       // Events.$emit(
       //   'calendar:startDatesChanged',
       //   {
@@ -56,12 +149,11 @@ export default {
     getEventById: function (eventId) {
       return this.parsed.byId[eventId]
     },
-    formatToSqlDate: function (momentObject) {
+    formatToSqlDate: function (dateObject) {
       // console.debug('formatToSqlDate called, ', momentObject)
-      return momentObject.format('YYYY-MM-DD')
+      return date.formatDate(dateObject, 'YYYY-MM-DD')
     },
-    dateGetEvents: function (dateNum) {
-      let thisDate = this.createThisDate(dateNum)
+    dateGetEvents: function (thisDate) {
       let hasAllDayEvents = this.hasAllDayEvents(thisDate)
       let hasEvents = this.hasEvents(thisDate)
       let returnArray = []
@@ -79,58 +171,74 @@ export default {
       }
       return returnArray
     },
-    parseDateParams: function (params) {
-      // console.debug('parseDateParams called, params = ', params)
-      let thisDateObject = {}
-      if (moment.isMoment(params)) {
-        thisDateObject = params
-      }
-      else if (typeof params === 'number') {
-        // assume this is a day date
-        thisDateObject = moment()
-          .year(this.yearNumber)
-          .month(this.monthNumber - 1)
-          .date(params)
-      }
-      else if (typeof params === 'string') {
-        // parse the string
-        thisDateObject = moment(params)
-      }
-      else if (typeof params === 'object') {
-        thisDateObject = moment()
-          .year(dashGet(params, 'year', this.yearNumber))
-          .month(dashGet(params, 'month', this.monthNumber - 1))
-          .date(dashGet(params, 'date', this.dayNumber))
-      }
-      else if (typeof params === 'undefined') {
-        thisDateObject = moment()
-          .year(this.yearNumber)
-          .month(this.monthNumber - 1)
-          .date(this.dayNumber)
-      }
-      else {
-        thisDateObject = moment()
-      }
-      // console.debug('parseDateParams returning = ', thisDateObject)
-      return thisDateObject
-    },
-    hasAnyEvents: function (params) {
-      // console.debug('hasAnyEvents call with params = ', params)
-      let thisDateObject = this.parseDateParams(params)
+    // dateGetEventsOld: function (dateNum) {
+    //   let thisDate = this.createThisDate(dateNum)
+    //   let hasAllDayEvents = this.hasAllDayEvents(thisDate)
+    //   let hasEvents = this.hasEvents(thisDate)
+    //   let returnArray = []
+    //   // console.debug('about to call formatToSqlDate')
+    //   let sqlDate = this.formatToSqlDate(thisDate)
+    //   if (hasAllDayEvents) {
+    //     for (let thisEvent of this.parsed.byAllDayStartDate[sqlDate]) {
+    //       returnArray.push(this.getEventById(thisEvent))
+    //     }
+    //   }
+    //   if (hasEvents) {
+    //     for (let thisEvent of this.parsed.byStartDate[sqlDate]) {
+    //       returnArray.push(this.getEventById(thisEvent))
+    //     }
+    //   }
+    //   return returnArray
+    // },
+    // parseDateParams: function (params) {
+    //   // console.debug('parseDateParams called, params = ', params)
+    //   let thisDateObject = {}
+    //   if (moment.isMoment(params)) {
+    //     thisDateObject = params
+    //   }
+    //   else if (typeof params === 'number') {
+    //     // assume this is a day date
+    //     thisDateObject = moment()
+    //       .year(this.yearNumber)
+    //       .month(this.monthNumber - 1)
+    //       .date(params)
+    //   }
+    //   else if (typeof params === 'string') {
+    //     // parse the string
+    //     thisDateObject = moment(params)
+    //   }
+    //   else if (typeof params === 'object') {
+    //     thisDateObject = moment()
+    //       .year(dashGet(params, 'year', this.yearNumber))
+    //       .month(dashGet(params, 'month', this.monthNumber - 1))
+    //       .date(dashGet(params, 'date', this.dayNumber))
+    //   }
+    //   else if (typeof params === 'undefined') {
+    //     thisDateObject = moment()
+    //       .year(this.yearNumber)
+    //       .month(this.monthNumber - 1)
+    //       .date(this.dayNumber)
+    //   }
+    //   else {
+    //     thisDateObject = moment()
+    //   }
+    //   // console.debug('parseDateParams returning = ', thisDateObject)
+    //   return thisDateObject
+    // },
+    hasAnyEvents: function (thisDateObject) {
+      // console.debug('hasAnyEvents call with thisDateObject = ', thisDateObject)
       return (
         this.hasEvents(thisDateObject) ||
         this.hasAllDayEvents(thisDateObject)
       )
     },
-    hasAllDayEvents: function (params) {
-      let thisDateObject = this.parseDateParams(params)
+    hasAllDayEvents: function (thisDateObject) {
       return dashHas(
         this.parsed.byAllDayStartDate,
         this.formatToSqlDate(thisDateObject)
       )
     },
-    hasEvents: function (params) {
-      let thisDateObject = this.parseDateParams(params)
+    hasEvents: function (thisDateObject) {
       return dashHas(
         this.parsed.byStartDate,
         this.formatToSqlDate(thisDateObject)
@@ -162,9 +270,13 @@ export default {
       for (let thisEvent of this.eventArray) {
         // console.debug(thisEvent)
         this.parsed.byId[thisEvent.id] = thisEvent
-        let thisStartDateTime = moment(thisEvent.start.dateTime)
+        // let thisStartDateTime = moment(thisEvent.start.dateTime)
+
+        thisEvent.start['dateObject'] = new Date(thisEvent.start.dateTime)
+        thisEvent.end['dateObject'] = new Date(thisEvent.end.dateTime)
+
         // console.debug('parseEventList about to call formatSql')
-        let thisStartDate = this.formatToSqlDate(thisStartDateTime)
+        let thisStartDate = this.formatToSqlDate(thisEvent.start.dateObject)
 
         // get all-day events
         if (thisEvent.start.isAllDay) {
@@ -195,9 +307,19 @@ export default {
         tempArray.push(this.parsed.byId[eventId])
       }
       tempArray.sort(function (a, b) {
-        let timeA = moment(a.start.dateTime).unix() + (a.duration / 1000)
-        let timeB = moment(b.start.dateTime).unix() + (b.duration / 1000)
-        return timeA - timeB
+        // console.debug('a = ', a)
+        // let timeA = new Date(a.start.dateTime)
+        // let timeB = new Date(b.start.dateTime)
+        // timeA = date.addToDate(timeA, { milliseconds: a.duration })
+        // timeB = date.addToDate(timeB, { milliseconds: b.duration })
+        // return date.getDateDiff(timeA, timeB, 'seconds')
+        return date.getDateDiff(
+          date.addToDate(a.start.dateObject, { milliseconds: a.duration }),
+          date.addToDate(b.start.dateObject, { milliseconds: b.duration }),
+        )
+        // let timeA = moment(a.start.dateTime).unix() + (a.duration / 1000)
+        // let timeB = moment(b.start.dateTime).unix() + (b.duration / 1000)
+        // return timeA - timeB
       })
       let returnArray = []
       for (let thisEvent of tempArray) {
@@ -245,25 +367,36 @@ export default {
         return 24 * 60
       }
       else {
-        let thisStart = moment(eventObj.start.dateTime)
-        let thisEnd = moment(eventObj.end.dateTime)
-        return thisEnd.diff(thisStart, 'minutes')
+        return date.getDateDiff(
+          eventObj.start.dateObject,
+          eventObj.end.dateObject,
+          'minutes'
+        )
+        // let thisStart = moment(eventObj.start.dateTime)
+        // let thisEnd = moment(eventObj.end.dateTime)
+        // return thisEnd.diff(thisStart, 'minutes')
       }
     },
     parseHasOverlap: function (event1, event2) {
-      const range1 = moment.range(event1.start.dateTime, event1.end.dateTime)
-      const range2 = moment.range(event2.start.dateTime, event2.end.dateTime)
-      return range1.overlaps(range2, { adjacent: true })
+      return (event1.start.dateObject <= event2.end.dateObject) &&
+        (event1.end.dateObject >= event2.start.dateObject)
+      // return this.dateRangeHasOverlap(
+      //   event1.start.dateObject,
+      //   event1.end.dateObject,
+      //   event2.start.dateObject,
+      //   event2.end.dateObject,
+      // )
+      // const range1 = moment.range(event1.start.dateTime, event1.end.dateTime)
+      // const range2 = moment.range(event2.start.dateTime, event2.end.dateTime)
+      // return range1.overlaps(range2, { adjacent: true })
     },
-    isCurrentDate: function (thisDateNum) {
-      let now = moment()
-      // let test = moment().year(this.yearNumber).month(this.monthNumber - 1).date(thisDateNum)
-      let test = moment().year(this.yearNumber).month(this.monthNumber - 1).date(thisDateNum)
-      // console.debug('isCurrentDate called, checking now = ', now.format('YYYY-MM-DD'))
-      // console.debug('test = ', test.format('YYYY-MM-DD'))
-      // console.debug('this.monthNumber = ', this.monthNumber)
-      // console.debug('test = ', test.format('YYYY-MM-DD'))
-      return now.isSame(test, 'day')
+    // dateRangeHasOverlap: function (event1Start, event1End, event2Start, event2End) {
+    //   return (event1Start <= event2End) && (event1End >= event2Start)
+    // },
+    isCurrentDate: function (thisDateObject) {
+      let now = new Date()
+      // console.debug('isCurrentDate called, now = ', now, thisDateObject)
+      return date.isSameDate(now, thisDateObject, 'day')
     },
     // isCurrentWeekday: function (thisDayNum) {
     //   return (moment().weekday() === thisDayNum)
@@ -280,35 +413,38 @@ export default {
       }
     },
     mountSetDate: function () {
-      // console.debug('mountSetDate called')
-      // if (dashHas(this, 'startDateObject')) {
-      if (this.startDateObject !== undefined) {
-        if (this.workingDateObject !== undefined) {
-          this.workingDateObject = this.startDateObject
-        }
-        this.dayNumber = this.startDateObject.date()
-        this.monthNumber = this.startDateObject.month() + 1
-        // this.monthNumber = this.startDateObject.month()
-        this.yearNumber = this.startDateObject.year()
-      }
-      else {
-        // console.debug('startDateObject not defined')
-        if (this.workingDateObject !== undefined) {
-          this.workingDateObject = moment()
-            .year(this.startYear)
-            .month(this.startMonth - 1)
-            .date(this.startDay)
-        }
-        // console.debug('old this.monthNumber, this.startMonth, this = ',
-        //   this.monthNumber,
-        //   this.startMonth,
-        //   this
-        // )
-        this.dayNumber = this.startDay
-        this.monthNumber = this.startMonth
-        this.yearNumber = this.startYear
-      }
+      this.workingDate = this.startDate
     },
+    // mountSetDateOld: function () {
+    //   // console.debug('mountSetDate called')
+    //   // if (dashHas(this, 'startDateObject')) {
+    //   if (this.startDateObject !== undefined) {
+    //     if (this.workingDateObject !== undefined) {
+    //       this.workingDateObject = this.startDateObject
+    //     }
+    //     this.dayNumber = this.startDateObject.date()
+    //     this.monthNumber = this.startDateObject.month() + 1
+    //     // this.monthNumber = this.startDateObject.month()
+    //     this.yearNumber = this.startDateObject.year()
+    //   }
+    //   else {
+    //     // console.debug('startDateObject not defined')
+    //     if (this.workingDateObject !== undefined) {
+    //       this.workingDateObject = moment()
+    //         .year(this.startYear)
+    //         .month(this.startMonth - 1)
+    //         .date(this.startDay)
+    //     }
+    //     // console.debug('old this.monthNumber, this.startMonth, this = ',
+    //     //   this.monthNumber,
+    //     //   this.startMonth,
+    //     //   this
+    //     // )
+    //     this.dayNumber = this.startDay
+    //     this.monthNumber = this.startMonth
+    //     this.yearNumber = this.startYear
+    //   }
+    // },
     decimalAdjust: function (type, value, exp) {
       // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
       // If the exp is undefined or zero...

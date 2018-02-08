@@ -1,5 +1,5 @@
 <template>
-    <div :class="columnCss()">
+    <div :class="columnCss">
         <!-- underlying cells -->
         <!--<div v-for="thisHour in 24" :style="{ 'height': dayCellHeight, 'max-height': dayCellHeight }">-->
         <div v-for="thisHour in 24" :style="getCellStyle">
@@ -26,22 +26,14 @@
   import moment from 'moment'
   import CalendarEvent from './CalendarEvent'
   import CalendarMixin from './CalendarMixin'
+  import { date } from 'quasar'
   export default {
     name: 'CalendarDayColumn',
     props: {
-      startMonth: {
-        type: Number,
-        default: moment().month()
+      startDate: {
+        type: Date,
+        default: () => { return new Date() }
       },
-      startYear: {
-        type: Number,
-        default: moment().year()
-      },
-      startDay: {
-        type: Number,
-        default: moment().date()
-      },
-      startDateObject: Object,
       dateEvents: {
         type: Array,
         default: []
@@ -67,16 +59,27 @@
       return {
         // dayCellHeight: 5,
         // dayCellHeightUnit: 'rem',
-        yearNumber: moment().year(),
-        monthNumber: moment().month() + 1,
-        weekNumber: moment().week(),
-        dayNumber: moment().date()
+        workingDate: new Date()
+        // yearNumber: moment().year(),
+        // monthNumber: moment().month() + 1,
+        // weekNumber: moment().week(),
+        // dayNumber: moment().date()
       }
     },
     watch: {
-      startDateObject: 'mountSetDate'
+      startDate: 'mountSetDate'
     },
     computed: {
+      columnCss: function () {
+        let returnVal = {
+          'calendar-day-column-content': true,
+          'relative-position': true,
+          // 'calendar-day-column-current': this.isCurrentDate(this.startDay)
+          'calendar-day-column-current': this.isCurrentDate(this.workingDate)
+        }
+        returnVal[this.columnCssClass] = true
+        return returnVal
+      },
       getCellStyle: function () {
         return {
           height: this.dayCellHeight + this.dayCellHeightUnit,
@@ -85,12 +88,12 @@
       }
     },
     methods: {
-      columnCss: function () {
+      columnCssNO: function () {
         let returnVal = {
           'calendar-day-column-content': true,
           'relative-position': true,
           // 'calendar-day-column-current': this.isCurrentDate(this.startDay)
-          'calendar-day-column-current': this.isCurrentDate2()
+          'calendar-day-column-current': this.isCurrentDate(this.workingDate)
         }
         returnVal[this.columnCssClass] = true
         return returnVal
@@ -131,7 +134,7 @@
         return style
       },
       calculateDayEventPosition: function (startDateTime, endDateTime) {
-        // console.debug('calculateDayEventTop called, dateTime = ', startDateTime)
+        console.debug('calculateDayEventTop called, dateTime = ', startDateTime, endDateTime)
         let startMom = moment(startDateTime)
         let endMom = moment(endDateTime)
         let momMidnight = startMom.clone().startOf('day')
@@ -143,15 +146,15 @@
           height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
         }
       },
-      isCurrentDate2: function () {
-        let now = moment()
-        let test = moment()
-          .year(this.yearNumber)
-          .month(this.monthNumber - 1)
-          .date(this.dayNumber)
-        // console.debug('isCurrentDate2 called, now/test=', now, test)
-        return now.isSame(test, 'day')
-      }
+      // isCurrentDate2: function () {
+      //   let now = moment()
+      //   let test = moment()
+      //     .year(this.yearNumber)
+      //     .month(this.monthNumber - 1)
+      //     .date(this.dayNumber)
+      //   // console.debug('isCurrentDate2 called, now/test=', now, test)
+      //   return now.isSame(test, 'day')
+      // }
     },
     mounted () {
       this.mountSetDate()

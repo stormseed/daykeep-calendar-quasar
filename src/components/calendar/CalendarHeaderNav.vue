@@ -58,7 +58,6 @@
     computed: {},
     methods: {
       doMoveTimePeriod (timePeriodUnit, timePeriodAmount) {
-        // console.debug('doMoveTimePeriod called, this = ', this)
         Events.$emit(
           this.moveTimePeriodEmit,
           {
@@ -66,15 +65,6 @@
             amount: timePeriodAmount
           }
         )
-        // if (this.moveFunction !== undefined) {
-        //   this.moveFunction(timePeriodUnit, timePeriodAmount)
-        // }
-        // if (this.moveTimePeriod !== undefined) {
-        //   this.moveTimePeriod(timePeriodUnit, timePeriodAmount)
-        // }
-        // else {
-        //   this.$parent.moveTimePeriod(timePeriodUnit, timePeriodAmount)
-        // }
       }
     },
     mounted () {}
