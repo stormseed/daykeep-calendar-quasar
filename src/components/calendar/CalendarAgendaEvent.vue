@@ -11,14 +11,14 @@
             v-if="showTime && !eventObject.start.isAllDay"
             class="calendar-agenda-event-time"
         >
-            {{ formatTime(eventObject.start.dateTime, eventObject.end.dateTime) }}
+            {{ formatTimeRange(eventObject.start.dateObject, eventObject.end.dateObject) }}
         </div>
     </div>
 </template>
 
 <script>
-  import moment from 'moment'
   import {
+    date,
     QBtn,
     QTooltip
   } from 'quasar'
@@ -73,25 +73,23 @@
     },
     computed: {},
     methods: {
-      formatTime: function (startTime, endTime) {
-        let startMoment = moment(startTime)
-        let endMoment = moment(endTime)
+      formatTimeRange: function (startTime, endTime) {
         let returnString = ''
         // start time
-        returnString += startMoment.format('h')
-        if (startMoment.minute() > 0) {
-          returnString += ':' + startMoment.format('mm')
+        returnString += date.formatDate(startTime.format, 'h')
+        if (startTime.getMinutes() > 0) {
+          returnString += ':' + date.formatDate(startTime.format, 'mm')
         }
-        if (startMoment.format('A') !== endMoment.format('A')) {
-          returnString += ' ' + startMoment.format('A')
+        if (date.formatDate(startTime, 'A') !== date.formatDate(endTime, 'A')) {
+          returnString += ' ' + date.formatDate(startTime, 'A')
         }
         returnString += ' - '
         // end time
-        returnString += endMoment.format('h')
-        if (endMoment.minute() > 0) {
-          returnString += ':' + endMoment.format('mm')
+        returnString += date.formatDate(endTime, 'h')
+        if (endTime.getMinutes() > 0) {
+          returnString += ':' + date.formatDate(endTime, 'mm')
         }
-        returnString += ' ' + endMoment.format('A')
+        returnString += ' ' + date.formatDate(endTime, 'A')
         return returnString
       },
       getEventClass: function () {

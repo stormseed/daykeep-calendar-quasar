@@ -83,13 +83,13 @@
       },
     },
     methods: {
-      formatTime: function (dateObject) {
+      formatTime: function (startTime) {
         let returnString = ''
-        returnString += date.formatDate(dateObject, 'h')
-        if (dateObject.getMinutes() > 0) {
-          returnString += ':' + date.formatDate(dateObject, 'mm')
+        returnString += date.formatDate(startTime, 'h')
+        if (startTime.getMinutes() > 0) {
+          returnString += ':' + date.formatDate(startTime, 'mm')
         }
-        returnString += date.formatDate(dateObject, 'a').slice(0, 1)
+        returnString += date.formatDate(startTime, 'a').slice(0, 1)
         return returnString
       },
       isAllDayEvent: function () {

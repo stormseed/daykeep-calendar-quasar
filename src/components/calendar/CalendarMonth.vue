@@ -157,7 +157,6 @@
               currentWeekArray = []
             }
             thisDayObject = {
-              moment: currentDay,
               dateObject: currentDay,
               year: currentDay.getFullYear(),
               month: currentDay.getMonth(),
