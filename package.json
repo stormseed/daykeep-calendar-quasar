@@ -11,9 +11,9 @@
     "bugs": "https://github.com/stormseed/quasar-calendar/issues",
     "repository": {
         "type": "git",
-        "url": "https://git.stormseed.com/cbenjamin/quasar-calendar.git"
+        "url": "https://github.com/stormseed/quasar-calendar.git"
     },
-    "homepage": "https://git.stormseed.com/cbenjamin/quasar-calendar",
+    "homepage": "https://github.com/stormseed/quasar-calendar",
     "author": "Chris Benjamin <cbenjamin@stormseed.com>",
     "license": "MIT",
     "main": "src/index.js",
@@ -21,6 +21,7 @@
         "src/index.js",
         "src/**/*js",
         "src/**/*vue",
+        "src/**/*styl",
         "package.json"
     ],
     "dependencies": {
