@@ -110,7 +110,6 @@
     QScrollArea
   } from 'quasar'
   import QuantityBubble from './QuantityBubble'
-  import './calendar.universal.styl'
   export default {
     name: 'Calendar',
     props: {
@@ -184,99 +183,13 @@
 </script>
 
 <style lang="stylus">
-    $sevenCellWidth = 14.285%
-    $cellHeight = 5em
-    $borderOuter = 1px solid silver
-    $borderThin = 1px dotted silver
-    $dayTimeLabelWidth = 4em
-
-    .calendar-time-width
-        width $dayTimeLabelWidth
-    .calendar-time-margin
-        margin-left $dayTimeLabelWidth
+    @import 'calendar.vars.styl'
 
     .calendar-tabs
         .calendar-tab-pane-day,
         .calendar-tab-pane-week
-        /*.calendar-tab-pane-agenda*/
             height 60vh
             max-height 60vh
             overflow hidden
-        /*
-        .calendar-tab-pane-day
-            height 60vh
-            max-height 60vh
-            overflow hidden
-        */
-        .calendar-tab-pane-week
-            /*height 60vh*/
-            /*max-height 60vh*/
-            /*overflow hidden*/
-            .calendar-day-labels
-                .calendar-day-label
-                    // width $sevenCellWidth
-            .calendar-header
-                .calendar-header-label
-                    font-size 1.25em
-                    font-weight bold
-    /*
-    .calendar-month
-        .calendar-header
-            .calendar-month-year
-                font-size 1.25em
-                font-weight bold
-        .calendar-content
-            padding 4px 12px
-            .calendar-cell
-                width $sevenCellWidth
-                max-width $sevenCellWidth
-                margin 1px
-                padding 2px
-            .calendar-day-labels
-                .calendar-day-label
-                    font-size 1.1em
-                .calendar-day-label-current
-                    font-weight bold
-            //.calendar-multi-day
-            //    border-bottom 1px solid silver
-            //    :last-child
-            //        border-bottom none
-            .calendar-day
-                background-color none
-                height $cellHeight
-                max-height $cellHeight
-                .calendar-day-number
-                    font-size 0.9em
-                    height 2em
-                    width 2em
-                    vertical-align middle
-                    padding-top .25em
-                    padding-left .25em
-                .calendar-day-current
-                    background-color: red
-    */
-    .calendar-day,
-    .calendar-multi-day,
-    .calendar-multi-day .calendar-multiple-days
-        .calendar-day-cell-height
-            height 5rem
-            max-height 5rem
-        .calendar-day-column-label
-            width $dayTimeLabelWidth
-        .calendar-day-column-content
-            // border-right $borderOuter
-            position relative
-        .calendar-day-time
-            padding-right .5em
-            border-right $borderOuter
-        .calendar-day-time-content
-            border-top $borderThin
-    .calendar-day
-        position relative
-    .calendar-multiple-days
-        .calendar-day-column-content
-            width $sevenCellWidth
-            border-right $borderThin
-            position absolute
-            top 0
+
 </style>

@@ -82,9 +82,6 @@
 </script>
 
 <style lang="stylus">
-    $cellWidth = 14.285%
-    $cellHeight = 5em
-
     .calendar-day-labels
         .calendar-day-label
             font-size 1.1em

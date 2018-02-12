@@ -71,7 +71,6 @@
     QInfiniteScroll,
     QSpinnerDots
   } from 'quasar'
-  import './calendar.universal.styl'
   export default {
     name: 'CalendarAgenda',
     props: {

@@ -134,11 +134,7 @@
 </script>
 
 <style lang="stylus">
-    $cellWidth = 14.285%
-    $cellHeight = 5em
-    $borderOuter = 1px solid silver
-    $borderThin = 1px dotted silver
-    $currentDayBackgroundColor = #eeeeee
+    @import 'calendar.vars.styl'
 
     .calendar-day
         position relative
@@ -148,7 +144,6 @@
         .calendar-day-column-label
             //
         .calendar-day-column-content
-            // border-right $borderOuter
             position relative
         .calendar-day-column-current
             background-color $currentDayBackgroundColor
