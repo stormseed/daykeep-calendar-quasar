@@ -76,9 +76,9 @@
       formatTimeRange: function (startTime, endTime) {
         let returnString = ''
         // start time
-        returnString += date.formatDate(startTime.format, 'h')
+        returnString += date.formatDate(startTime, 'h')
         if (startTime.getMinutes() > 0) {
-          returnString += ':' + date.formatDate(startTime.format, 'mm')
+          returnString += ':' + date.formatDate(startTime, 'mm')
         }
         if (date.formatDate(startTime, 'A') !== date.formatDate(endTime, 'A')) {
           returnString += ' ' + date.formatDate(startTime, 'A')
