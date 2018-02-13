@@ -11,6 +11,23 @@ const defaultParsed = {
 export default {
   computed: {},
   methods: {
+    addCssColorClasses: function (cssObject, eventObject) {
+      // background color
+      if (eventObject.color) {
+        cssObject['bg-' + eventObject.color] = eventObject.color
+      }
+      else {
+        cssObject['bg-' + this.color] = true
+      }
+      // text color
+      if (eventObject.textColor) {
+        cssObject['text-' + eventObject.textColor] = true
+      }
+      else {
+        cssObject['text-' + this.textColor] = true
+      }
+      return cssObject
+    },
     formatDate: function (dateObject, formatString) {
       return date.formatDate(dateObject, formatString)
     },

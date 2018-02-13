@@ -19,7 +19,7 @@
     QBtn,
     QTooltip
   } from 'quasar'
-  import QuantityBubble from './QuantityBubble'
+  import CalendarMixin from './CalendarMixin'
   export default {
     name: 'CalendarEvent',
     props: {
@@ -27,9 +27,9 @@
         type: Object,
         default: this.blankCalendarEvent
       },
-      backgroundColor: {
+      color: {
         type: String,
-        default: 'blue'
+        default: 'primary'
       },
       textColor: {
         type: String,
@@ -45,10 +45,10 @@
       }
     },
     components: {
-      QuantityBubble,
       QBtn,
       QTooltip
     },
+    mixins: [CalendarMixin],
     data () {
       return {
         blankCalendarEvent: {
@@ -71,15 +71,18 @@
     computed: {
       getEventStyle: function () {
         return {
-          'background-color': this.backgroundColor,
-          'color': this.textColor
+          // 'background-color': this.backgroundColor,
+          // 'color': this.textColor
         }
       },
       getEventClass: function () {
-        return {
-          'calendar-event': true,
-          'calendar-event-month': this.monthStyle
-        }
+        return this.addCssColorClasses(
+          {
+            'calendar-event': true,
+            'calendar-event-month': this.monthStyle
+          },
+          this.eventObject
+        )
       },
     },
     methods: {

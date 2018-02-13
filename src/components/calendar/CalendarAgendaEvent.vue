@@ -1,7 +1,7 @@
 <template>
     <div
-        :class="getEventClass()"
-        :style="getEventStyle()"
+        :class="getEventClass"
+        :style="getEventStyle"
         @mouseup="handleClick"
     >
         <div class="calendar-agenda-event-summary">
@@ -17,12 +17,12 @@
 </template>
 
 <script>
+  import CalendarMixin from './CalendarMixin'
   import {
     date,
     QBtn,
     QTooltip
   } from 'quasar'
-  import QuantityBubble from './QuantityBubble'
   export default {
     name: 'CalendarAgendaEvent',
     props: {
@@ -30,9 +30,9 @@
         type: Object,
         default: this.blankCalendarEvent
       },
-      backgroundColor: {
+      color: {
         type: String,
-        default: 'blue'
+        default: 'primary'
       },
       textColor: {
         type: String,
@@ -48,10 +48,10 @@
       }
     },
     components: {
-      QuantityBubble,
       QBtn,
       QTooltip
     },
+    mixins: [CalendarMixin],
     data () {
       return {
         blankCalendarEvent: {
@@ -71,7 +71,20 @@
         }
       }
     },
-    computed: {},
+    computed: {
+      getEventClass: function () {
+        return this.addCssColorClasses(
+          {
+            'calendar-agenda-event': true,
+            'calendar-agenda-event-allday': this.eventObject.start.isAllDay
+          },
+          this.eventObject
+        )
+      },
+      getEventStyle: function () {
+        return {}
+      }
+    },
     methods: {
       formatTimeRange: function (startTime, endTime) {
         let returnString = ''
@@ -91,19 +104,6 @@
         }
         returnString += ' ' + date.formatDate(endTime, 'A')
         return returnString
-      },
-      getEventClass: function () {
-        return {
-          'calendar-agenda-event': true,
-          'calendar-agenda-event-allday': this.eventObject.start.isAllDay
-        }
-      },
-      getEventStyle: function () {
-        let retVal = {
-          'background-color': this.backgroundColor,
-          'color': this.textColor
-        }
-        return retVal
       },
       handleClick: function (e) {
         // console.debug('event clicked')

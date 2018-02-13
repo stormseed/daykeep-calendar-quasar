@@ -79,7 +79,6 @@
   import CalendarEvent from './CalendarEvent'
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
-  import './calendar.universal.styl'
   export default {
     name: 'CalendarMonth',
     components: {
@@ -214,11 +213,15 @@
 </script>
 
 <style lang="stylus">
-    $cellWidth = 14.285%
-    $cellHeight = 5em
-    $currentDayBackgroundColor = #eeeeee
+    @import 'calendar.vars.styl'
 
     .calendar-month
+
+        .calendar-time-width
+            width $dayTimeLabelWidth
+        .calendar-time-margin
+            margin-left $dayTimeLabelWidth
+
         .calendar-header
             .calendar-header-label
                 font-size 1.25em
@@ -228,7 +231,6 @@
             .calendar-cell
                 width $cellWidth
                 max-width $cellWidth
-                /*margin 1px*/
                 padding 2px
             .calendar-day-labels
                 .calendar-day-label
@@ -236,7 +238,7 @@
                 .calendar-day-label-current
                     font-weight bold
             .calendar-multi-day
-                border-bottom 1px solid silver
+                border-bottom 1px solid $borderColor
                 :last-child
                     border-bottom none
             .calendar-day
@@ -244,6 +246,7 @@
                 height $cellHeight
                 max-height $cellHeight
                 overflow hidden
+                width $sevenCellWidth
                 .calendar-day-number
                     font-size 0.9em
                     height 2em

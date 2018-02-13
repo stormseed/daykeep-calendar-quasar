@@ -191,5 +191,7 @@
             height 60vh
             max-height 60vh
             overflow hidden
+        .q-tab-pane
+            border none
 
 </style>

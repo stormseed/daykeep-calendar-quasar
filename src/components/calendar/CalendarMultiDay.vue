@@ -78,7 +78,6 @@
     QTooltip,
     QScrollArea
   } from 'quasar'
-  import './calendar.universal.styl'
   export default {
     name: 'CalendarMultiDay',
     props: {
@@ -231,30 +230,19 @@
 </script>
 
 <style lang="stylus">
-    $sevenCellWidth = 14.285%
-    $cellHeight = 5em
-    $borderOuter = 1px solid silver
-    $borderThin = 1px dotted silver
-    $dayTimeLabelWidth = 4em
-    $currentDayBackgroundColor = #eeeeee
+    @import 'calendar.vars.styl'
 
     .calendar-multi-day-component
-        .calendar-day-labels
-        .calendar-day-label
-        // width $sevenCellWidth
+        .calendar-time-margin
+            margin-left $dayTimeLabelWidth
         .calendar-header
             .calendar-header-label
                 font-size 1.25em
                 font-weight bold
         .calendar-day
-            //.calendar-day-cell-height
-            //    height $cellHeight
-            //    max-height $cellHeight
             .calendar-day-column-label
                 width $dayTimeLabelWidth
             .calendar-day-column-content
-                // border-right $borderOuter
-                // width $sevenCellWidth
                 border-right $borderThin
                 position relative
             .calendar-day-time
@@ -263,10 +251,4 @@
             .calendar-day-time-content
                 border-top $borderThin
 
-        .calendar-multiple-daysNO
-            .calendar-day-column-content
-                width $sevenCellWidth
-                border-right $borderThin
-                position absolute
-                top 0
 </style>
