@@ -1,6 +1,6 @@
 <template>
     <div class="calendar-test">
-        <q-tabs class="calendar-tabs" inverted>
+        <q-tabs class="calendar-tabs" ref="fullCalendarTabs" inverted>
             <q-tab
                 name="tab-month"
                 icon="view_module"
@@ -39,6 +39,7 @@
                     :start-date="workingDate"
                     :parsed-events="parsed"
                     :event-ref="eventRef"
+                    :fullComponentRef="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
@@ -50,6 +51,7 @@
                     :nav-days="7"
                     :force-start-of-week="true"
                     :event-ref="eventRef"
+                    :fullComponentRef="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
@@ -61,6 +63,7 @@
                     :nav-days="1"
                     :force-start-of-week="false"
                     :event-ref="eventRef"
+                    :fullComponentRef="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
@@ -72,6 +75,7 @@
                     :nav-days="1"
                     :force-start-of-week="false"
                     :event-ref="eventRef"
+                    :fullComponentRef="eventRef"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
@@ -82,6 +86,7 @@
                     :num-days="30"
                     :event-ref="eventRef"
                     scroll-height="300px"
+                    :fullComponentRef="eventRef"
                 />
             </q-tab-pane>
 
@@ -165,6 +170,10 @@
           this.eventRef + ':navMovePeriod',
           this.calPackageMoveTimePeriod
         )
+        Events.$on(
+          this.eventRef + ':moveToSingleDay',
+          this.switchToSingleDay
+        )
       },
       calPackageMoveTimePeriod: function (params) {
         this.moveTimePeriod(params)
@@ -172,6 +181,10 @@
           'calendar' + ':navMovePeriod',
           params
         )
+      },
+      switchToSingleDay: function (params) {
+        this.setTimePeriod(params)
+        this.$refs.fullCalendarTabs.selectTab('tab-single-day-component')
       }
     },
     mounted () {

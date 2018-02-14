@@ -26,6 +26,7 @@
                 :show-dates="true"
                 :start-date="workingDate"
                 :force-start-of-week="forceStartOfWeek"
+                :fullComponentRef="fullComponentRef"
             />
         </div>
 
@@ -127,7 +128,8 @@
       scrollHeight: {
         type: String,
         default: 'auto'
-      }
+      },
+      fullComponentRef: String
     },
     components: {
       CalendarEvent,

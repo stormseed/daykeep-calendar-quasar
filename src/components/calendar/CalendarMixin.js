@@ -11,6 +11,15 @@ const defaultParsed = {
 export default {
   computed: {},
   methods: {
+    fullMoveToDay: function (dateObject) {
+      if (this.fullComponentRef) {
+        Events.$emit(
+          this.fullComponentRef + ':moveToSingleDay', {
+            dateObject: dateObject
+          }
+        )
+      }
+    },
     addCssColorClasses: function (cssObject, eventObject) {
       // background color
       if (eventObject.color) {
@@ -108,6 +117,9 @@ export default {
       let paramObj = {}
       paramObj[params.unitType] = params.amount
       this.workingDate = date.addToDate(this.workingDate, paramObj)
+    },
+    setTimePeriod: function (params) {
+      this.workingDate = params.dateObject
     },
     getDayOfWeek: function () {
       return this.createThisDate(this.dayNumber).format('dddd')

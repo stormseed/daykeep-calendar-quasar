@@ -5,12 +5,14 @@
             :class="{
               'calendar-day-label': true,
               'calendar-cell': true,
-              'calendar-day-label-current': isCurrentDayLabel(thisDay)
+              'calendar-day-label-current': isCurrentDayLabel(thisDay),
+              'cursor-pointer': calendarDaysAreClickable
             }"
             :style="{
               'width': cellWidth,
               'max-width': cellWidth,
             }"
+            @click="handleDayClick(thisDay)"
         >
             {{ formatDate(thisDay, 'ddd') }}
             <div
@@ -44,7 +46,8 @@
       forceStartOfWeek: {
         type: Boolean,
         default: false
-      }
+      },
+      fullComponentRef: String
     },
     components: {},
     mixins: [CalendarMixin],
@@ -59,6 +62,9 @@
     computed: {
       cellWidth: function () {
         return this.calculateDayCellWidth(this.numberOfDays)
+      },
+      calendarDaysAreClickable: function () {
+        return (this.fullComponentRef && this.fullComponentRef.length > 0)
       }
     },
     methods: {
@@ -82,6 +88,11 @@
           return (date.isSameDate(now, thisDay, 'day'))
         }
       },
+      handleDayClick: function (dateObject) {
+        if (this.fullComponentRef) {
+          this.fullMoveToDay(dateObject)
+        }
+      }
     },
     mounted () {
       this.mountSetDate()

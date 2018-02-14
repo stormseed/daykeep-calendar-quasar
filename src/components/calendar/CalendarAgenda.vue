@@ -36,6 +36,8 @@
                             <div
                                 class="col-auto calendar-agenda-side"
                                 :style="{ 'width': leftMargin, 'max-width': leftMargin }"
+                                :class="{ 'cursor-pointer': calendarDaysAreClickable }"
+                                @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
                             >
                                 <div class="calendar-agenda-side-date">
                                     {{ formatDate(forwardDate, 'D') }}
@@ -101,7 +103,8 @@
       scrollHeight: {
         type: String,
         default: '200px'
-      }
+      },
+      fullComponentRef: String
     },
     components: {
       CalendarAgendaEvent,
@@ -121,7 +124,11 @@
         parsed: this.getDefaultParsed()
       }
     },
-    computed: {},
+    computed: {
+      calendarDaysAreClickable: function () {
+        return (this.fullComponentRef && this.fullComponentRef.length > 0)
+      }
+    },
     methods: {
       getDaysForwardDate: function (daysForward) {
         return date.addToDate(this.workingDate, { days: daysForward })
@@ -151,6 +158,11 @@
           return date.formatDate(firstDate, 'MMM D - ') + date.formatDate(lastDate, 'MMM D')
         }
       },
+      handleDayClick: function (dateObject) {
+        if (this.fullComponentRef) {
+          this.fullMoveToDay(dateObject)
+        }
+      }
     },
     mounted () {
       this.localNumDays = this.numDays

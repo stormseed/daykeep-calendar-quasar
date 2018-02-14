@@ -35,12 +35,24 @@
                         }"
                     v-for="thisDay in thisWeek"
                 >
-                    <quantity-bubble
+                    <div
                         v-if="isCurrentDate(thisDay.dateObject)"
-                        :quantity="thisDay.dateObject.getDate()"
-                        :offset="false"
-                    />
-                    <div v-else class="calendar-day-number">
+                        :class="{ 'cursor-pointer': calendarDaysAreClickable }"
+                        @click="handleDayClick(thisDay.dateObject)"
+                    >
+                        <quantity-bubble
+                            :quantity="thisDay.dateObject.getDate()"
+                            :offset="false"
+                        />
+                    </div>
+                    <div
+                        v-else
+                        :class="{
+                            'calendar-day-number': true,
+                            'cursor-pointer': calendarDaysAreClickable
+                        }"
+                        @click="handleDayClick(thisDay.dateObject)"
+                    >
                         {{ thisDay.dateObject.getDate() }}
                     </div>
                     <div class="calendar-day-content">
@@ -110,7 +122,8 @@
       eventRef: {
         type: String,
         default: 'cal-' + Math.random().toString(36).substring(2, 15)
-      }
+      },
+      fullComponentRef: String
     },
     data () {
       return {
@@ -121,7 +134,11 @@
         parsed: this.getDefaultParsed()
       }
     },
-    computed: {},
+    computed: {
+      calendarDaysAreClickable: function () {
+        return (this.fullComponentRef && this.fullComponentRef.length > 0)
+      }
+    },
     methods: {
       handleStartChange: function (val, oldVal) {
         debounce(this.doUpdate, 300)
@@ -169,11 +186,9 @@
         if (weekArray.length > 0) {
           weekArray.push(currentWeekArray)
         }
-        console.debug('getCallendarCellArray about to return weekArray', weekArray)
         return weekArray
       },
       generateCalendarCellArray: function () {
-        console.debug('generateCalendarCellArray called')
         this.weekArray = this.getCalendarCellArray(
           this.workingDate.getMonth(),
           this.workingDate.getFullYear()
@@ -190,6 +205,11 @@
           }
         )
         this.generateCalendarCellArray()
+      },
+      handleDayClick: function (dateObject) {
+        if (this.fullComponentRef) {
+          this.fullMoveToDay(dateObject)
+        }
       }
     },
     mounted () {
