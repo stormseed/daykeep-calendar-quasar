@@ -42,7 +42,8 @@
       monthStyle: {
         type: Boolean,
         default: false
-      }
+      },
+      eventRef: String
     },
     components: {
       QBtn,
@@ -100,6 +101,7 @@
       },
       handleClick: function (e) {
         this.$emit('click', this.eventObject)
+        this.triggerEventClick(this.eventObject, this.eventRef)
       }
     },
     mounted () {}

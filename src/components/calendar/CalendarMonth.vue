@@ -63,7 +63,8 @@
                         >
                             <calendar-event
                                 :event-object="thisEvent"
-                                :monthStyle="true"
+                                :month-style="true"
+                                :event-ref="eventRef"
                             />
                         </div>
                         <!--Content here-->
@@ -71,6 +72,12 @@
                 </div>
             </div>
         </div>
+
+        <calendar-event-detail
+            ref="defaultEventDetail"
+            :event-object="eventDetailEventObject"
+        />
+
     </div>
 </template>
 
@@ -91,6 +98,7 @@
   import CalendarEvent from './CalendarEvent'
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
+  import CalendarEventDetail from './CalendarEventDetail'
   export default {
     name: 'CalendarMonth',
     components: {
@@ -98,6 +106,7 @@
       CalendarEvent,
       CalendarDayLabels,
       CalendarHeaderNav,
+      CalendarEventDetail,
       QBtn,
       QTooltip,
       QTabs,
@@ -131,7 +140,8 @@
         dayCellHeightUnit: 'rem',
         workingDate: new Date(),
         weekArray: [],
-        parsed: this.getDefaultParsed()
+        parsed: this.getDefaultParsed(),
+        eventDetailEventObject: {}
       }
     },
     computed: {
@@ -210,7 +220,7 @@
         if (this.fullComponentRef) {
           this.fullMoveToDay(dateObject)
         }
-      }
+      },
     },
     mounted () {
       this.doUpdate()
@@ -218,6 +228,10 @@
       Events.$on(
         this.eventRef + ':navMovePeriod',
         this.handleNavMove
+      )
+      Events.$on(
+        'click-event-' + this.eventRef,
+        this.handleEventDetailEvent
       )
     },
     watch: {

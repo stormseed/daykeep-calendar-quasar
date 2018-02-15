@@ -14,6 +14,7 @@
                 <calendar-event
                     :event-object="thisEvent"
                     :show-time="false"
+                    :event-ref="eventRef"
                 />
             </template>
         </div>
@@ -38,7 +39,8 @@
       numberOfDays: {
         type: Number,
         default: 7
-      }
+      },
+      eventRef: String
     },
     components: {
       CalendarEvent

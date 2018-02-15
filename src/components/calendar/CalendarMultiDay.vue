@@ -34,9 +34,9 @@
         <div class="calendar-time-margin">
             <calendar-all-day-events
                 :number-of-days="numDays"
-                :NOstart-date="workingDate"
                 :start-date="weekDateArray[0]"
                 :parsed="parsed"
+                :event-ref="eventRef"
             />
         </div>
 
@@ -55,12 +55,19 @@
                             :date-events="dateGetEvents(thisDate)"
                             column-css-class="calendar-day-column-content"
                             :style="{ 'width': dayCellWidth }"
+                            :event-ref="eventRef"
                         />
                     </div>
                 </div>
             </div>
 
         </q-scroll-area>
+
+        <calendar-event-detail
+            ref="defaultEventDetail"
+            :event-object="eventDetailEventObject"
+        />
+
     </div>
 </template>
 
@@ -72,6 +79,7 @@
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarAllDayEvents from './CalendarAllDayEvents'
+  import CalendarEventDetail from './CalendarEventDetail'
   import {
     date,
     Events,
@@ -138,6 +146,7 @@
       CalendarDayLabels,
       CalendarHeaderNav,
       CalendarAllDayEvents,
+      CalendarEventDetail,
       QBtn,
       QTooltip,
       QScrollArea
@@ -149,7 +158,8 @@
         weekDateArray: [],
         dayRowArray: [],
         parsed: this.getDefaultParsed(),
-        thisNavRef: this.createNewNavEventName()
+        thisNavRef: this.createNewNavEventName(),
+        eventDetailEventObject: {}
       }
     },
     computed: {
@@ -213,7 +223,7 @@
           }
         )
         this.buildWeekDateArray()
-      }
+      },
     },
     mounted () {
       this.doUpdate()
@@ -221,6 +231,10 @@
       Events.$on(
         this.eventRef + ':navMovePeriod',
         this.handleNavMove
+      )
+      Events.$on(
+        'click-event-' + this.eventRef,
+        this.handleEventDetailEvent
       )
     },
     watch: {

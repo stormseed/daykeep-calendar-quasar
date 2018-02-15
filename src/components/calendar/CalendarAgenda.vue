@@ -1,71 +1,82 @@
 <template>
     <div class="calendar-agenda column fit">
         <!-- content -->
-            <q-infinite-scroll
-                inline
-                :handler="loadMore"
-                :style="{ 'height': scrollHeight, 'overflow':'auto' }">
-                <div
-                    v-for="daysForward in localNumDays"
-                    :key="daysForward"
-                >
-                    <div v-if="forwardDate = getDaysForwardDate(daysForward - 1)">
+        <q-infinite-scroll
+            inline
+            :handler="loadMore"
+            :style="{ 'height': scrollHeight, 'overflow':'auto' }">
+            <div
+                v-for="daysForward in localNumDays"
+                :key="daysForward"
+            >
+                <div v-if="forwardDate = getDaysForwardDate(daysForward - 1)">
 
-                        <!--month marker-->
+                    <!--month marker-->
+                    <div
+                        v-if="isFirstOfMonth(forwardDate)"
+                        class="row calendar-agenda-month"
+                        :style="{ 'padding-left': leftMargin }"
+                    >
+                        {{ formatDate(forwardDate, 'MMMM YYYY') }}
+                    </div>
+
+                    <!--week marker-->
+                    <div
+                        v-if="isFirstDayOfWeek(forwardDate)"
+                        class="row calendar-agenda-week"
+                        :style="{ 'margin-left': leftMargin }"
+                    >
+                        {{ getWeekTitle(forwardDate) }}
+                    </div>
+
+                    <!--individual day-->
+                    <div
+                        v-if="dateGetEvents(forwardDate).length > 0"
+                        class="col row items-start calendar-agenda-day">
                         <div
-                            v-if="isFirstOfMonth(forwardDate)"
-                            class="row calendar-agenda-month"
-                            :style="{ 'padding-left': leftMargin }"
+                            class="col-auto calendar-agenda-side"
+                            :style="{ 'width': leftMargin, 'max-width': leftMargin }"
+                            :class="{ 'cursor-pointer': calendarDaysAreClickable }"
+                            @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
                         >
-                            {{ formatDate(forwardDate, 'MMMM YYYY') }}
+                            <div class="calendar-agenda-side-date">
+                                {{ formatDate(forwardDate, 'D') }}
+                            </div>
+                            <div class="calendar-agenda-side-day">
+                                {{ formatDate(forwardDate, 'ddd') }}
+                            </div>
                         </div>
-
-                        <!--week marker-->
-                        <div
-                            v-if="isFirstDayOfWeek(forwardDate)"
-                            class="row calendar-agenda-week"
-                            :style="{ 'margin-left': leftMargin }"
-                        >
-                            {{ getWeekTitle(forwardDate) }}
-                        </div>
-
-                        <!--individual day-->
-                        <div
-                            v-if="dateGetEvents(forwardDate).length > 0"
-                            class="col row items-start calendar-agenda-day">
-                            <div
-                                class="col-auto calendar-agenda-side"
-                                :style="{ 'width': leftMargin, 'max-width': leftMargin }"
-                                :class="{ 'cursor-pointer': calendarDaysAreClickable }"
-                                @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
+                        <div class="col row calendar-agenda-events">
+                            <template
+                                v-if="dateGetEvents(forwardDate)"
+                                v-for="thisEvent in dateGetEvents(forwardDate)"
                             >
-                                <div class="calendar-agenda-side-date">
-                                    {{ formatDate(forwardDate, 'D') }}
-                                </div>
-                                <div class="calendar-agenda-side-day">
-                                    {{ formatDate(forwardDate, 'ddd') }}
-                                </div>
-                            </div>
-                            <div class="col row calendar-agenda-events">
-                                <template
-                                    v-if="dateGetEvents(forwardDate)"
-                                    v-for="thisEvent in dateGetEvents(forwardDate)"
-                                >
-                                    <calendar-agenda-event :event-object="thisEvent"/>
-                                </template>
-                            </div>
+                                <calendar-agenda-event
+                                    :event-object="thisEvent"
+                                    :event-ref="eventRef"
+                                />
+                            </template>
                         </div>
                     </div>
                 </div>
-                <q-spinner-dots slot="message" :size="40" />
-            </q-infinite-scroll>
+            </div>
+            <q-spinner-dots slot="message" :size="40" />
+        </q-infinite-scroll>
+
+        <calendar-event-detail
+            ref="defaultEventDetail"
+            :event-object="eventDetailEventObject"
+        />
+
     </div>
 </template>
 
 <script>
   import CalendarMixin from './CalendarMixin'
   import CalendarAgendaEvent from './CalendarAgendaEvent'
+  import CalendarEventDetail from './CalendarEventDetail'
   import {
+    Events,
     date,
     QBtn,
     QTooltip,
@@ -108,6 +119,7 @@
     },
     components: {
       CalendarAgendaEvent,
+      CalendarEventDetail,
       QBtn,
       QTooltip,
       QScrollArea,
@@ -121,7 +133,8 @@
         localNumDays: 30,
         dayRowArray: [],
         dayCounter: [],
-        parsed: this.getDefaultParsed()
+        parsed: this.getDefaultParsed(),
+        eventDetailEventObject: {}
       }
     },
     computed: {
@@ -162,12 +175,16 @@
         if (this.fullComponentRef) {
           this.fullMoveToDay(dateObject)
         }
-      }
+      },
     },
     mounted () {
       this.localNumDays = this.numDays
       this.doUpdate()
       this.handlePassedInEvents()
+      Events.$on(
+        'click-event-' + this.eventRef,
+        this.handleEventDetailEvent
+      )
     },
     watch: {
       startYear: 'handleStartChange',
@@ -210,6 +227,7 @@
                     margin-bottom .5em
                     text-overflow clip
                     border-radius .25em
+                    cursor pointer
                     .calendar-agenda-event-summary
                         font-weight bold
                     .calendar-agenda-event-time

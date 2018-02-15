@@ -11,6 +11,24 @@ const defaultParsed = {
 export default {
   computed: {},
   methods: {
+    triggerEventClick: function (eventObject, eventRef) {
+      // console.debug('triggerEventClick called')
+      // console.debug('eventObject = ', eventObject)
+      // console.debug('eventRef = ', eventRef)
+      Events.$emit(
+        'click-event-' + eventRef,
+        eventObject
+      )
+    },
+    handleEventDetailEvent: function (params, thisRef) {
+      if (thisRef === undefined) {
+        thisRef = 'defaultEventDetail'
+      }
+      // console.debug('handleEventDetailEvent called', params)
+      this.eventDetailEventObject = params
+      // console.debug(this.$refs.defaultEventDetail)
+      this.$refs[thisRef].__open()
+    },
     fullMoveToDay: function (dateObject) {
       if (this.fullComponentRef) {
         Events.$emit(
@@ -20,21 +38,23 @@ export default {
         )
       }
     },
+    getEventColor: function (cssObject, eventObject, colorName) {
+      if (dashHas(eventObject, colorName)) {
+        return eventObject[colorName]
+      }
+      else if (dashHas(this, colorName)) {
+        return this[colorName]
+      }
+      else if (colorName === 'textColor') {
+        return 'white'
+      }
+      else {
+        return 'primary'
+      }
+    },
     addCssColorClasses: function (cssObject, eventObject) {
-      // background color
-      if (eventObject.color) {
-        cssObject['bg-' + eventObject.color] = eventObject.color
-      }
-      else {
-        cssObject['bg-' + this.color] = true
-      }
-      // text color
-      if (eventObject.textColor) {
-        cssObject['text-' + eventObject.textColor] = true
-      }
-      else {
-        cssObject['text-' + this.textColor] = true
-      }
+      cssObject['bg-' + this.getEventColor(cssObject, eventObject, 'color')] = true
+      cssObject['text-' + this.getEventColor(cssObject, eventObject, 'textColor')] = true
       return cssObject
     },
     formatDate: function (dateObject, formatString) {

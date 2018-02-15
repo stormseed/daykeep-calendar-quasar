@@ -15,6 +15,7 @@
             <calendar-event
                 v-if="!eventObject.start.isAllDay"
                 :event-object="eventObject"
+                :event-ref="eventRef"
             />
         </div>
 
@@ -47,7 +48,8 @@
       dayCellHeightUnit: {
         type: String,
         default: 'rem'
-      }
+      },
+      eventRef: String
     },
     components: {
       CalendarEvent
@@ -55,7 +57,8 @@
     mixins: [CalendarMixin],
     data () {
       return {
-        workingDate: new Date()
+        workingDate: new Date(),
+        eventDetailEventObject: {}
       }
     },
     watch: {
