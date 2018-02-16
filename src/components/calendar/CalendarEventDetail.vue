@@ -41,9 +41,77 @@
                     </q-item-main>
                 </q-item>
 
-                <!-- text description -->
+                <!-- location -->
                 <q-item
-                    v-if="eventObject.description && eventObject.description.length > 0"
+                    v-if="textExists('location')"
+                >
+                    <q-item-side>
+                        <q-item-tile icon="location_on" />
+                    </q-item-side>
+                    <q-item-main class="ced-list-title">
+                        {{ eventObject.location }}
+                    </q-item-main>
+                </q-item>
+
+                <!-- resources -->
+                <q-item
+                    v-if="countResources > 0"
+                >
+                    <q-item-side>
+                        <q-item-tile icon="business" />
+                    </q-item-side>
+                    <q-item-main>
+                        <q-item
+                            dense
+                            v-for="thisAttendee in eventObject.attendees"
+                            v-if="thisAttendee.resource"
+                            class="ced-nested-item"
+                        >
+                            {{ thisAttendee.displayName }}
+                        </q-item>
+                    </q-item-main>
+                </q-item>
+
+                <!-- attendees -->
+                <q-item
+                    multiline
+                    v-if="countAttendees > 0"
+                >
+                    <q-item-side>
+                        <q-item-tile icon="people" />
+                    </q-item-side>
+                    <q-item-main class="ced-list-title">
+                        {{ countAttendees }} guest<template v-if="countAttendees > 1">s</template>
+                        <!-- guest list -->
+                        <q-item
+                            dense
+                            v-for="thisAttendee in eventObject.attendees"
+                            v-if="!thisAttendee.resource"
+                            class="ced-nested-item"
+                        >
+                            <q-item-side
+                                inverted
+                                icon="person"
+                                color="secondary"
+                                text-color="secondary"
+                                textColor="secondary"
+                            />
+                            <q-item-main class="ced-list-title">
+                                <template v-if="thisAttendee.displayName && thisAttendee.displayName.length > 0">
+                                    {{ thisAttendee.displayName }}
+                                </template>
+                                <template v-else>
+                                    {{ thisAttendee.email }}
+                                </template>
+                            </q-item-main>
+                        </q-item>
+                    </q-item-main>
+                </q-item>
+
+                <!-- description -->
+                <q-item
+                    multiline
+                    v-if="textExists('description')"
                 >
                     <q-item-side>
                         <q-item-tile icon="format_align_left" />
@@ -61,6 +129,7 @@
 </template>
 
 <script>
+  import dashHas from 'lodash.has'
   import {
     date,
     QList,
@@ -98,13 +167,30 @@
       }
     },
     computed: {
-      // getToolbarColor: function () {
-      //   return this.getEventColor(
-      //     {},
-      //     this.eventObject,
-      //     'textColor'
-      //   )
-      // },
+      countAttendees: function () {
+        if (!dashHas(this.eventObject, 'attendees')) {
+          return 0
+        }
+        let count = this.eventObject.attendees.length
+        for (let thisAttendee of this.eventObject.attendees) {
+          if (thisAttendee.resource) {
+            count--
+          }
+        }
+        return count
+      },
+      countResources: function () {
+        if (!dashHas(this.eventObject, 'attendees')) {
+          return 0
+        }
+        let count = 0
+        for (let thisAttendee of this.eventObject.attendees) {
+          if (thisAttendee.resource) {
+            count++
+          }
+        }
+        return count
+      },
       getTopColorClasses: function () {
         return this.addCssColorClasses({
           'ced-top': true
@@ -128,6 +214,12 @@
       },
     },
     methods: {
+      textExists: function (fieldLocation) {
+        return (
+          dashHas(this.eventObject, fieldLocation) &&
+          this.eventObject[fieldLocation].length > 0
+        )
+      },
       formatDateTime: function (dateObject, format) {
         return date.formatDate(dateObject, format)
       },
@@ -162,4 +254,6 @@
                 margin-left $forcedLeftMargin
         .ced-content
             font-size 1em
+        .ced-nested-item
+            padding-left 0
 </style>

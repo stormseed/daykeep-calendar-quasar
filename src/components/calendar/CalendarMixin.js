@@ -24,9 +24,7 @@ export default {
       if (thisRef === undefined) {
         thisRef = 'defaultEventDetail'
       }
-      // console.debug('handleEventDetailEvent called', params)
       this.eventDetailEventObject = params
-      // console.debug(this.$refs.defaultEventDetail)
       this.$refs[thisRef].__open()
     },
     fullMoveToDay: function (dateObject) {

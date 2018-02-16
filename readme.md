@@ -44,18 +44,32 @@ Events should be passed in as an array of objects. Each object should have the f
 
 ```js
 {
-	id: 1,
-	summary: 'My event title',
-	description: 'Some extra info goes here',
-	start: {
-		dateTime: '2018-01-16 14:00:00',
-		isAllDay: false
-	},
-	end: {
-		dateTime: '2018-01-16 16:30:00',
-		isAllDay: false
+  id: 1,
+  summary: 'Test event',
+  description: 'Some extra info goes here',
+  location: 'Office of the Divine Randomness, 1232 Main St., Denver, CO',
+  start: {
+	dateTime: '2018-02-16 14:00:00',
+	isAllDay: false,
+	timeZone: 'America/New_York'
+  },
+  end: {
+	dateTime: '2018-02-16 16:30:00',
+	isAllDay: false,
+	timeZone: 'American/New_York'
+  },
+  color: 'positive',
+  attendees: [
+	{
+		id: 5,
+		email: 'somebody@somewhere.com',
+		displayName: 'John Q. Public',
+		organizer: false,
+		self: false,
+		resource: false
 	}
-},
+  ]
+}
 ```
 
 Each object needs to have a unique ID. The date time should be in a string format that [Moment.js](https://momentjs.com/docs/#/parsing/) can parse. 
