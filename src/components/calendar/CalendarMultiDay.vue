@@ -73,6 +73,7 @@
 
 <script>
   import CalendarMixin from './CalendarMixin'
+  import CalendarEventMixin from './CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarDayColumn from './CalendarDayColumn'
   import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
@@ -151,7 +152,7 @@
       QTooltip,
       QScrollArea
     },
-    mixins: [CalendarMixin],
+    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {
         workingDate: new Date(),

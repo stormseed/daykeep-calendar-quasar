@@ -96,6 +96,7 @@
 
 <script>
   import CalendarMixin from './CalendarMixin'
+  import CalendarEventMixin from './CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarMonth from './CalendarMonth'
   import CalendarMultiDay from './CalendarMultiDay'
@@ -148,7 +149,7 @@
       QTabPane,
       QScrollArea
     },
-    mixins: [CalendarMixin],
+    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {
         dayCellHeight: 5,

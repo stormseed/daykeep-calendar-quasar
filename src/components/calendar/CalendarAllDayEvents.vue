@@ -23,6 +23,7 @@
 
 <script>
   import CalendarMixin from './CalendarMixin'
+  import CalendarEventMixin from './CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
   import { date } from 'quasar'
   export default {
@@ -45,7 +46,7 @@
     components: {
       CalendarEvent
     },
-    mixins: [CalendarMixin],
+    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {
         dayCellHeight: 5,

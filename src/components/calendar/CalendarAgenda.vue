@@ -73,6 +73,7 @@
 
 <script>
   import CalendarMixin from './CalendarMixin'
+  import CalendarEventMixin from './CalendarEventMixin'
   import CalendarAgendaEvent from './CalendarAgendaEvent'
   import CalendarEventDetail from './CalendarEventDetail'
   import {
@@ -126,7 +127,7 @@
       QInfiniteScroll,
       QSpinnerDots
     },
-    mixins: [CalendarMixin],
+    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {
         workingDate: new Date(),

@@ -64,6 +64,7 @@
                         <q-item
                             dense
                             v-for="thisAttendee in eventObject.attendees"
+                            :key="thisAttendee.id"
                             v-if="thisAttendee.resource"
                             class="ced-nested-item"
                         >
@@ -86,6 +87,7 @@
                         <q-item
                             dense
                             v-for="thisAttendee in eventObject.attendees"
+                            :key="thisAttendee.id"
                             v-if="!thisAttendee.resource"
                             class="ced-nested-item"
                         >
@@ -224,7 +226,6 @@
         return date.formatDate(dateObject, format)
       },
       __open: function () {
-        console.debug('calendarEventDetail.__open() called')
         this.modalIsOpen = true
       },
       __close: function () {

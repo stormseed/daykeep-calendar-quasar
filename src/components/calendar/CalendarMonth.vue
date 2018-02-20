@@ -56,7 +56,6 @@
                         {{ thisDay.dateObject.getDate() }}
                     </div>
                     <div class="calendar-day-content">
-
                         <div
                             v-if="hasAnyEvents(thisDay.dateObject)"
                             v-for="thisEvent in dateGetEvents(thisDay.dateObject)"
@@ -83,6 +82,7 @@
 
 <script>
   import CalendarMixin from './CalendarMixin'
+  import CalendarEventMixin from './CalendarEventMixin'
   import {
     date,
     Events,
@@ -114,7 +114,7 @@
       QTabPane,
       QScrollArea
     },
-    mixins: [CalendarMixin],
+    mixins: [CalendarMixin, CalendarEventMixin],
     props: {
       startDate: {
         type: Date,
@@ -205,7 +205,6 @@
         )
       },
       handleNavMove: function (params) {
-        console.debug('calendarMonth called handleNavMove', params.unitType, params.amount)
         this.moveTimePeriod(params)
         this.$emit(
           this.eventRef + ':navMovePeriod',
