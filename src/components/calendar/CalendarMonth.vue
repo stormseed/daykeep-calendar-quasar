@@ -31,6 +31,7 @@
                     :class="{
                         'calendar-day': true,
                         'calendar-cell': true,
+                        'calendar-day-weekend': isWeekendDay(thisDay.dateObject),
                         'calendar-day-current': isCurrentDate(thisDay.dateObject)
                         }"
                     v-for="thisDay in thisWeek"
@@ -289,5 +290,7 @@
                     padding-left .25em
             .calendar-day-current
                 background-color $currentDayBackgroundColor
+            .calendar-day-weekend
+                background-color $weekendDayBackgroundColor
 
 </style>

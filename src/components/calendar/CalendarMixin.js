@@ -139,9 +139,13 @@ export default {
     createThisDate: function (dateNum) {
       return this.parseDateParams(dateNum)
     },
-      isCurrentDate: function (thisDateObject) {
+    isCurrentDate: function (thisDateObject) {
       let now = new Date()
       return date.isSameDate(now, thisDateObject, 'day')
+    },
+    isWeekendDay: function (thisDateObject) {
+      const dayName = date.formatDate(thisDateObject, 'ddd')
+      return (dayName === 'Sun' || dayName === 'Sat')
     },
     mountSetDate: function () {
       this.workingDate = this.startDate

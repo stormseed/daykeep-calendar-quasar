@@ -69,6 +69,7 @@
         let returnVal = {
           'calendar-day-column-content': true,
           'relative-position': true,
+          'calendar-day-column-weekend': this.isWeekendDay(this.workingDate),
           'calendar-day-column-current': this.isCurrentDate(this.workingDate)
         }
         returnVal[this.columnCssClass] = true
@@ -150,6 +151,8 @@
             position relative
         .calendar-day-column-current
             background-color $currentDayBackgroundColor
+        .calendar-day-column-weekend
+            background-color $weekendDayBackgroundColor
         .calendar-day-time
             padding-right .5em
             border-right $borderOuter
