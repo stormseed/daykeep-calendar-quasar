@@ -5,11 +5,9 @@
             <div class="row justify-end items-start ced-toolbar">
                 <q-btn
                     flat
-                    label="Close"
+                    icon-right="close"
                     @click="__close()"
-                >
-                    <q-icon name="close"></q-icon>
-                </q-btn>
+                />
             </div>
             <div class="ced-top-title" v-if="eventObject.summary">
                 {{ eventObject.summary }}
@@ -78,35 +76,40 @@
                     multiline
                     v-if="countAttendees > 0"
                 >
-                    <q-item-side>
-                        <q-item-tile icon="people" />
+                    <q-item-side icon="people">
+                        <!--<q-item-tile icon="people" />-->
                     </q-item-side>
                     <q-item-main class="ced-list-title">
-                        {{ countAttendees }} guest<template v-if="countAttendees > 1">s</template>
+
+                        <q-item-tile>
+                            {{ countAttendees }} guest<template v-if="countAttendees > 1">s</template>
+                        </q-item-tile>
+
                         <!-- guest list -->
-                        <q-item
-                            dense
-                            v-for="thisAttendee in eventObject.attendees"
-                            :key="thisAttendee.id"
-                            v-if="!thisAttendee.resource"
-                            class="ced-nested-item"
-                        >
-                            <q-item-side
-                                inverted
-                                icon="person"
-                                color="secondary"
-                                text-color="secondary"
-                                textColor="secondary"
-                            />
-                            <q-item-main class="ced-list-title">
-                                <template v-if="thisAttendee.displayName && thisAttendee.displayName.length > 0">
-                                    {{ thisAttendee.displayName }}
-                                </template>
-                                <template v-else>
-                                    {{ thisAttendee.email }}
-                                </template>
-                            </q-item-main>
-                        </q-item>
+                        <q-item-tile>
+                            <q-item
+                                dense
+                                v-for="thisAttendee in eventObject.attendees"
+                                :key="thisAttendee.id"
+                                v-if="!thisAttendee.resource"
+                                class="ced-nested-item"
+                            >
+                                <q-item-side
+                                    inverted
+                                    icon="person"
+                                    class="ced-small-inverted-icon"
+                                />
+                                <q-item-main class="ced-list-title">
+                                    <template v-if="thisAttendee.displayName && thisAttendee.displayName.length > 0">
+                                        {{ thisAttendee.displayName }}
+                                    </template>
+                                    <template v-else>
+                                        {{ thisAttendee.email }}
+                                    </template>
+                                </q-item-main>
+                            </q-item>
+                        </q-item-tile>
+
                     </q-item-main>
                 </q-item>
 
@@ -237,6 +240,8 @@
 </script>
 
 <style lang="stylus">
+    @import 'calendar.vars.styl'
+
     $topSidePadding = 16px
     $listSideItemWidth = 38px
     $listSideItemSpace = 10px
@@ -257,4 +262,11 @@
             font-size 1em
         .ced-nested-item
             padding-left 0
+        .ced-small-inverted-icon
+            font-size 20px
+            padding 2px
+            border-radius 50%
+            min-width 24px
+            .q-item-icon-inverted
+                background lighten($light, 25%)
 </style>

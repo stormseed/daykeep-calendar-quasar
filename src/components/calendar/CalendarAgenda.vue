@@ -77,7 +77,6 @@
   import CalendarAgendaEvent from './CalendarAgendaEvent'
   import CalendarEventDetail from './CalendarEventDetail'
   import {
-    Events,
     date,
     QBtn,
     QTooltip,
@@ -182,7 +181,7 @@
       this.localNumDays = this.numDays
       this.doUpdate()
       this.handlePassedInEvents()
-      Events.$on(
+      this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
       )

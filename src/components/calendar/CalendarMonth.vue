@@ -86,7 +86,6 @@
   import CalendarEventMixin from './CalendarEventMixin'
   import {
     date,
-    Events,
     QBtn,
     QTooltip,
     QTabs,
@@ -225,11 +224,11 @@
     mounted () {
       this.doUpdate()
       this.handlePassedInEvents()
-      Events.$on(
+      this.$root.$on(
         this.eventRef + ':navMovePeriod',
         this.handleNavMove
       )
-      Events.$on(
+      this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
       )

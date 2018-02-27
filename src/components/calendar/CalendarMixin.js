@@ -1,13 +1,12 @@
 import dashHas from 'lodash.has'
 import {
-  date,
-  Events
+  date
 } from 'quasar'
 export default {
   computed: {},
   methods: {
     triggerEventClick: function (eventObject, eventRef) {
-      Events.$emit(
+      this.$root.$emit(
         'click-event-' + eventRef,
         eventObject
       )
@@ -23,7 +22,7 @@ export default {
     },
     fullMoveToDay: function (dateObject) {
       if (this.fullComponentRef) {
-        Events.$emit(
+        this.$root.$emit(
           this.fullComponentRef + ':moveToSingleDay', {
             dateObject: dateObject
           }

@@ -1,7 +1,6 @@
 import dashHas from 'lodash.has'
 import {
-  date,
-  Events
+  date
 } from 'quasar'
 const defaultParsed = {
   byAllDayStartDate: {},

@@ -107,7 +107,6 @@
   import CalendarHeaderNav from './CalendarHeaderNav'
   import {
     date,
-    Events,
     QBtn,
     QTooltip,
     QTabs,
@@ -167,11 +166,11 @@
     computed: {},
     methods: {
       setupEventsHandling: function () {
-        Events.$on(
+        this.$root.$on(
           this.eventRef + ':navMovePeriod',
           this.calPackageMoveTimePeriod
         )
-        Events.$on(
+        this.$root.$on(
           this.eventRef + ':moveToSingleDay',
           this.switchToSingleDay
         )

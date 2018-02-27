@@ -26,8 +26,7 @@
 
 <script>
   import {
-    QBtn,
-    Events
+    QBtn
   } from 'quasar'
   export default {
     name: 'CalendarHeaderNav',
@@ -55,7 +54,7 @@
     computed: {},
     methods: {
       doMoveTimePeriod (timePeriodUnit, timePeriodAmount) {
-        Events.$emit(
+        this.$root.$emit(
           this.moveTimePeriodEmit,
           {
             unitType: timePeriodUnit,

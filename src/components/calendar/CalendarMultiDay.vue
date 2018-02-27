@@ -83,7 +83,6 @@
   import CalendarEventDetail from './CalendarEventDetail'
   import {
     date,
-    Events,
     QBtn,
     QTooltip,
     QScrollArea
@@ -229,11 +228,11 @@
     mounted () {
       this.doUpdate()
       this.handlePassedInEvents()
-      Events.$on(
+      this.$root.$on(
         this.eventRef + ':navMovePeriod',
         this.handleNavMove
       )
-      Events.$on(
+      this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
       )
