@@ -32,15 +32,14 @@ Or you can pass in parameters to customize
 
 ```html
 <calendar-month
-	:start-year="2018"
-	:start-month="1"
+	:start-date="Date('2019-01-01')"
 	:events="someEventObject"
 />
 ```
 
 ## Event data format
 
-Events should be passed in as an array of objects. Each object should have the following information:
+The event data format is meant to be a subset of the [Google Calendar v3 API](https://developers.google.com/google-apps/calendar/v3/reference/events) (*this is still a work in progress*). Events should be passed in as an array of objects. Each object can have elements like in this example:
 
 ```js
 {
@@ -49,12 +48,12 @@ Events should be passed in as an array of objects. Each object should have the f
   description: 'Some extra info goes here',
   location: 'Office of the Divine Randomness, 1232 Main St., Denver, CO',
   start: {
-	dateTime: '2018-02-16 14:00:00',
+	dateTime: '2018-02-16T14:00:00Z',
 	isAllDay: false,
 	timeZone: 'America/New_York'
   },
   end: {
-	dateTime: '2018-02-16 16:30:00',
+	dateTime: '2018-02-16T16:30:00Z',
 	isAllDay: false,
 	timeZone: 'American/New_York'
   },
@@ -72,7 +71,7 @@ Events should be passed in as an array of objects. Each object should have the f
 }
 ```
 
-Each object needs to have a unique ID. The date time should be in a string format that [Moment.js](https://momentjs.com/docs/#/parsing/) can parse. 
+Each object needs to have a unique ID. The date time should be in [RFC3339](https://tools.ietf.org/html/rfc3339) format. 
 
 ## Individual Vue components
 
@@ -80,10 +79,7 @@ The usuable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `C
 
 | Vue Property | Type | Description |
 | --- | --- | --- |
-| `start-year` | Number | An integer representing the initial year the calendar should start on. |
-| `start-month` | Number | An integer representing the initial month the calendar should start on. Unlike moment.js, a `1` means January and `12` means December. |
-| `start-day` | Number | An integer representing the initial day of the month should start on. |
-
+| `start-date` | Date | A JavaScript Date object that passes in a starting display date for the calendar to display. |
 
 In addition, each individual components have the following properties:
 
@@ -100,9 +96,3 @@ In addition, each individual components have the following properties:
 | Vue Property | Type | Description |
 | --- | --- | --- |
 | `num-days` | Number | The number of days to initially display and also the number of additional days to load up when the user scrolls to the bottom of the agenda. |
-
-## Roadmap
-
-- [ ] Pass in visual properties for individual events
-- [ ] Allow a custom function or component to display events
-- [ ] Use existing Quasar components to select the dates currently viewable on the calendar

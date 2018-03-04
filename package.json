@@ -1,6 +1,6 @@
 {
     "name": "quasar-calendar",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "A full display calendar for the Quasar vue.js framework",
     "keywords": [
         "vue",
@@ -38,9 +38,9 @@
         "eslint-plugin-promise": "3.4.0",
         "eslint-plugin-standard": "3.0.1",
         "eslint-plugin-vue": "4.0.0",
-        "quasar-cli": "^0.15.2"
+        "quasar-cli": "^0.15.7"
     },
     "peerDependencies": {
-        "quasar-framework": "^0.15.3"
+        "quasar-framework": "^0.15.6"
     }
 }

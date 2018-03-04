@@ -66,8 +66,15 @@ export default {
       this.clearParsed()
       for (let thisEvent of this.eventArray) {
         this.parsed.byId[thisEvent.id] = thisEvent
-        thisEvent.start['dateObject'] = new Date(thisEvent.start.dateTime)
-        thisEvent.end['dateObject'] = new Date(thisEvent.end.dateTime)
+        if (dashHas(thisEvent.start, 'date')) {
+          thisEvent.start['dateObject'] = new Date(thisEvent.start.date)
+          thisEvent.end['dateObject'] = new Date(thisEvent.end.date)
+          thisEvent.start['isAllDay'] = true
+        }
+        else {
+          thisEvent.start['dateObject'] = new Date(thisEvent.start.dateTime)
+          thisEvent.end['dateObject'] = new Date(thisEvent.end.dateTime)
+        }
         let thisStartDate = this.formatToSqlDate(thisEvent.start.dateObject)
 
         // get all-day events
