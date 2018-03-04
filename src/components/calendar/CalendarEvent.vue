@@ -2,7 +2,7 @@
     <div
         :class="getEventClass"
         :style="getEventStyle"
-        @mouseup="handleClick"
+        @click="handleClick"
     >
         <span v-if="!isAllDayEvent() && showTime" class="calendar-event-start-time">
             {{ formatTime(eventObject.start.dateObject) }}
