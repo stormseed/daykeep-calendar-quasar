@@ -34,7 +34,7 @@
                         'calendar-day-weekend': isWeekendDay(thisDay.dateObject),
                         'calendar-day-current': isCurrentDate(thisDay.dateObject)
                         }"
-                    v-for="thisDay in thisWeek"
+                    v-for="(thisDay, weekDayIndex) in thisWeek"
                 >
                     <div
                         v-if="isCurrentDate(thisDay.dateObject)"
@@ -57,17 +57,21 @@
                         {{ thisDay.dateObject.getDate() }}
                     </div>
                     <div class="calendar-day-content">
-                        <div
-                            v-if="hasAnyEvents(thisDay.dateObject)"
-                            v-for="thisEvent in dateGetEvents(thisDay.dateObject)"
-                        >
-                            <calendar-event
-                                :event-object="thisEvent"
-                                :month-style="true"
-                                :event-ref="eventRef"
-                            />
-                        </div>
-                        <!--Content here-->
+                        <template v-if="hasAnyEvents(thisDay.dateObject)">
+                            <div
+                                v-for="thisEvent in monthGetDateEvents(thisDay.dateObject)"
+                            >
+                                <calendar-event
+                                    :event-object="thisEvent"
+                                    :month-style="true"
+                                    :event-ref="eventRef"
+                                    :has-previous-day="thisEvent.hasPrev"
+                                    :has-next-day="thisEvent.hasNext"
+                                    :first-day-of-week="(weekDayIndex === 0)"
+                                    :last-day-of-week="(weekDayIndex === 6)"
+                                />
+                            </div>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -150,6 +154,11 @@
       }
     },
     methods: {
+      monthGetDateEvents: function (dateObject) {
+        let returnVal = this.dateGetEvents(dateObject)
+        // console.debug('monthGetDateEvents called with %s, returning %O', this.formatToSqlDate(dateObject), this.stripObject(returnVal))
+        return returnVal
+      },
       handleStartChange: function (val, oldVal) {
         debounce(this.doUpdate, 300)
       },
@@ -264,7 +273,8 @@
             .calendar-cell
                 width $cellWidth
                 max-width $cellWidth
-                padding 2px
+                /*padding 2px*/
+                padding 0
             .calendar-day-labels
                 .calendar-day-label
                     font-size 1.1em

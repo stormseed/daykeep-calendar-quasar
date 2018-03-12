@@ -99,10 +99,19 @@
           'z-index': 10,
           width: '100%'
         }
-        let positions = this.calculateDayEventPosition(
-          thisEvent.start.dateObject,
-          thisEvent.end.dateObject
-        )
+        let positions = {}
+        if (thisEvent.start.dateObject && thisEvent.end.dateObject) {
+          positions = this.calculateDayEventPosition(
+            thisEvent.start.dateObject,
+            thisEvent.end.dateObject
+          )
+        }
+        else {
+          positions = {
+            top: 0,
+            height: 0
+          }
+        }
         style['top'] = positions.top
         style['height'] = positions.height
         if (thisEvent.numberOfOverlaps > 0) {

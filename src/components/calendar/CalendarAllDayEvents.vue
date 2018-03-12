@@ -15,6 +15,9 @@
                     :event-object="thisEvent"
                     :show-time="false"
                     :event-ref="eventRef"
+                    :has-previous-day="thisEvent.hasPrev"
+                    :has-next-day="thisEvent.hasNext"
+                    :force-all-day="true"
                 />
             </template>
         </div>
