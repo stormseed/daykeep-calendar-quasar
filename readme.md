@@ -19,7 +19,7 @@ You can see a demo of the calendar components with event data at:
 
 ```shell
 npm install quasar-calendar
-```w
+```
 
 Add Calendar to you .vue page similar to a a Quasar component
 
