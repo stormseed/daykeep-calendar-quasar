@@ -42,33 +42,44 @@ Or you can pass in parameters to customize
 The event data format is meant to be a subset of the [Google Calendar v3 API](https://developers.google.com/google-apps/calendar/v3/reference/events) (*this is still a work in progress*). Events should be passed in as an array of objects. Each object can have elements like in this example:
 
 ```js
-{
-  id: 1,
-  summary: 'Test event',
-  description: 'Some extra info goes here',
-  location: 'Office of the Divine Randomness, 1232 Main St., Denver, CO',
-  start: {
-	dateTime: '2018-02-16T14:00:00Z',
-	isAllDay: false,
-	timeZone: 'America/New_York'
+[
+  {
+    id: 1,
+    summary: 'Test event',
+    description: 'Some extra info goes here',
+    location: 'Office of the Divine Randomness, 1232 Main St., Denver, CO',
+    start: {
+      dateTime: '2018-02-16T14:00:00Z',
+      timeZone: 'America/New_York'
+    },
+    end: {
+      dateTime: '2018-02-16T16:30:00Z',
+      timeZone: 'American/New_York'
+    },
+    color: 'positive',
+    attendees: [
+      {
+        id: 5,
+        email: 'somebody@somewhere.com',
+        displayName: 'John Q. Public',
+        organizer: false,
+        self: false,
+        resource: false
+      }
+    ]
   },
-  end: {
-	dateTime: '2018-02-16T16:30:00Z',
-	isAllDay: false,
-	timeZone: 'American/New_York'
-  },
-  color: 'positive',
-  attendees: [
-	{
-		id: 5,
-		email: 'somebody@somewhere.com',
-		displayName: 'John Q. Public',
-		organizer: false,
-		self: false,
-		resource: false
-	}
-  ]
-}
+  {
+    id: 2,
+    summary: 'Test all-day event',
+    description: 'Some extra info goes here',
+    start: {
+      date: '2018-02-16'
+    },
+    end: {
+      date: '2018-02-19'
+    }
+  }
+]
 ```
 
 Each object needs to have a unique ID. The date time should be in [RFC3339](https://tools.ietf.org/html/rfc3339) format. 
