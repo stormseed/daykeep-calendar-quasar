@@ -1,11 +1,25 @@
 # Quasar Calendar
-An event display calendar for the Quasar framework
+An event display calendar for the Quasar framework. This is still a work in progress project but we're putting in functionality and squashing bugs on a consistent basis.
+
+- [Demo](#demo)
+- [Setup](#setup)
+- [Event data format](#event-data-format)
+- [Individual Vue components](#individual-vue-components)
+    - [CalendarMultiDay](#calendarmultiday)
+    - [CalendarAgenda](#calendaragenda)
+- [Roadmap](#roadmap)
+
+## Demo
+
+You can see a demo of the calendar components with event data at:
+
+[Quasar calendar demo](https://stormseed.github.io/quasar-calendar-demo)
 
 ## Setup
 
 ```shell
 npm install quasar-calendar
-```
+```w
 
 Add Calendar to you .vue page similar to a a Quasar component
 
@@ -107,3 +121,12 @@ In addition, each individual components have the following properties:
 | Vue Property | Type | Description |
 | --- | --- | --- |
 | `num-days` | Number | The number of days to initially display and also the number of additional days to load up when the user scrolls to the bottom of the agenda. |
+
+## Roadmap
+
+Our near-term roadmap is as follows:
+
+| Version | Description |
+| --- | --- |
+| v0.2.x | Full internationalization. Allow for customization of language, formats, etc. |
+| v0.3.x | Have some basic editing abilities such as changing the data for an event and drag and drop editing. |
