@@ -1,13 +1,7 @@
 # Quasar Calendar
 An event display calendar for the Quasar framework. This is still a work in progress project but we're putting in functionality and squashing bugs on a consistent basis.
 
-- [Demo](#demo)
-- [Setup](#setup)
-- [Event data format](#event-data-format)
-- [Individual Vue components](#individual-vue-components)
-    - [CalendarMultiDay](#calendarmultiday)
-    - [CalendarAgenda](#calendaragenda)
-- [Roadmap](#roadmap)
+![screenshot](https://stormseed.github.io/quasar-calendar-demo/statics/quasar_calendar_snap.png)
 
 ## Demo
 
