@@ -4,7 +4,6 @@
         :style="getEventStyle()"
         @click="handleClick"
     >
-        <!--INNER-test prev - {{ eventObject.hasPrev }}, next - {{ eventObject.hasNext }}-->
         <template v-if="!eventHasPreviousDay() || (firstDayOfWeek && eventHasPreviousDay())">
           <span v-if="!isAllDayEvent() && showTime" class="calendar-event-start-time">
             {{ formatTime(eventObject.start.dateObject) }}
@@ -28,9 +27,10 @@
     QBtn,
     QTooltip
   } from 'quasar'
-  import CalendarMixin from './CalendarMixin'
-  import CalendarEventMixin from './CalendarEventMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  import CalendarEventMixin from './mixins/CalendarEventMixin'
   import dashHas from 'lodash.has'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarEvent',
     props: {
@@ -59,7 +59,11 @@
       hasPreviousDay: Boolean,
       hasNextDay: Boolean,
       firstDayOfWeek: Boolean,
-      lastDayOfWeek: Boolean
+      lastDayOfWeek: Boolean,
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      }
     },
     components: {
       QBtn,
@@ -119,15 +123,21 @@
         return (
           this.monthStyle &&
           this.eventHasNextDay() &&
-          this.lastDayOfWeek
+          (this.lastDayOfWeek || this.isLastDayOfMonth(this.eventObject.start.dateObject))
         )
       },
       eventContinuesFromLastWeek: function () {
         return (
           this.monthStyle &&
           this.eventHasPreviousDay() &&
-          this.firstDayOfWeek
+          (this.firstDayOfWeek || this.isFirstDayOfMonth(this.eventObject.start.dateObject))
         )
+      },
+      isLastDayOfMonth: function (dateObject) {
+        return dateObject.toISODate() === dateObject.endOf('month').toISODate()
+      },
+      isFirstDayOfMonth: function (dateObject) {
+        return dateObject.toISODate() === dateObject.startOf('month').toISODate()
       },
       eventHasNextDay: function () {
         if (this.hasNextDay) {
@@ -142,12 +152,20 @@
         return false
       },
       formatTime: function (startTime) {
-        let returnString = ''
-        returnString += date.formatDate(startTime, 'h')
-        if (startTime.getMinutes() > 0) {
-          returnString += ':' + date.formatDate(startTime, 'mm')
+        // let returnString = ''
+        // returnString += date.formatDate(startTime, 'h')
+        // if (startTime.getMinutes() > 0) {
+        //   returnString += ':' + date.formatDate(startTime, 'mm')
+        // }
+        // returnString += date.formatDate(startTime, 'a').slice(0, 1)
+        // return returnString
+        let returnString = this.makeDT(startTime).toLocaleString(DateTime.TIME_SIMPLE)
+        // simplify if AM / PM present
+        if (returnString.includes('M')) {
+          returnString = returnString.replace(':00', '') // remove minutes if = ':00'
+            .replace(' AM', 'a')
+            .replace(' PM', 'p')
         }
-        returnString += date.formatDate(startTime, 'a').slice(0, 1)
         return returnString
       },
       isAllDayEvent: function () {

@@ -14,25 +14,27 @@
             }"
             @click="handleDayClick(thisDay)"
         >
-            {{ formatDate(thisDay, 'ddd') }}
+            {{ formatDate(thisDay, 'EEE') }}
+            <!--{{ thisDay.toFormat('ddd') }}-->
             <div
                 v-if="showDates"
                 class="calendar-day-label-date"
             >
-                {{ formatDate(thisDay, 'D') }}
+                {{ formatDate(thisDay, 'd') }}
             </div>
         </div>
     </div>
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
   import { date } from 'quasar'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarDayLabels',
     props: {
       startDate: {
-        type: Date,
+        type: [Object, Date],
         default: () => { return new Date() }
       },
       numberOfDays: {
@@ -47,7 +49,15 @@
         type: Boolean,
         default: false
       },
-      fullComponentRef: String
+      fullComponentRef: String,
+      sundayFirstDayOfWeek: {
+        type: Boolean,
+        default: false
+      },
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      }
     },
     components: {},
     mixins: [CalendarMixin],
@@ -55,7 +65,8 @@
       return {
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
-        workingDate: new Date(),
+        // workingDate: new Date(),
+        workingDate: DateTime.local(),
         weekDateArray: []
       }
     },
@@ -73,19 +84,24 @@
       },
       doUpdate: function () {
         this.mountSetDate()
-        this.buildWeekDateArray()
+        this.buildWeekDateArray(this.numberOfDays, this.sundayFirstDayOfWeek)
       },
       isCurrentDayLabel: function (thisDay, checkMonthOnly) {
-        let now = new Date()
+        // let now = new Date()
+        let now = DateTime.local()
+        thisDay = this.makeDT(thisDay)
         // console.debug('isCurrentDayLabel called', thisDayNum, date.getDayOfWeek(now))
         if (checkMonthOnly === true) {
           return (
-            date.getDayOfWeek(now) === date.getDayOfWeek(thisDay) &&
-            now.getMonth() === thisDay.getMonth()
+            // date.getDayOfWeek(now) === date.getDayOfWeek(thisDay) &&
+            now.weekday === thisDay.weekday &&
+            // now.getMonth() === thisDay.getMonth()
+            now.month === thisDay.month
           )
         }
         else {
-          return (date.isSameDate(now, thisDay, 'day'))
+          // return (date.isSameDate(now, thisDay, 'day'))
+          return now.hasSame(thisDay, 'day')
         }
       },
       handleDayClick: function (dateObject) {

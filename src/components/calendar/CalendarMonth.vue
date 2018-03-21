@@ -7,7 +7,7 @@
             :time-period-amount="1"
             :move-time-period-emit="eventRef + ':navMovePeriod'"
         >
-            {{ formatDate(workingDate, 'MMMM') }} {{ formatDate(workingDate, 'YYYY') }}
+            {{ formatDate(workingDate, 'MMMM yyyy') }}
         </calendar-header-nav>
 
         <div class="calendar-content">
@@ -15,6 +15,8 @@
                 :number-of-days="7"
                 :start-date="workingDate"
                 :force-start-of-week="true"
+                :sunday-first-day-of-week="sundayFirstDayOfWeek"
+                :calendar-locale="calendarLocale"
             />
             <div
                 v-for="(thisWeek, index) in weekArray"
@@ -34,7 +36,7 @@
                         'calendar-day-weekend': isWeekendDay(thisDay.dateObject),
                         'calendar-day-current': isCurrentDate(thisDay.dateObject)
                         }"
-                    v-for="(thisDay, weekDayIndex) in thisWeek"
+                    v-for="(thisDay , weekDayIndex) in thisWeek"
                 >
                     <div
                         v-if="isCurrentDate(thisDay.dateObject)"
@@ -42,7 +44,7 @@
                         @click="handleDayClick(thisDay.dateObject)"
                     >
                         <quantity-bubble
-                            :quantity="thisDay.dateObject.getDate()"
+                            :quantity="thisDay.dateObject.day"
                             :offset="false"
                         />
                     </div>
@@ -54,7 +56,7 @@
                         }"
                         @click="handleDayClick(thisDay.dateObject)"
                     >
-                        {{ thisDay.dateObject.getDate() }}
+                        {{ thisDay.dateObject.day }}
                     </div>
                     <div class="calendar-day-content">
                         <template v-if="hasAnyEvents(thisDay.dateObject)">
@@ -80,14 +82,16 @@
         <calendar-event-detail
             ref="defaultEventDetail"
             :event-object="eventDetailEventObject"
+            :calendar-locale="calendarLocale"
+            :calendar-timezone="calendarTimezone"
         />
 
     </div>
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
-  import CalendarEventMixin from './CalendarEventMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  import CalendarEventMixin from './mixins/CalendarEventMixin'
   import {
     date,
     QBtn,
@@ -103,6 +107,7 @@
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarEventDetail from './CalendarEventDetail'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarMonth',
     components: {
@@ -121,7 +126,7 @@
     mixins: [CalendarMixin, CalendarEventMixin],
     props: {
       startDate: {
-        type: Date,
+        type: [Object, Date],
         default: () => { return new Date() }
       },
       eventArray: {
@@ -136,10 +141,22 @@
         type: String,
         default: 'cal-' + Math.random().toString(36).substring(2, 15)
       },
-      fullComponentRef: String
+      fullComponentRef: String,
+      sundayFirstDayOfWeek: {
+        type: Boolean,
+        default: false
+      },
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      },
+      calendarTimezone: {
+        type: String,
+        default: () => { return DateTime.local().zoneName }
+      }
     },
     data () {
-      return {
+      return  {
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
         workingDate: new Date(),
@@ -167,37 +184,50 @@
         this.generateCalendarCellArray()
       },
       getCalendarCellArray: function (monthNumber, yearNumber) {
-        let currentDay = date.buildDate({
-          year: yearNumber,
-          month: monthNumber + 1, // TODO: is this correct? This should be in the Quasar docs
-          date: 1
-        })
-        let currentWeekOfYear = date.getWeekOfYear(currentDay)
+        // let currentDay = date.buildDate({
+        //   year: yearNumber,
+        //   month: monthNumber + 1, // TODO: is this correct? This should be in the Quasar docs
+        //   date: 1
+        // })
+        let currentDay = this.makeDT(
+          DateTime.fromObject({
+            year: yearNumber,
+            month: monthNumber,
+            day: 1
+          })
+        )
+        // let currentWeekOfYear = date.getWeekOfYear(currentDay)
+        // let currentWeekOfYear = currentDay.weekNumber
+        let currentWeekOfYear = this.getWeekNumber(currentDay, this.sundayFirstDayOfWeek)
         let weekArray = []
         let currentWeekArray = []
         let thisDayObject = {}
         for (let thisDateOfMonth = 1; thisDateOfMonth <= 31; thisDateOfMonth++) {
-          currentDay = date.buildDate({
-            year: yearNumber,
-            month: monthNumber + 1,
-            date: thisDateOfMonth
-          })
+          currentDay = this.makeDT(
+            DateTime.fromObject({
+              year: yearNumber,
+              month: monthNumber,
+              day: thisDateOfMonth
+            })
+          )
           if (
-            currentDay.getFullYear() === yearNumber &&
-            currentDay.getMonth() === monthNumber
+            currentDay.year === yearNumber &&
+            currentDay.month === monthNumber
           ) {
-            if (date.getWeekOfYear(currentDay) !== currentWeekOfYear) {
+            if (
+              this.getWeekNumber(currentDay, this.sundayFirstDayOfWeek) !== currentWeekOfYear
+            ) {
               weekArray.push(currentWeekArray)
-              currentWeekOfYear = date.getWeekOfYear(currentDay)
+              currentWeekOfYear = this.getWeekNumber(currentDay, this.sundayFirstDayOfWeek)
               currentWeekArray = []
             }
             thisDayObject = {
               dateObject: currentDay,
-              year: currentDay.getFullYear(),
-              month: currentDay.getMonth(),
-              date: currentDay.getDate(),
-              dayName: date.formatDate(currentDay, 'dddd'),
-              dayNumber: date.getDayOfWeek(currentDay)
+              year: currentDay.year,
+              month: currentDay.month,
+              date: currentDay.day,
+              dayName: currentDay.toFormat('EEEE'),
+              dayNumber: currentDay.weekday
             }
             currentWeekArray.push(thisDayObject)
           }
@@ -209,8 +239,8 @@
       },
       generateCalendarCellArray: function () {
         this.weekArray = this.getCalendarCellArray(
-          this.workingDate.getMonth(),
-          this.workingDate.getFullYear()
+          this.makeDT(this.workingDate).month,
+          this.makeDT(this.workingDate).year
         )
       },
       handleNavMove: function (params) {

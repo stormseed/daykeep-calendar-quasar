@@ -28,13 +28,13 @@
                             v-if="eventObject.start && eventObject.start.dateObject"
                             class="ced-list-title"
                         >
-                            {{ formatDateTime(eventObject.start.dateObject, 'dddd, MMMM D')}}
+                            {{ formatDate(eventObject.start.dateObject, 'DATE_HUGE', true) }}
                         </div>
                         <div
                             v-if="eventObject.end && eventObject.end.dateObject && eventObject.start.isAllDay !== true"
                             class="ced-list-subtitle"
                         >
-                            {{ formatDateTime(eventObject.start.dateObject, 'h:mm a')}} - {{ formatDateTime(eventObject.end.dateObject, 'h:mm a')}}
+                          {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true) }} - {{ formatDate(eventObject.end.dateObject, 'TIME_SIMPLE', true) }}
                         </div>
                     </q-item-main>
                 </q-item>
@@ -146,13 +146,22 @@
     QBtn,
     QIcon
   } from 'quasar'
-  import CalendarMixin from './CalendarMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarEventDetail',
     props: {
       eventObject: {
         type: Object,
         default: this.blankCalendarEvent
+      },
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      },
+      calendarTimezone: {
+        type: String,
+        default: () => { return DateTime.local().zoneName }
       }
     },
     components: {

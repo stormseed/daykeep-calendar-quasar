@@ -11,13 +11,18 @@
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarTimeLabelColumn',
     props: {
       dayCellHeight: {
         type: String,
         default: '5rem'
+      },
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
       }
     },
     components: {},

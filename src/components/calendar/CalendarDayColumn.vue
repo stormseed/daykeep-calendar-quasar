@@ -16,6 +16,8 @@
                 v-if="!eventObject.start.isAllDay"
                 :event-object="eventObject"
                 :event-ref="eventRef"
+                :calendar-locale="calendarLocale"
+                :calendar-timezone="calendarTimezone"
             />
         </div>
 
@@ -24,13 +26,14 @@
 
 <script>
   import CalendarEvent from './CalendarEvent'
-  import CalendarMixin from './CalendarMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
   import { date } from 'quasar'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarDayColumn',
     props: {
       startDate: {
-        type: Date,
+        type: [Object, Date],
         default: () => { return new Date() }
       },
       dateEvents: {
@@ -49,7 +52,15 @@
         type: String,
         default: 'rem'
       },
-      eventRef: String
+      eventRef: String,
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      },
+      calendarTimezone: {
+        type: String,
+        default: () => { return DateTime.local().zoneName }
+      }
     },
     components: {
       CalendarEvent
