@@ -56,6 +56,7 @@
       },
       eventRef: String,
       forceAllDay: Boolean,
+      currentCalendarDay: Object,
       hasPreviousDay: Boolean,
       hasNextDay: Boolean,
       firstDayOfWeek: Boolean,
@@ -113,7 +114,6 @@
           },
           this.eventObject
         )
-        // console.debug('getEventClass called, summary = %s, eventObject = %O, returnVal = %O', this.eventObject.summary, this.stripObject(this.eventObject), returnVal)
         return returnVal
       },
       isEmptySlot: function () {
@@ -121,6 +121,7 @@
       },
       eventContinuesNextWeek: function () {
         return (
+          dashHas(this.eventObject, 'start.dateObject') &&
           this.monthStyle &&
           this.eventHasNextDay() &&
           (this.lastDayOfWeek || this.isLastDayOfMonth(this.eventObject.start.dateObject))
@@ -128,16 +129,23 @@
       },
       eventContinuesFromLastWeek: function () {
         return (
+          dashHas(this.eventObject, 'start.dateObject') &&
           this.monthStyle &&
           this.eventHasPreviousDay() &&
           (this.firstDayOfWeek || this.isFirstDayOfMonth(this.eventObject.start.dateObject))
         )
       },
       isLastDayOfMonth: function (dateObject) {
-        return dateObject.toISODate() === dateObject.endOf('month').toISODate()
+        if (typeof dateObject === 'undefined' || dateObject === null) {
+          return false
+        }
+        return this.makeDT(this.currentCalendarDay).toISODate() === this.makeDT(dateObject).endOf('month').toISODate()
       },
       isFirstDayOfMonth: function (dateObject) {
-        return dateObject.toISODate() === dateObject.startOf('month').toISODate()
+        if (typeof dateObject === 'undefined' || dateObject === null) {
+          return false
+        }
+        return this.makeDT(this.currentCalendarDay).toISODate() === this.makeDT(dateObject).startOf('month').toISODate()
       },
       eventHasNextDay: function () {
         if (this.hasNextDay) {
@@ -181,30 +189,46 @@
 </script>
 
 <style lang="stylus">
-    .calendar-event
-        /*width 100%*/
-        height 100%
-        padding 2px
-        text-overflow clip
-        border-radius .25em
-        margin 1px 0
-        font-size 0.8em
-        cursor pointer
-    .calendar-event-month
-        white-space nowrap
-        margin 1px 2px
-    .calendar-event-multi-allday
-        margin-right 1em
-    .calendar-event-has-next-day
-        border-top-right-radius 0
-        border-bottom-right-radius 0
-        margin-right 0
-    .calendar-event-has-previous-day
-        border-top-left-radius 0
-        border-bottom-left-radius 0
-        margin-left 0
-    .calendar-event-empty-slot
-        background-color transparent !important
-        cursor inherit
-        border-radius 0
+
+  $nextPrevEdgeVal = 5%
+
+  .calendar-event
+    /*width 100%*/
+    height 100%
+    padding 2px
+    text-overflow clip
+    border-radius .25em
+    margin 1px 0
+    font-size 0.8em
+    cursor pointer
+
+  .calendar-event-month
+    white-space nowrap
+    margin 1px 2px
+
+  .calendar-event-multi-allday
+    margin-right 1em
+
+  .calendar-event-has-next-day
+    border-top-right-radius 0
+    border-bottom-right-radius 0
+    margin-right 0
+
+  .calendar-event-has-previous-day
+    border-top-left-radius 0
+    border-bottom-left-radius 0
+    margin-left 0
+
+  .calendar-event-empty-slot
+    background-color transparent !important
+    cursor inherit
+    border-radius 0
+
+  .calendar-event-continues-next-week
+    padding-right $nextPrevEdgeVal
+    clip-path polygon(0% 0%, (100% - $nextPrevEdgeVal) 0%, 100% 50%, (100% - $nextPrevEdgeVal) 100%, 0% 100%)
+
+  .calendar-event-continues-from-last-week
+    padding-left $nextPrevEdgeVal
+    clip-path polygon($nextPrevEdgeVal 0, 100% 0, 100% 100%, $nextPrevEdgeVal 100%, 0% 50%)
 </style>

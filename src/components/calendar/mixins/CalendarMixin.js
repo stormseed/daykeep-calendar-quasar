@@ -1,5 +1,4 @@
 import dashHas from 'lodash.has'
-// import DateTime from 'luxon'
 import {
   date
 } from 'quasar'
@@ -9,22 +8,20 @@ export default {
   methods: {
 
     makeDT: function (dateObject, adjustTimezone) {
+      if (typeof dateObject === 'undefined') {
+        return null
+      }
       if (dateObject instanceof Date) {
-        // return DateTime.fromJSDate(dateObject)
         dateObject = DateTime.fromJSDate(dateObject)
       }
-      // else {
-      //   return dateObject
-      // }
-      // console.debug('makeDT, calendarLocale = %s, dateObject.locale = %s', this.calendarLocale, dateObject.locale)
-      if (this.calendarLocale && this.calendarLocale !== dateObject.locale) {
+      if (
+        this.calendarLocale &&
+        (!dashHas(dateObject, 'locale') || this.calendarLocale !== dateObject.locale)
+      ) {
         dateObject = dateObject.setLocale(this.calendarLocale)
       }
-      console.debug('makeDT, calendarTimezone = %s, dateObject.zoneName = %s', this.calendarTimezone, dateObject.zoneName)
       if (adjustTimezone && adjustTimezone !== dateObject.zoneName) {
-        console.debug('dateObject before = %s datetime = %s', dateObject.zoneName, dateObject.toISO())
         dateObject = dateObject.setZone(this.calendarTimezone)
-        console.debug('dateObject after = %s, datetime = %s', dateObject.zoneName, dateObject.toISO())
       }
       return dateObject
     },
@@ -80,28 +77,8 @@ export default {
         return this.makeDT(dateObject).toFormat(formatString)
       }
     },
-    // dateAdjustWeekdayOLD (thisDateObject, weekdayNum) {
-    //   let checkDate = new Date()
-    //   let adjustForward = true
-    //   if (weekdayNum < 0) {
-    //     adjustForward = false
-    //     weekdayNum = Math.abs(weekdayNum)
-    //   }
-    //   for (let counter = 0; counter <= 6; counter++) {
-    //     if (adjustForward) {
-    //       checkDate = date.addToDate(thisDateObject, { days: counter })
-    //     }
-    //     else {
-    //       checkDate = date.subtractFromDate(thisDateObject, { days: counter })
-    //     }
-    //     if (date.getDayOfWeek(checkDate) === weekdayNum) {
-    //       return checkDate
-    //     }
-    //   }
-    // },
     dateAdjustWeekday (thisDateObject, weekdayNum) {
       console.debug('dateAdjustWeekday called, weekdayNum = ', weekdayNum)
-      // let checkDate = new Date()
       thisDateObject = this.makeDT(thisDateObject)
       let checkDate = DateTime.local()
       let adjustForward = true
@@ -112,7 +89,6 @@ export default {
           weekdayNum = 7
         }
       }
-      // for (let counter = 1; counter <= 7; counter++) {
       for (let counter = 1; counter <= 7; counter++) {
         if (adjustForward) {
           checkDate = thisDateObject.plus({ days: counter })

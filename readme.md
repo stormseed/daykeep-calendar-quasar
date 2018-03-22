@@ -25,6 +25,7 @@ or import individual components
 
 ```js
 import {
+  CalendarMonth,
   CalendarAgenda,
   CalendarMultiDay
 } from 'quasar-calendar'
@@ -40,8 +41,11 @@ Or you can pass in parameters to customize
 
 ```html
 <calendar-month
-	:start-date="Date('2019-01-01')"
-	:events="someEventObject"
+  :start-date="Date('2019-01-01')"
+  :events="someEventObject"
+  :sunday-first-day-of-week="true"
+  calendar-locale="fr"
+  calendar-timezone="Europe/Paris"
 />
 ```
 
@@ -57,11 +61,11 @@ The event data format is meant to be a subset of the [Google Calendar v3 API](ht
     description: 'Some extra info goes here',
     location: 'Office of the Divine Randomness, 1232 Main St., Denver, CO',
     start: {
-      dateTime: '2018-02-16T14:00:00Z',
-      timeZone: 'America/New_York'
+      dateTime: '2018-02-16T14:00:00', // ISO 8601 formatted
+      timeZone: 'America/New_York' // Timezone listed as a separate IANA code
     },
     end: {
-      dateTime: '2018-02-16T16:30:00Z',
+      dateTime: '2018-02-16T16:30:00',
       timeZone: 'American/New_York'
     },
     color: 'positive',
@@ -81,16 +85,27 @@ The event data format is meant to be a subset of the [Google Calendar v3 API](ht
     summary: 'Test all-day event',
     description: 'Some extra info goes here',
     start: {
-      date: '2018-02-16'
+      date: '2018-02-16' // A date variable indicates an all-day event
     },
     end: {
       date: '2018-02-19'
     }
-  }
+  },
+    {
+      id: 3,
+      summary: 'Some other test event',
+      description: 'Some extra info goes here',
+      start: {
+        dateTime: '2018-02-17T10:00:00+0500', // timezone embedded in dateTime
+      },
+      end: {
+        dateTime: '2018-02-17T12:30:00+0500',
+      },
+    },
 ]
 ```
 
-Each object needs to have a unique ID. The date time should be in [RFC3339](https://tools.ietf.org/html/rfc3339) format. 
+Each object needs to have a unique ID. The date time should be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. A value in the optional `timeZone` field will override the timezone.
 
 ## Individual Vue components
 
@@ -98,7 +113,10 @@ The usuable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `C
 
 | Vue Property | Type | Description |
 | --- | --- | --- |
-| `start-date` | Date | A JavaScript Date object that passes in a starting display date for the calendar to display. |
+| `start-date` | JavaScript Date or Luxon DateTime | A JavaScript Date or Luxon DateTime object that passes in a starting display date for the calendar to display. |
+| `sunday-first-day-of-week` | Boolean | If true this will force month and week calendars to start on a Sunday instead of the standard Monday. |
+| `calendar-locale` | String | A string setting the locale. We use the Luxon package for this and they describe how to set this [here](https://moment.github.io/luxon/docs/manual/intl.html). This will default to the user's system setting. |
+| `calendar-timezone` | String | Manually set the timezone for the calendar. Many strings can be passed in including `UTC` or any valid [IANA zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). This is better explained [here](https://moment.github.io/luxon/docs/manual/zones.html). |
 
 In addition, each individual components have the following properties:
 

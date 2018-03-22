@@ -67,6 +67,7 @@
                                     :event-object="thisEvent"
                                     :month-style="true"
                                     :event-ref="eventRef"
+                                    :current-calendar-day="thisDay.dateObject"
                                     :has-previous-day="thisEvent.hasPrev"
                                     :has-next-day="thisEvent.hasNext"
                                     :first-day-of-week="(weekDayIndex === 0)"
