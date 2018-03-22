@@ -25,16 +25,30 @@
                     </q-item-side>
                     <q-item-main>
                         <div
-                            v-if="eventObject.start && eventObject.start.dateObject"
+                            v-if="eventObject.start &&
+                              eventObject.start.dateObject"
                             class="ced-list-title"
                         >
                             {{ formatDate(eventObject.start.dateObject, 'DATE_HUGE', true) }}
+                            <template
+                                v-if="eventObject.end &&
+                                    eventObject.end.dateObject &&
+                                    eventObject.start.isAllDay &&
+                                    formatDate(eventObject.start.dateObject, 'DATE_SHORT', true) !== formatDate(eventObject.end.dateObject, 'DATE_SHORT', true)"
+                            >
+                                -
+                                {{ formatDate(eventObject.end.dateObject, 'DATE_HUGE', true) }}
+                            </template>
                         </div>
                         <div
-                            v-if="eventObject.end && eventObject.end.dateObject && eventObject.start.isAllDay !== true"
+                            v-if="eventObject.end &&
+                                eventObject.end.dateObject &&
+                                eventObject.start.isAllDay !== true"
                             class="ced-list-subtitle"
                         >
-                          {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true) }} - {{ formatDate(eventObject.end.dateObject, 'TIME_SIMPLE', true) }}
+                          {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true) }}
+                          -
+                          {{ formatDate(eventObject.end.dateObject, 'TIME_SIMPLE', true) }}
                         </div>
                     </q-item-main>
                 </q-item>
