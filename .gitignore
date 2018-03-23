@@ -1,6 +1,13 @@
+.DS_Store
+.Thumbs.db
 /node_modules
 /*.log
-/.idea
 .editorconfig
 .eslint*
 .stylint*
+cordova
+*.sublime*
+.idea/
+debug.log
+yarn.lock
+package-lock.json

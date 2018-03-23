@@ -36,7 +36,7 @@
                         'calendar-day-weekend': isWeekendDay(thisDay.dateObject),
                         'calendar-day-current': isCurrentDate(thisDay.dateObject)
                         }"
-                    v-for="(thisDay , weekDayIndex) in thisWeek"
+                    v-for="(thisDay, weekDayIndex) in thisWeek"
                 >
                     <div
                         v-if="isCurrentDate(thisDay.dateObject)"
@@ -71,7 +71,7 @@
                                     :has-previous-day="thisEvent.hasPrev"
                                     :has-next-day="thisEvent.hasNext"
                                     :first-day-of-week="(weekDayIndex === 0)"
-                                    :last-day-of-week="(weekDayIndex === 6)"
+                                    :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
                                 />
                             </div>
                         </template>

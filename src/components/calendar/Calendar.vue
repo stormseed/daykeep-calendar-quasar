@@ -4,32 +4,32 @@
             <q-tab
                 name="tab-month"
                 icon="view_module"
-                label="Month"
+                :label="tabLabels.month"
                 default
                 slot="title"
             />
             <q-tab
                 name="tab-week-component"
                 icon="view_week"
-                label="Week"
+                :label="tabLabels.week"
                 slot="title"
             />
             <q-tab
                 name="tab-days-component"
                 icon="view_column"
-                label="3 Day"
+                :label="tabLabels.threeDay"
                 slot="title"
             />
             <q-tab
                 name="tab-single-day-component"
                 icon="view_day"
-                label="Day"
+                :label="tabLabels.day"
                 slot="title"
             />
             <q-tab
                 name="tab-agenda"
                 icon="view_agenda"
-                label="Agenda"
+                :label="tabLabels.agenda"
                 slot="title"
             />
 
@@ -157,6 +157,16 @@
       sundayFirstDayOfWeek: {
         type: Boolean,
         default: false
+      },
+      tabLabels: {
+        type: Object,
+        default: {
+          month: 'Month',
+          week: 'Week',
+          threeDay: '3 Day',
+          day: 'Day',
+          agenda: 'Agenda'
+        }
       }
     },
     components: {
