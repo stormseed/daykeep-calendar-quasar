@@ -109,7 +109,7 @@ Each object needs to have a unique ID. The date time should be in [ISO 8601](htt
 
 ## Individual Vue components
 
-The usuable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `CalendarAgenda` share the following properties:
+The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `CalendarAgenda` share the following properties:
 
 | Vue Property | Type | Description |
 | --- | --- | --- |
@@ -119,6 +119,11 @@ The usuable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `C
 | `calendar-timezone` | String | Manually set the timezone for the calendar. Many strings can be passed in including `UTC` or any valid [IANA zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). This is better explained [here](https://moment.github.io/luxon/docs/manual/zones.html). |
 
 In addition, each individual components have the following properties:
+
+### Calendar
+| Vue Property | Type | Description |
+| --- | --- | --- |
+| `tab-labels` | Object | Passing in an object with strings that will override the labels for the different calendar components. Set variables for `month`, `week`, `threeDay`, `day` and `agenda`. Eventually we will replace this with language files and will use the `calendar-locale` setting. |
 
 ### CalendarMultiDay
 
