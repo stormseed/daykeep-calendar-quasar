@@ -2,9 +2,29 @@ import dashHas from 'lodash.has'
 import {
   date
 } from 'quasar'
+const { DateTime } = require('luxon')
 export default {
   computed: {},
   methods: {
+
+    makeDT: function (dateObject, adjustTimezone) {
+      if (typeof dateObject === 'undefined') {
+        return null
+      }
+      if (dateObject instanceof Date) {
+        dateObject = DateTime.fromJSDate(dateObject)
+      }
+      if (
+        this.calendarLocale &&
+        (!dashHas(dateObject, 'locale') || this.calendarLocale !== dateObject.locale)
+      ) {
+        dateObject = dateObject.setLocale(this.calendarLocale)
+      }
+      if (adjustTimezone && adjustTimezone !== dateObject.zoneName) {
+        dateObject = dateObject.setZone(this.calendarTimezone)
+      }
+      return dateObject
+    },
     triggerEventClick: function (eventObject, eventRef) {
       this.$root.$emit(
         'click-event-' + eventRef,
@@ -48,29 +68,40 @@ export default {
       cssObject['text-' + this.getEventColor(cssObject, eventObject, 'textColor')] = true
       return cssObject
     },
-    formatDate: function (dateObject, formatString) {
-      return date.formatDate(dateObject, formatString)
+    formatDate: function (dateObject, formatString, usePredefined) {
+      // return date.formatDate(dateObject, formatString)
+      if (usePredefined) {
+        return this.makeDT(dateObject).toLocaleString(DateTime[formatString])
+      }
+      else {
+        return this.makeDT(dateObject).toFormat(formatString)
+      }
     },
     dateAdjustWeekday (thisDateObject, weekdayNum) {
-      let checkDate = new Date()
+      console.debug('dateAdjustWeekday called, weekdayNum = ', weekdayNum)
+      thisDateObject = this.makeDT(thisDateObject)
+      let checkDate = DateTime.local()
       let adjustForward = true
-      if (weekdayNum < 0) {
+      if (weekdayNum < 1) {
         adjustForward = false
         weekdayNum = Math.abs(weekdayNum)
+        if (weekdayNum === 0) {
+          weekdayNum = 7
+        }
       }
-      for (let counter = 0; counter <= 6; counter++) {
+      for (let counter = 1; counter <= 7; counter++) {
         if (adjustForward) {
-          checkDate = date.addToDate(thisDateObject, { days: counter })
+          checkDate = thisDateObject.plus({ days: counter })
         }
         else {
-          checkDate = date.subtractFromDate(thisDateObject, { days: counter })
+          checkDate = thisDateObject.minus({ days: counter })
         }
-        if (date.getDayOfWeek(checkDate) === weekdayNum) {
+        if (checkDate.weekday === weekdayNum) {
           return checkDate
         }
       }
     },
-    buildWeekDateArray: function (numberOfDays) {
+    buildWeekDateArray: function (numberOfDays, sundayFirstDayOfWeek) {
       if (numberOfDays === undefined) {
         if (this.numberOfDays !== undefined) {
           numberOfDays = this.numberOfDays
@@ -83,46 +114,74 @@ export default {
         }
       }
       if (this.forceStartOfWeek) {
-        this.weekDateArray = this.getForcedWeekDateArray(numberOfDays)
+        this.weekDateArray = this.getForcedWeekDateArray(numberOfDays, sundayFirstDayOfWeek)
       }
       else {
         this.weekDateArray = this.getWeekDateArray(numberOfDays)
       }
     },
-    getForcedWeekBookendDates: function (numberOfDays) {
+    getForcedWeekBookendDates: function (numberOfDays, sundayFirstDayOfWeek) {
       if (numberOfDays === undefined) {
         numberOfDays = 7
       }
-      return {
-        first: this.dateAdjustWeekday(this.workingDate, -1),
-        last: this.dateAdjustWeekday(this.workingDate, numberOfDays),
+      if (sundayFirstDayOfWeek) {
+        return {
+          first: this.dateAdjustWeekday(this.workingDate, -1).minus({days: 1}),
+          last: this.dateAdjustWeekday(this.workingDate, numberOfDays).minus({days: 1})
+        }
+      }
+      else {
+        return {
+          first: this.dateAdjustWeekday(this.workingDate, -1),
+          last: this.dateAdjustWeekday(this.workingDate, numberOfDays)
+        }
       }
     },
-    getForcedWeekDateArray: function (numberOfDays) {
-      let bookendDates = this.getForcedWeekBookendDates()
+    getForcedWeekDateArray: function (numberOfDays, sundayFirstDayOfWeek) {
+      // console.debug('getForcedWeekDateArray called, numberOfDays = ', numberOfDays)
+      let bookendDates = this.getForcedWeekBookendDates(numberOfDays, sundayFirstDayOfWeek)
+      // console.debug('getForcedWeekDateArray says bookendDates = ', bookendDates)
       let returnArray = []
+      // console.debug('about to count')
       for (let counter = 0; counter <= numberOfDays - 1; counter++) {
+        // console.debug('counter = ', counter)
         returnArray.push(
-          date.addToDate(bookendDates.first, { days: counter })
+          // date.addToDate(bookendDates.first, { days: counter })
+          this.makeDT(bookendDates.first).plus({days: counter})
+          // bookendDates.first.add({ days: counter })
         )
       }
+      // console.debug('about to return from getForcedWeekDateArray')
       return returnArray
     },
     getWeekDateArray: function (numberOfDays) {
       let returnArray = []
       for (let counter = 0; counter <= numberOfDays - 1; counter++) {
         returnArray.push(
-          date.addToDate(this.workingDate, { days: counter })
+          // this.workingDate.add({ days: counter })
+          // date.addToDate(this.workingDate, { days: counter })
+          this.makeDT(this.workingDate).plus({ days: counter }  )
         )
       }
       return returnArray
     },
     formatTimeFromNumber: function (hourNumber) {
       // TODO: this should be able to handle 24 hour and alternate time formats
-      return date.formatDate(
-        date.adjustDate(new Date(), { hours: hourNumber }),
-        'ha'
-      )
+      let tempDate = this.makeDT(DateTime.fromObject({ hour: hourNumber }))
+      let localeFormattedHour = tempDate.toLocaleString(DateTime.TIME_SIMPLE)
+      return localeFormattedHour
+        .replace(/:[0-9][0-9]/, '')
+        .replace(' ', '')
+        .toLowerCase()
+    },
+    simplifyTimeFormat: function (timeString, removeMeridiem) {
+      if (removeMeridiem) {
+        timeString = timeString.replace(/[AP]M/i, '')
+      }
+      return timeString
+        .replace(':00', '')
+        .replace(' ', '')
+        .toLowerCase()
     },
     moveTimePeriod: function (params) {
       let paramObj = {}
@@ -139,15 +198,27 @@ export default {
       return this.parseDateParams(dateNum)
     },
     isCurrentDate: function (thisDateObject) {
-      let now = new Date()
-      return date.isSameDate(now, thisDateObject, 'day')
+      return DateTime.local().hasSame(
+        this.makeDT(thisDateObject),
+        'day'
+      )
     },
     isWeekendDay: function (thisDateObject) {
-      const dayName = date.formatDate(thisDateObject, 'ddd')
-      return (dayName === 'Sun' || dayName === 'Sat')
+      const dayNumber = this.makeDT(thisDateObject).weekday
+      return (dayNumber === 6 || dayNumber === 7)
+    },
+    getWeekNumber (thisDateObject, useSundayStart) {
+      if (useSundayStart) {
+        return this.makeDT(thisDateObject).plus({days: 1}).weekNumber
+      }
+      else {
+        return this.makeDT(thisDateObject).weekNumber
+      }
     },
     mountSetDate: function () {
-      this.workingDate = this.startDate
+      // this.workingDate = this.startDate
+      this.workingDate = this.makeDT(this.startDate)
+      // this.workingDate = DateTime.fromJSDate(this.startDate)
     },
     decimalAdjust: function (type, value, exp) {
       // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
@@ -180,7 +251,7 @@ export default {
     },
     createRandomString: function () {
       return Math.random().toString(36).substring(2, 15)
-    },
+    }
   },
   mounted () {}
 }

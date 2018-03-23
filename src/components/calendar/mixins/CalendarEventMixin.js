@@ -1,4 +1,5 @@
 import dashHas from 'lodash.has'
+// import DateTime from 'luxon'
 import {
   date
 } from 'quasar'
@@ -8,6 +9,7 @@ const defaultParsed = {
   byStartDate: {},
   byId: {}
 }
+const { DateTime } = require('luxon')
 export default {
   computed: {},
   methods: {
@@ -16,7 +18,8 @@ export default {
       return JSON.parse(JSON.stringify(thisObj))
     },
     formatToSqlDate: function (dateObject) {
-      return date.formatDate(dateObject, 'YYYY-MM-DD')
+      return this.makeDT(dateObject).toISODate()
+      // return date.formatDate(dateObject, 'YYYY-MM-DD')
     },
     getEventById: function (eventId) {
       return this.parsed.byId[eventId]
@@ -25,7 +28,7 @@ export default {
       let hasAllDayEvents = this.hasAllDayEvents(thisDate)
       let hasEvents = this.hasEvents(thisDate)
       let returnArray = []
-      let sqlDate = this.formatToSqlDate(thisDate)
+      let sqlDate = this.makeDT(thisDate).toISODate()
 
       // console.groupCollapsed('dateGetEvents called with ' + sqlDate)
 
@@ -59,8 +62,8 @@ export default {
             for (let thisField of transferFields) {
               tempObject[thisField] = slotObject[counter][thisField]
             }
-            tempObject.hasPrevWTF = (tempObject.durationDays > 0 && tempObject.daysFromStart > 0)
-            tempObject.hasNextWTF = (tempObject.durationDays > 0 && (tempObject.daysFromStart + 1) < tempObject.durationDays)
+            // tempObject.hasPrevWTF = (tempObject.durationDays > 0 && tempObject.daysFromStart > 0)
+            // tempObject.hasNextWTF = (tempObject.durationDays > 0 && (tempObject.daysFromStart + 1) < tempObject.durationDays)
           }
           else {
             // this is an empty slot
@@ -118,6 +121,9 @@ export default {
       }
       return true
     },
+    moveToDisplayZone: function (dateObject) {
+      return this.makeDT(dateObject, this.calendarTimezone)
+    },
     parseEventList: function () {
       this.clearParsed()
       for (let thisEvent of this.eventArray) {
@@ -125,28 +131,55 @@ export default {
         // console.debug('this.parsed.byId[' + thisEvent.id + '] = %O', this.stripObject(thisEvent))
 
         if (dashHas(thisEvent.start, 'date')) {
-          // thisEvent.start['dateObject'] = new Date(thisEvent.start.date)
-          // thisEvent.end['dateObject'] = new Date(thisEvent.end.date)
-          thisEvent.start['dateObject'] = new Date(thisEvent.start.date + 'T00:00:00')
-          thisEvent.end['dateObject'] = new Date(thisEvent.end.date + 'T23:59:59')
+          // thisEvent.start['dateObject'] = new Date(thisEvent.start.date + 'T00:00:00')
+          // thisEvent.end['dateObject'] = new Date(thisEvent.end.date + 'T23:59:59')
+          thisEvent.start['dateObject'] = this.moveToDisplayZone(
+            DateTime.fromISO(thisEvent.start.date).startOf('day')
+          )
+
+          thisEvent.end['dateObject'] = this.moveToDisplayZone(
+            DateTime.fromISO(thisEvent.end.date).endOf('day')
+          )
           thisEvent.start['isAllDay'] = true
-          thisEvent['durationDays'] = date.getDateDiff(thisEvent.end.dateObject, thisEvent.start.dateObject, 'days') + 1
+          thisEvent['durationDays'] = Math.ceil(
+            thisEvent.end.dateObject
+              .diff(thisEvent.start.dateObject)
+              .as('days')
+          )
         }
         else {
-          thisEvent.start['dateObject'] = new Date(thisEvent.start.dateTime)
-          thisEvent.end['dateObject'] = new Date(thisEvent.end.dateTime)
+          // start date
+          thisEvent.start['dateObject'] = DateTime.fromISO(thisEvent.start.dateTime)
+          if (dashHas(thisEvent.start, 'timeZone')) {
+            thisEvent.start.dateObject = thisEvent.start.dateObject
+              .setZone(thisEvent.start.timeZone)
+          }
+          thisEvent.start.dateObject = this.moveToDisplayZone(
+            thisEvent.start.dateObject
+          )
+          // end date
+          thisEvent.end['dateObject'] = DateTime.fromISO(thisEvent.end.dateTime)
+          if (dashHas(thisEvent.end, 'timeZone')) {
+            thisEvent.end.dateObject = thisEvent.end.dateObject
+              .setZone(thisEvent.end.timeZone)
+          }
+          thisEvent.end.dateObject = this.moveToDisplayZone(
+            thisEvent.end.dateObject
+          )
         }
 
-        let thisStartDate = this.formatToSqlDate(thisEvent.start.dateObject)
+        let thisStartDate = thisEvent.start.dateObject.toISODate()
 
         // get all-day events
 
         if (thisEvent.start.isAllDay) {
           for (let dayAdd = 0; dayAdd < thisEvent.durationDays; dayAdd++) {
-
-            let innerStartDate = this.formatToSqlDate(
-              date.addToDate(thisEvent.start.dateObject, { days: dayAdd })
-            )
+            // let innerStartDate = this.formatToSqlDate(
+            //   date.addToDate(thisEvent.start.dateObject, { days: dayAdd })
+            // )
+            let innerStartDate = thisEvent.start.dateObject
+              .plus({ days: dayAdd })
+              .toISODate()
 
             if (!dashHas(this.parsed.byAllDayStartDate, innerStartDate)) {
               this.parsed.byAllDayStartDate[innerStartDate] = []
@@ -168,9 +201,7 @@ export default {
               startDate: thisEvent.start.dateObject,
               daysFromStart: dayAdd
             })
-
           }
-
         }
 
         // get events with a start and end time
@@ -242,10 +273,9 @@ export default {
             // now fill that slot for each successive day
             // console.groupCollapsed('filling slot for durationDays = ', thisAllDayObject.durationDays)
             for (let dayAdd = 0; dayAdd < thisAllDayObject.durationDays; dayAdd++) {
-              let innerStartDate = this.formatToSqlDate(
-                // date.addToDate(thisAllDayObject.startDate, { days: dayAdd })
-                date.addToDate(new Date(thisDate + 'T00:00:00'), { days: dayAdd })
-              )
+              let innerStartDate = DateTime.fromISO(thisDate + 'T00:00:00')
+                .plus({ days: dayAdd })
+                .toISODate()
               // console.debug('innerStartDate, thisEventId', innerStartDate, thisEventId)
 
               if (!dashHas(slotAssignments, innerStartDate)) {
@@ -342,8 +372,7 @@ export default {
         return 24 * 60
       }
       else {
-        return date.getDateDiff(
-          eventObj.end.dateObject,
+        return eventObj.end.dateObject.diff(
           eventObj.start.dateObject,
           'minutes'
         )

@@ -1,7 +1,7 @@
 <template>
     <div
-        :class="getEventClass"
-        :style="getEventStyle"
+        :class="getEventClass()"
+        :style="getEventStyle()"
         @mouseup="handleClick"
     >
         <div class="calendar-agenda-event-summary">
@@ -17,12 +17,13 @@
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
   import {
     date,
     QBtn,
     QTooltip
   } from 'quasar'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAgendaEvent',
     props: {
@@ -46,7 +47,15 @@
         type: Boolean,
         default: false
       },
-      eventRef: String
+      eventRef: String,
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      },
+      calendarTimezone: {
+        type: String,
+        default: () => { return DateTime.local().zoneName }
+      }
     },
     components: {
       QBtn,
@@ -72,38 +81,34 @@
         }
       }
     },
-    computed: {
+    computed: {},
+    methods: {
       getEventClass: function () {
         return this.addCssColorClasses(
           {
             'calendar-agenda-event': true,
-            'calendar-agenda-event-allday': this.eventObject.start.isAllDay
+            'calendar-agenda-event-allday': this.eventObject.start.isAllDay,
+            'calendar-agenda-event-empty-slot': this.eventObject.start.isEmptySlot
           },
           this.eventObject
         )
       },
       getEventStyle: function () {
         return {}
-      }
-    },
-    methods: {
+      },
       formatTimeRange: function (startTime, endTime) {
         let returnString = ''
         // start time
-        returnString += date.formatDate(startTime, 'h')
-        if (startTime.getMinutes() > 0) {
-          returnString += ':' + date.formatDate(startTime, 'mm')
-        }
-        if (date.formatDate(startTime, 'A') !== date.formatDate(endTime, 'A')) {
-          returnString += ' ' + date.formatDate(startTime, 'A')
-        }
+        returnString += this.simplifyTimeFormat(
+          this.makeDT(startTime).toLocaleString(DateTime.TIME_SIMPLE),
+          (this.formatDate(startTime, 'a') === this.formatDate(endTime, 'a'))
+        )
         returnString += ' - '
         // end time
-        returnString += date.formatDate(endTime, 'h')
-        if (endTime.getMinutes() > 0) {
-          returnString += ':' + date.formatDate(endTime, 'mm')
-        }
-        returnString += ' ' + date.formatDate(endTime, 'A')
+        returnString += this.simplifyTimeFormat(
+          this.makeDT(endTime).toLocaleString(DateTime.TIME_SIMPLE),
+          false
+        )
         return returnString
       },
       handleClick: function (e) {
@@ -117,4 +122,7 @@
 </script>
 
 <style lang="stylus">
+  .calendar-agenda-event-empty-slot
+    display none
+    background green
 </style>

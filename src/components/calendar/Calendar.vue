@@ -4,32 +4,32 @@
             <q-tab
                 name="tab-month"
                 icon="view_module"
-                label="Month"
+                :label="tabLabels.month"
                 default
                 slot="title"
             />
             <q-tab
                 name="tab-week-component"
                 icon="view_week"
-                label="Week"
+                :label="tabLabels.week"
                 slot="title"
             />
             <q-tab
                 name="tab-days-component"
                 icon="view_column"
-                label="3 Day"
+                :label="tabLabels.threeDay"
                 slot="title"
             />
             <q-tab
                 name="tab-single-day-component"
                 icon="view_day"
-                label="Day"
+                :label="tabLabels.day"
                 slot="title"
             />
             <q-tab
                 name="tab-agenda"
                 icon="view_agenda"
-                label="Agenda"
+                :label="tabLabels.agenda"
                 slot="title"
             />
 
@@ -39,7 +39,10 @@
                     :start-date="workingDate"
                     :parsed-events="parsed"
                     :event-ref="eventRef"
-                    :fullComponentRef="eventRef"
+                    :full-component-ref="eventRef"
+                    :sunday-first-day-of-week="sundayFirstDayOfWeek"
+                    :calendar-locale="calendarLocale"
+                    :calendar-timezone="calendarTimezone"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
@@ -51,7 +54,10 @@
                     :nav-days="7"
                     :force-start-of-week="true"
                     :event-ref="eventRef"
-                    :fullComponentRef="eventRef"
+                    :full-component-ref="eventRef"
+                    :sunday-first-day-of-week="sundayFirstDayOfWeek"
+                    :calendar-locale="calendarLocale"
+                    :calendar-timezone="calendarTimezone"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
@@ -63,7 +69,10 @@
                     :nav-days="1"
                     :force-start-of-week="false"
                     :event-ref="eventRef"
-                    :fullComponentRef="eventRef"
+                    :full-component-ref="eventRef"
+                    :sunday-first-day-of-week="sundayFirstDayOfWeek"
+                    :calendar-locale="calendarLocale"
+                    :calendar-timezone="calendarTimezone"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
@@ -75,7 +84,10 @@
                     :nav-days="1"
                     :force-start-of-week="false"
                     :event-ref="eventRef"
-                    :fullComponentRef="eventRef"
+                    :full-component-ref="eventRef"
+                    :sunday-first-day-of-week="sundayFirstDayOfWeek"
+                    :calendar-locale="calendarLocale"
+                    :calendar-timezone="calendarTimezone"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
@@ -86,7 +98,10 @@
                     :num-days="30"
                     :event-ref="eventRef"
                     scroll-height="300px"
-                    :fullComponentRef="eventRef"
+                    :full-component-ref="eventRef"
+                    :sunday-first-day-of-week="sundayFirstDayOfWeek"
+                    :calendar-locale="calendarLocale"
+                    :calendar-timezone="calendarTimezone"
                 />
             </q-tab-pane>
 
@@ -95,8 +110,8 @@
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
-  import CalendarEventMixin from './CalendarEventMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  import CalendarEventMixin from './mixins/CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarMonth from './CalendarMonth'
   import CalendarMultiDay from './CalendarMultiDay'
@@ -115,11 +130,12 @@
     QScrollArea
   } from 'quasar'
   import QuantityBubble from './QuantityBubble'
+  const { DateTime } = require('luxon')
   export default {
     name: 'Calendar',
     props: {
       startDate: {
-        type: Date,
+        type: [Object, Date],
         default: () => { return new Date() }
       },
       eventArray: {
@@ -129,6 +145,28 @@
       eventRef: {
         type: String,
         default: 'cal-' + Math.random().toString(36).substring(2, 15)
+      },
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      },
+      calendarTimezone: {
+        type: String,
+        default: () => { return DateTime.local().zoneName }
+      },
+      sundayFirstDayOfWeek: {
+        type: Boolean,
+        default: false
+      },
+      tabLabels: {
+        type: Object,
+        default: {
+          month: 'Month',
+          week: 'Week',
+          threeDay: '3 Day',
+          day: 'Day',
+          agenda: 'Agenda'
+        }
       }
     },
     components: {

@@ -25,15 +25,16 @@
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
-  import CalendarEventMixin from './CalendarEventMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  import CalendarEventMixin from './mixins/CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
   import { date } from 'quasar'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAllDayEvents',
     props: {
       startDate: {
-        type: Date,
+        type: [Object, Date],
         default: () => { return new Date() }
       },
       parsed: {
@@ -72,7 +73,8 @@
         this.mountSetDate()
       },
       addDaysToDate: function (thisDateObject, numDays) {
-        return date.addToDate(thisDateObject, { days: numDays })
+        return this.makeDT(thisDateObject).plus({ days: numDays })
+        // return date.addToDate(thisDateObject, { days: numDays })
       }
     },
     mounted () {

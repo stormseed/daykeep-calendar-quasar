@@ -6,8 +6,9 @@
                 time-period-unit="days"
                 :time-period-amount="navDays"
                 :move-time-period-emit="eventRef + ':navMovePeriod'"
+                :calendar-locale="calendarLocale"
             >
-                {{ formatDate(workingDate, 'dddd, MMMM D YYYY')}}
+                {{ formatDate(workingDate, 'EEEE, MMMM d, yyyy')}}
             </calendar-header-nav>
         </template>
         <template v-else>
@@ -26,7 +27,9 @@
                 :show-dates="true"
                 :start-date="workingDate"
                 :force-start-of-week="forceStartOfWeek"
-                :fullComponentRef="fullComponentRef"
+                :full-component-ref="fullComponentRef"
+                :sunday-first-day-of-week="sundayFirstDayOfWeek"
+                :calendar-locale="calendarLocale"
             />
         </div>
 
@@ -37,6 +40,8 @@
                 :start-date="weekDateArray[0]"
                 :parsed="parsed"
                 :event-ref="eventRef"
+                :calendar-locale="calendarLocale"
+                :calendar-timezone="calendarTimezone"
             />
         </div>
 
@@ -47,7 +52,9 @@
         >
             <div class="col">
                 <div class="calendar-day row">
-                    <calendar-time-label-column />
+                    <calendar-time-label-column
+                      :calendar-locale="calendarLocale"
+                    />
                     <div class="calendar-multiple-days col row">
                         <calendar-day-column
                             v-for="thisDate in weekDateArray"
@@ -56,6 +63,8 @@
                             column-css-class="calendar-day-column-content"
                             :style="{ 'width': dayCellWidth }"
                             :event-ref="eventRef"
+                            :calendar-locale="calendarLocale"
+                            :calendar-timezone="calendarTimezone"
                         />
                     </div>
                 </div>
@@ -66,14 +75,16 @@
         <calendar-event-detail
             ref="defaultEventDetail"
             :event-object="eventDetailEventObject"
+            :calendar-locale="calendarLocale"
+            :calendar-timezone="calendarTimezone"
         />
 
     </div>
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
-  import CalendarEventMixin from './CalendarEventMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  import CalendarEventMixin from './mixins/CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarDayColumn from './CalendarDayColumn'
   import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
@@ -87,11 +98,12 @@
     QTooltip,
     QScrollArea
   } from 'quasar'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarMultiDay',
     props: {
       startDate: {
-        type: Date,
+        type: [Object, Date],
         default: () => { return new Date() }
       },
       eventArray: {
@@ -137,7 +149,19 @@
         type: String,
         default: 'auto'
       },
-      fullComponentRef: String
+      fullComponentRef: String,
+      sundayFirstDayOfWeek: {
+        type: Boolean,
+        default: false
+      },
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      },
+      calendarTimezone: {
+        type: String,
+        default: () => { return DateTime.local().zoneName }
+      }
     },
     components: {
       CalendarEvent,
@@ -179,7 +203,7 @@
       getScrollClass: function () {
         if (this.scrollHeight === 'auto') {
           return {
-            'col': true,
+            'col': true
           }
         }
         else {
@@ -192,18 +216,22 @@
         if (this.forceStartOfWeek) {
           let dateReturn = ''
           let bookendDates = this.getForcedWeekBookendDates()
-          if (bookendDates.first.getMonth() !== bookendDates.last.getMonth()) {
-            dateReturn += date.formatDate(bookendDates.first, 'MMM')
-            if (bookendDates.first.getFullYear() !== bookendDates.last.getFullYear()) {
-              dateReturn += date.formatDate(bookendDates.first, ' YYYY')
+          // if (bookendDates.first.getMonth() !== bookendDates.last.getMonth()) {
+          if (bookendDates.first.month !== bookendDates.last.month) {
+            // dateReturn += date.formatDate(bookendDates.first, 'MMM')
+            dateReturn += bookendDates.first.toFormat('MMM')
+            // if (bookendDates.first.getFullYear() !== bookendDates.last.getFullYear()) {
+            if (bookendDates.first.year !== bookendDates.last.year) {
+              // dateReturn += date.formatDate(bookendDates.first, ' YYYY')
+              dateReturn += bookendDates.first.toFormat(' yyyy')
             }
             dateReturn += ' - '
           }
-          dateReturn += date.formatDate(bookendDates.last, 'MMM YYYY')
+          dateReturn += bookendDates.last.toFormat('MMM yyyy')
           return dateReturn
         }
         else {
-          return date.formatDate(this.workingDate, 'MMMM YYYY')
+          return this.makeDT(this.workingDate).toFormat('MMMM yyyy')
         }
       },
       handleStartChange: function (val, oldVal) {
@@ -211,7 +239,7 @@
       },
       doUpdate: function () {
         this.mountSetDate()
-        this.buildWeekDateArray()
+        this.buildWeekDateArray(this.numDays, this.sundayFirstDayOfWeek)
       },
       handleNavMove: function (unitType, amount) {
         this.moveTimePeriod(unitType, amount)
@@ -223,7 +251,7 @@
           }
         )
         this.buildWeekDateArray()
-      },
+      }
     },
     mounted () {
       this.doUpdate()

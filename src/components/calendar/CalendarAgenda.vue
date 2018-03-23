@@ -17,7 +17,7 @@
                         class="row calendar-agenda-month"
                         :style="{ 'padding-left': leftMargin }"
                     >
-                        {{ formatDate(forwardDate, 'MMMM YYYY') }}
+                        {{ formatDate(forwardDate, 'MMMM yyyy') }}
                     </div>
 
                     <!--week marker-->
@@ -40,10 +40,10 @@
                             @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
                         >
                             <div class="calendar-agenda-side-date">
-                                {{ formatDate(forwardDate, 'D') }}
+                                {{ formatDate(forwardDate, 'd') }}
                             </div>
                             <div class="calendar-agenda-side-day">
-                                {{ formatDate(forwardDate, 'ddd') }}
+                                {{ formatDate(forwardDate, 'EEE') }}
                             </div>
                         </div>
                         <div class="col row calendar-agenda-events">
@@ -54,6 +54,8 @@
                                 <calendar-agenda-event
                                     :event-object="thisEvent"
                                     :event-ref="eventRef"
+                                    :calendar-locale="calendarLocale"
+                                    :calendar-timezone="calendarTimezone"
                                 />
                             </template>
                         </div>
@@ -72,8 +74,8 @@
 </template>
 
 <script>
-  import CalendarMixin from './CalendarMixin'
-  import CalendarEventMixin from './CalendarEventMixin'
+  import CalendarMixin from './mixins/CalendarMixin'
+  import CalendarEventMixin from './mixins/CalendarEventMixin'
   import CalendarAgendaEvent from './CalendarAgendaEvent'
   import CalendarEventDetail from './CalendarEventDetail'
   import {
@@ -84,11 +86,12 @@
     QInfiniteScroll,
     QSpinnerDots
   } from 'quasar'
+  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAgenda',
     props: {
       startDate: {
-        type: Date,
+        type: [Object, Date],
         default: () => { return new Date() }
       },
       numDays: {
@@ -115,7 +118,15 @@
         type: String,
         default: '200px'
       },
-      fullComponentRef: String
+      fullComponentRef: String,
+      calendarLocale: {
+        type: String,
+        default: () => { return DateTime.local().locale }
+      },
+      calendarTimezone: {
+        type: String,
+        default: () => { return DateTime.local().zoneName }
+      }
     },
     components: {
       CalendarAgendaEvent,
@@ -165,10 +176,10 @@
       getWeekTitle: function (firstDate) {
         let lastDate = date.addToDate(firstDate, { days: 6 })
         if (firstDate.getMonth() === lastDate.getMonth()) {
-          return date.formatDate(firstDate, 'MMM D - ') + date.formatDate(lastDate, 'D')
+          return this.formatDate(firstDate, 'MMM d - ') + this.formatDate(lastDate, 'd')
         }
         else {
-          return date.formatDate(firstDate, 'MMM D - ') + date.formatDate(lastDate, 'MMM D')
+          return this.formatDate(firstDate, 'MMM d - ') + this.formatDate(lastDate, 'MMM d')
         }
       },
       handleDayClick: function (dateObject) {
