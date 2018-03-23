@@ -226,9 +226,14 @@
 
   .calendar-event-continues-next-week
     padding-right $nextPrevEdgeVal
-    clip-path polygon(0% 0%, (100% - $nextPrevEdgeVal) 0%, 100% 50%, (100% - $nextPrevEdgeVal) 100%, 0% 100%)
+    clip-path polygon(0% 100%, 0% 0%, (100% - $nextPrevEdgeVal) 0%, 100% 50%, (100% - $nextPrevEdgeVal) 100%)
 
   .calendar-event-continues-from-last-week
     padding-left $nextPrevEdgeVal
-    clip-path polygon($nextPrevEdgeVal 0, 100% 0, 100% 100%, $nextPrevEdgeVal 100%, 0% 50%)
+    clip-path polygon($nextPrevEdgeVal 100%, 0% 50%, $nextPrevEdgeVal 0, 100% 0, 100% 100%)
+
+  .calendar-event-continues-next-week.calendar-event-continues-from-last-week
+    padding-left $nextPrevEdgeVal
+    padding-right $nextPrevEdgeVal
+    clip-path polygon($nextPrevEdgeVal 100%, 0% 50%, $nextPrevEdgeVal 0, (100% - $nextPrevEdgeVal) 0%, 100% 50%, (100% - $nextPrevEdgeVal) 100%)
 </style>
