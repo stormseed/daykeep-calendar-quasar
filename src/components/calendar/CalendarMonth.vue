@@ -62,6 +62,7 @@
                         <template v-if="hasAnyEvents(thisDay.dateObject)">
                             <div
                                 v-for="thisEvent in monthGetDateEvents(thisDay.dateObject)"
+                                :key="thisEvent.id"
                             >
                                 <calendar-event
                                     :event-object="thisEvent"
