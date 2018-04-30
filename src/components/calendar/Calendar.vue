@@ -43,6 +43,7 @@
                     :sunday-first-day-of-week="sundayFirstDayOfWeek"
                     :calendar-locale="calendarLocale"
                     :calendar-timezone="calendarTimezone"
+                    :prevent-event-detail="preventEventDetail"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
@@ -58,6 +59,7 @@
                     :sunday-first-day-of-week="sundayFirstDayOfWeek"
                     :calendar-locale="calendarLocale"
                     :calendar-timezone="calendarTimezone"
+                    :prevent-event-detail="preventEventDetail"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
@@ -73,6 +75,7 @@
                     :sunday-first-day-of-week="sundayFirstDayOfWeek"
                     :calendar-locale="calendarLocale"
                     :calendar-timezone="calendarTimezone"
+                    :prevent-event-detail="preventEventDetail"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
@@ -88,6 +91,7 @@
                     :sunday-first-day-of-week="sundayFirstDayOfWeek"
                     :calendar-locale="calendarLocale"
                     :calendar-timezone="calendarTimezone"
+                    :prevent-event-detail="preventEventDetail"
                 />
             </q-tab-pane>
             <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
@@ -102,6 +106,7 @@
                     :sunday-first-day-of-week="sundayFirstDayOfWeek"
                     :calendar-locale="calendarLocale"
                     :calendar-timezone="calendarTimezone"
+                    :prevent-event-detail="preventEventDetail"
                 />
             </q-tab-pane>
 
@@ -145,6 +150,10 @@
       eventRef: {
         type: String,
         default: 'cal-' + Math.random().toString(36).substring(2, 15)
+      },
+      preventEventDetail: {
+        type: Boolean,
+        default: false
       },
       calendarLocale: {
         type: String,

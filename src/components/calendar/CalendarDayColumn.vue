@@ -18,6 +18,7 @@
                 :event-ref="eventRef"
                 :calendar-locale="calendarLocale"
                 :calendar-timezone="calendarTimezone"
+                :prevent-event-detail="preventEventDetail"
             />
         </div>
 
@@ -53,6 +54,10 @@
         default: 'rem'
       },
       eventRef: String,
+      preventEventDetail: {
+        type: Boolean,
+        default: false
+      },
       calendarLocale: {
         type: String,
         default: () => { return DateTime.local().locale }

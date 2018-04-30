@@ -55,6 +55,10 @@
         default: false
       },
       eventRef: String,
+      preventEventDetail: {
+        type: Boolean,
+        default: false
+      },
       forceAllDay: Boolean,
       currentCalendarDay: Object,
       hasPreviousDay: Boolean,

@@ -40,6 +40,7 @@
                 :start-date="weekDateArray[0]"
                 :parsed="parsed"
                 :event-ref="eventRef"
+                :prevent-event-detail="preventEventDetail"
                 :calendar-locale="calendarLocale"
                 :calendar-timezone="calendarTimezone"
             />
@@ -63,6 +64,7 @@
                             column-css-class="calendar-day-column-content"
                             :style="{ 'width': dayCellWidth }"
                             :event-ref="eventRef"
+                            :prevent-event-detail="preventEventDetail"
                             :calendar-locale="calendarLocale"
                             :calendar-timezone="calendarTimezone"
                         />
@@ -74,6 +76,7 @@
 
         <calendar-event-detail
             ref="defaultEventDetail"
+            v-if="!preventEventDetail"
             :event-object="eventDetailEventObject"
             :calendar-locale="calendarLocale"
             :calendar-timezone="calendarTimezone"
@@ -118,6 +121,10 @@
         type: String,
         // default: 'calendar'
         default: 'cal-' + Math.random().toString(36).substring(2, 15)
+      },
+      preventEventDetail: {
+        type: Boolean,
+        default: false
       },
       numDays: {
         type: Number,
