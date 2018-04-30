@@ -2,6 +2,7 @@
     <div class="calendar-day-labels row no-wrap justify-end">
         <div
             v-for="thisDay in weekDateArray"
+            :key="formatDate(thisDay, 'EEE')"
             :class="{
               'calendar-day-label': true,
               'calendar-cell': true,

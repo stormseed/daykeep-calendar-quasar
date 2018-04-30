@@ -1,7 +1,11 @@
 <template>
     <div :class="columnCss">
         <!-- underlying cells -->
-        <div v-for="thisHour in 24" :style="getCellStyle">
+        <div
+          v-for="thisHour in 24"
+          :key="thisHour"
+          :style="getCellStyle"
+        >
             <div class="calendar-day-time-content"></div>
         </div>
 
