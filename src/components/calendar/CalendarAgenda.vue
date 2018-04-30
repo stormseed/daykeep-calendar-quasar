@@ -67,6 +67,7 @@
 
         <calendar-event-detail
             ref="defaultEventDetail"
+            v-if="!preventEventDetail"
             :event-object="eventDetailEventObject"
         />
 
@@ -113,6 +114,10 @@
       eventRef: {
         type: String,
         default: 'calendar'
+      },
+      preventEventDetail: {
+        type: Boolean,
+        default: false
       },
       scrollHeight: {
         type: String,
@@ -186,7 +191,7 @@
         if (this.fullComponentRef) {
           this.fullMoveToDay(dateObject)
         }
-      },
+      }
     },
     mounted () {
       this.localNumDays = this.numDays

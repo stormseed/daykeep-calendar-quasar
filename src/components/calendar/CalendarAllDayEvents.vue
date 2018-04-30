@@ -15,6 +15,7 @@
                     :event-object="thisEvent"
                     :show-time="false"
                     :event-ref="eventRef"
+                    :prevent-event-detail="preventEventDetail"
                     :has-previous-day="thisEvent.hasPrev"
                     :has-next-day="thisEvent.hasNext"
                     :force-all-day="true"
@@ -45,7 +46,11 @@
         type: Number,
         default: 7
       },
-      eventRef: String
+      eventRef: String,
+      preventEventDetail: {
+        type: Boolean,
+        default: false
+      }
     },
     components: {
       CalendarEvent

@@ -67,6 +67,7 @@
                                     :event-object="thisEvent"
                                     :month-style="true"
                                     :event-ref="eventRef"
+                                    :prevent-event-detail="preventEventDetail"
                                     :current-calendar-day="thisDay.dateObject"
                                     :has-previous-day="thisEvent.hasPrev"
                                     :has-next-day="thisEvent.hasNext"
@@ -82,6 +83,7 @@
 
         <calendar-event-detail
             ref="defaultEventDetail"
+            v-if="!preventEventDetail"
             :event-object="eventDetailEventObject"
             :calendar-locale="calendarLocale"
             :calendar-timezone="calendarTimezone"
@@ -141,6 +143,10 @@
       eventRef: {
         type: String,
         default: 'cal-' + Math.random().toString(36).substring(2, 15)
+      },
+      preventEventDetail: {
+        type: Boolean,
+        default: false
       },
       fullComponentRef: String,
       sundayFirstDayOfWeek: {
