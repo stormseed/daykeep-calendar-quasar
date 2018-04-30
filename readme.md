@@ -107,6 +107,37 @@ The event data format is meant to be a subset of the [Google Calendar v3 API](ht
 
 Each object needs to have a unique ID. The date time should be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. A value in the optional `timeZone` field will override the timezone.
 
+## Custom event detail handling
+
+By default we use our own event detail popup when an event is clicked. You can override this and use your own by doing a few things:
+
+* Pass in an event reference string
+* Prevent the default event detail from showing up
+* Listen for a click event to trigger your own detail content
+
+Each calendar is given a random reference string so that we can distinguish between multiple calendars on a page. You can override this and pass in a string so that you can listen for events from that calendar. In this case, if we pass in the string `MYCALENDAR`, the Vue.js event `click-event-MYCALENDAR` would fire on the [global event bus](http://quasar-framework.org/components/global-event-bus.html) when a calendar event is clicked on. 
+
+So to implement, be sure to have `prevent-event-detail` and `event-ref` set when you embed a calendar component:
+
+```html
+<calendar
+  event-ref="MYCALENDAR"
+  :prevent-event-detail="true"
+  :events="someEventObject"
+/>
+```
+
+And then somewhere be sure to be listening for a click event on that calendar:
+
+```js
+this.$root.$on(
+  'click-event-MYCALENDAR',
+  function (eventDetailObject) {
+    // do something here
+  }
+)
+```
+
 ## Individual Vue components
 
 The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `CalendarAgenda` share the following properties:
@@ -117,6 +148,8 @@ The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `Ca
 | `sunday-first-day-of-week` | Boolean | If true this will force month and week calendars to start on a Sunday instead of the standard Monday. |
 | `calendar-locale` | String | A string setting the locale. We use the Luxon package for this and they describe how to set this [here](https://moment.github.io/luxon/docs/manual/intl.html). This will default to the user's system setting. |
 | `calendar-timezone` | String | Manually set the timezone for the calendar. Many strings can be passed in including `UTC` or any valid [IANA zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). This is better explained [here](https://moment.github.io/luxon/docs/manual/zones.html). |
+| `event-ref` | String | Give the calendar component a custom name so that events triggered on the global event bus can be watched. |
+| `prevent-event-detail` | Boolean | Prevent the default event detail popup from appearing when an event is clicked in a calendar. |
 
 In addition, each individual components have the following properties:
 
@@ -145,5 +178,4 @@ Our near-term roadmap is as follows:
 
 | Version | Description |
 | --- | --- |
-| v0.2.x | Full internationalization. Allow for customization of language, formats, etc. |
 | v0.3.x | Have some basic editing abilities such as changing the data for an event and drag and drop editing. |
