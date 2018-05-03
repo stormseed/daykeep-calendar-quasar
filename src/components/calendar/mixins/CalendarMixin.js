@@ -83,7 +83,6 @@ export default {
       }
     },
     dateAdjustWeekday (thisDateObject, weekdayNum) {
-      console.debug('dateAdjustWeekday called, weekdayNum = ', weekdayNum)
       thisDateObject = this.makeDT(thisDateObject)
       let checkDate = DateTime.local()
       let adjustForward = true

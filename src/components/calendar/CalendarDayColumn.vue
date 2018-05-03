@@ -13,6 +13,7 @@
         <div
             v-if="dateEvents.length > 0"
             v-for="eventObject in dateEvents"
+            :key="makeDT(workingDate).toISODate() + eventObject.id.toString()"
             :class="calculateDayEventClass(eventObject)"
             :style="calculateDayEventStyle(eventObject)"
         >

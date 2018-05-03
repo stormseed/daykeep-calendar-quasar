@@ -169,12 +169,14 @@
       },
       tabLabels: {
         type: Object,
-        default: {
-          month: 'Month',
-          week: 'Week',
-          threeDay: '3 Day',
-          day: 'Day',
-          agenda: 'Agenda'
+        default: () => {
+          return {
+            month: 'Month',
+            week: 'Week',
+            threeDay: '3 Day',
+            day: 'Day',
+            agenda: 'Agenda'
+          }
         }
       }
     },

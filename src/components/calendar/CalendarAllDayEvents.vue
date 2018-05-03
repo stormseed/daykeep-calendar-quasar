@@ -2,25 +2,24 @@
     <div class="calendar-all-day-events row no-wrap justify-end items-start">
         <div
             v-for="(addDays, index) in numberOfDays"
+            :key="addDays"
             :style="{
               'width': cellWidth,
               'max-width': cellWidth
             }"
         >
-            <template
+            <calendar-event
                 v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))"
+                :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + thisEvent.id.toString()"
                 v-if="thisEvent.start.isAllDay"
-            >
-                <calendar-event
-                    :event-object="thisEvent"
-                    :show-time="false"
-                    :event-ref="eventRef"
-                    :prevent-event-detail="preventEventDetail"
-                    :has-previous-day="thisEvent.hasPrev"
-                    :has-next-day="thisEvent.hasNext"
-                    :force-all-day="true"
-                />
-            </template>
+                :event-object="thisEvent"
+                :show-time="false"
+                :event-ref="eventRef"
+                :prevent-event-detail="preventEventDetail"
+                :has-previous-day="thisEvent.hasPrev"
+                :has-next-day="thisEvent.hasNext"
+                :force-all-day="true"
+            />
         </div>
     </div>
 </template>
