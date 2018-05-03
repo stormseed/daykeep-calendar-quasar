@@ -191,7 +191,9 @@ export default {
     moveTimePeriod: function (params) {
       let paramObj = {}
       paramObj[params.unitType] = params.amount
-      this.workingDate = date.addToDate(this.workingDate, paramObj)
+      // console.debug('moveTimePeriod', params, this.workingDate)
+      // this.workingDate = date.addToDate(this.workingDate, paramObj)
+      this.workingDate = this.workingDate.plus(paramObj)
     },
     setTimePeriod: function (params) {
       this.workingDate = params.dateObject

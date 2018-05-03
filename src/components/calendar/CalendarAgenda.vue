@@ -1,77 +1,137 @@
 <template>
-    <div class="calendar-agenda column fit">
-        <!-- content -->
-        <q-infinite-scroll
-            inline
-            :handler="loadMore"
-            :style="{ 'height': scrollHeight, 'overflow':'auto' }">
+  <div class="calendar-agenda column fit">
+    <!-- content block style -->
+    <q-infinite-scroll
+      v-if="agendaStyle === 'block'"
+      inline
+      :handler="loadMore"
+      :style="{ 'height': scrollHeight, 'overflow':'auto' }">
+      <div
+        v-for="daysForward in localNumDays"
+        :key="daysForward"
+      >
+        <div v-if="forwardDate = getDaysForwardDate(daysForward - 1)">
+
+          <!--month marker-->
+          <div
+            v-if="isFirstOfMonth(forwardDate)"
+            class="row calendar-agenda-month"
+            :style="{ 'padding-left': leftMargin }"
+          >
+            {{ formatDate(forwardDate, 'MMMM yyyy') }}
+          </div>
+
+          <!--week marker-->
+          <div
+            v-if="isFirstDayOfWeek(forwardDate)"
+            class="row calendar-agenda-week"
+            :style="{ 'margin-left': leftMargin }"
+          >
+            {{ getWeekTitle(forwardDate) }}
+          </div>
+
+          <!--individual day-->
+          <div
+            v-if="dateGetEvents(forwardDate).length > 0"
+            class="col row items-start calendar-agenda-day">
             <div
-                v-for="daysForward in localNumDays"
-                :key="daysForward"
+              class="col-auto calendar-agenda-side"
+              :style="{ 'width': leftMargin, 'max-width': leftMargin }"
+              :class="{ 'cursor-pointer': calendarDaysAreClickable }"
+              @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
             >
-                <div v-if="forwardDate = getDaysForwardDate(daysForward - 1)">
-
-                    <!--month marker-->
-                    <div
-                        v-if="isFirstOfMonth(forwardDate)"
-                        class="row calendar-agenda-month"
-                        :style="{ 'padding-left': leftMargin }"
-                    >
-                        {{ formatDate(forwardDate, 'MMMM yyyy') }}
-                    </div>
-
-                    <!--week marker-->
-                    <div
-                        v-if="isFirstDayOfWeek(forwardDate)"
-                        class="row calendar-agenda-week"
-                        :style="{ 'margin-left': leftMargin }"
-                    >
-                        {{ getWeekTitle(forwardDate) }}
-                    </div>
-
-                    <!--individual day-->
-                    <div
-                        v-if="dateGetEvents(forwardDate).length > 0"
-                        class="col row items-start calendar-agenda-day">
-                        <div
-                            class="col-auto calendar-agenda-side"
-                            :style="{ 'width': leftMargin, 'max-width': leftMargin }"
-                            :class="{ 'cursor-pointer': calendarDaysAreClickable }"
-                            @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
-                        >
-                            <div class="calendar-agenda-side-date">
-                                {{ formatDate(forwardDate, 'd') }}
-                            </div>
-                            <div class="calendar-agenda-side-day">
-                                {{ formatDate(forwardDate, 'EEE') }}
-                            </div>
-                        </div>
-                        <div class="col row calendar-agenda-events">
-                            <template
-                                v-if="dateGetEvents(forwardDate)"
-                                v-for="thisEvent in dateGetEvents(forwardDate)"
-                            >
-                                <calendar-agenda-event
-                                    :event-object="thisEvent"
-                                    :event-ref="eventRef"
-                                    :calendar-locale="calendarLocale"
-                                    :calendar-timezone="calendarTimezone"
-                                />
-                            </template>
-                        </div>
-                    </div>
-                </div>
+              <div class="calendar-agenda-side-date">
+                {{ formatDate(forwardDate, 'd') }}
+              </div>
+              <div class="calendar-agenda-side-day">
+                {{ formatDate(forwardDate, 'EEE') }}
+              </div>
             </div>
-            <q-spinner-dots slot="message" :size="40" />
-        </q-infinite-scroll>
+            <div class="col row calendar-agenda-events">
+              <template
+                v-if="dateGetEvents(forwardDate)"
+                v-for="thisEvent in dateGetEvents(forwardDate)"
+              >
+                <calendar-agenda-event
+                  :event-object="thisEvent"
+                  :event-ref="eventRef"
+                  :calendar-locale="calendarLocale"
+                  :calendar-timezone="calendarTimezone"
+                />
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <q-spinner-dots slot="message" :size="40"/>
+    </q-infinite-scroll>
 
-        <calendar-event-detail
-            ref="defaultEventDetail"
-            v-if="!preventEventDetail"
-            :event-object="eventDetailEventObject"
-        />
+    <!-- content circle style -->
+    <div v-else>
+      <!-- calendar header -->
+      <calendar-header-nav
+        time-period-unit="days"
+        :time-period-amount="1"
+        :move-time-period-emit="eventRef + ':navMovePeriod'"
+        :calendar-locale="calendarLocale"
+      >
+        {{ formatDate(workingDate, 'EEE, MMM d')}} - <template v-if="workingDate.plus({})">{{ formatDate(workingDate.plus({ days: numJumpDays }), 'MMM d')}}</template>
+      </calendar-header-nav>
 
+      <div
+        v-for="daysForward in numJumpDays"
+        :key="daysForward"
+      >
+        <div
+          v-if="forwardDate = getDaysForwardDate(daysForward - 1)"
+          class="calendar-agenda-style-dot"
+        >
+
+          <!--individual day-->
+          <div
+            v-if="dateGetEvents(forwardDate).length > 0"
+            class="col row items-start calendar-agenda-day"
+          >
+            <div
+              class="col-auto calendar-agenda-side"
+              :NOstyle="{ 'width': leftMargin, 'max-width': leftMargin }"
+              :class="{ 'cursor-pointer': calendarDaysAreClickable }"
+              @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
+            >
+              <div class="calendar-agenda-side-day">
+                {{ formatDate(forwardDate, 'EEE') }}
+              </div>
+              <div class="calendar-agenda-side-date">
+                {{ formatDate(forwardDate, 'MMM d') }}
+              </div>
+            </div>
+            <div class="col row calendar-agenda-events">
+              <div
+                class="full-width"
+                v-if="dateGetEvents(forwardDate)"
+                v-for="thisEvent in dateGetEvents(forwardDate)"
+              >
+                <calendar-agenda-event
+                  :event-object="thisEvent"
+                  :event-ref="eventRef"
+                  :calendar-locale="calendarLocale"
+                  :calendar-timezone="calendarTimezone"
+                  agenda-style="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <calendar-event-detail
+      ref="defaultEventDetail"
+      v-if="!preventEventDetail"
+      :event-object="eventDetailEventObject"
+    />
+
+  </div>
 </template>
 
 <script>
@@ -79,6 +139,7 @@
   import CalendarEventMixin from './mixins/CalendarEventMixin'
   import CalendarAgendaEvent from './CalendarAgendaEvent'
   import CalendarEventDetail from './CalendarEventDetail'
+  import CalendarHeaderNav from './CalendarHeaderNav'
   import {
     date,
     QBtn,
@@ -90,10 +151,27 @@
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAgenda',
+    components: {
+      CalendarAgendaEvent,
+      CalendarEventDetail,
+      CalendarHeaderNav,
+      QBtn,
+      QTooltip,
+      QScrollArea,
+      QInfiniteScroll,
+      QSpinnerDots
+    },
+    mixins: [CalendarMixin, CalendarEventMixin],
     props: {
+      agendaStyle: {
+        type: String,
+        default: 'dot'
+      },
       startDate: {
         type: [Object, Date],
-        default: () => { return new Date() }
+        default: () => {
+          return new Date()
+        }
       },
       numDays: {
         type: Number,
@@ -109,7 +187,8 @@
       },
       parsedEvents: {
         type: Object,
-        default: () => {}
+        default: () => {
+        }
       },
       eventRef: {
         type: String,
@@ -126,27 +205,22 @@
       fullComponentRef: String,
       calendarLocale: {
         type: String,
-        default: () => { return DateTime.local().locale }
+        default: () => {
+          return DateTime.local().locale
+        }
       },
       calendarTimezone: {
         type: String,
-        default: () => { return DateTime.local().zoneName }
+        default: () => {
+          return DateTime.local().zoneName
+        }
       }
     },
-    components: {
-      CalendarAgendaEvent,
-      CalendarEventDetail,
-      QBtn,
-      QTooltip,
-      QScrollArea,
-      QInfiniteScroll,
-      QSpinnerDots
-    },
-    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {
         workingDate: new Date(),
-        localNumDays: 30,
+        numJumpDays: 28,
+        localNumDays: 28,
         dayRowArray: [],
         dayCounter: [],
         parsed: this.getDefaultParsed(),
@@ -160,7 +234,7 @@
     },
     methods: {
       getDaysForwardDate: function (daysForward) {
-        return date.addToDate(this.workingDate, { days: daysForward })
+        return date.addToDate(this.workingDate, {days: daysForward})
       },
       isFirstOfMonth: function (thisDate) {
         return thisDate.getDate() === 1
@@ -169,7 +243,7 @@
         return date.getDayOfWeek(thisDate) === 1
       },
       loadMore: function (index, done) {
-        this.localNumDays += 30
+        this.localNumDays += this.numJumpDays
         done()
       },
       handleStartChange: function (val, oldVal) {
@@ -179,13 +253,25 @@
         this.mountSetDate()
       },
       getWeekTitle: function (firstDate) {
-        let lastDate = date.addToDate(firstDate, { days: 6 })
+        let lastDate = date.addToDate(firstDate, {days: 6})
         if (firstDate.getMonth() === lastDate.getMonth()) {
           return this.formatDate(firstDate, 'MMM d - ') + this.formatDate(lastDate, 'd')
         }
         else {
           return this.formatDate(firstDate, 'MMM d - ') + this.formatDate(lastDate, 'MMM d')
         }
+      },
+      handleNavMove: function (params) {
+        console.debug('agenda handleNavMove called')
+        this.moveTimePeriod(params)
+        this.$emit(
+          this.eventRef + ':navMovePeriod',
+          {
+            unitType: params.unitType,
+            amount: params.amount
+          }
+        )
+        // this.generateCalendarCellArray()
       },
       handleDayClick: function (dateObject) {
         if (this.fullComponentRef) {
@@ -197,6 +283,10 @@
       this.localNumDays = this.numDays
       this.doUpdate()
       this.handlePassedInEvents()
+      this.$root.$on(
+        this.eventRef + ':navMovePeriod',
+        this.handleNavMove
+      )
       this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
@@ -213,41 +303,56 @@
 </script>
 
 <style lang="stylus">
-    .calendar-agenda
-        .calendar-agenda-month
-            font-size 1.5em
-            font-weight bold
-            background blue
-            color white
-            padding 1em 0 2em 0
-            margin-bottom .5em
-        .calendar-agenda-week
-            font-size 1.2em
-            font-weight bold
-            color grey
-            margin-bottom .5em
-        .calendar-agenda-day
-            margin-bottom 1em
-            .calendar-agenda-side
-                width 4em
-                .calendar-agenda-side-date
-                    font-size 1.75em
-                    font-weight bold
-                .calendar-agenda-side-day
-                    font-size 1.1em
-            .calendar-agenda-events
-                    width 100%
-                .calendar-agenda-event
-                    width 100%
-                    padding .5em .5em
-                    margin-bottom .5em
-                    text-overflow clip
-                    border-radius .25em
-                    cursor pointer
-                    .calendar-agenda-event-summary
-                        font-weight bold
-                    .calendar-agenda-event-time
-                        // nothing
-                .calendar-agenda-event-allday
-                    // nothing
+  @import 'calendar.vars.styl'
+  .calendar-agenda
+    .calendar-header
+      margin-bottom 1em
+      .calendar-header-label
+        font-size 1.25em
+        font-weight bold
+    .calendar-agenda-month
+      font-size 1.5em
+      font-weight bold
+      background blue
+      color white
+      padding 1em 0 2em 0
+      margin-bottom .5em
+    .calendar-agenda-week
+      font-size 1.2em
+      font-weight bold
+      color grey
+      margin-bottom .5em
+    .calendar-agenda-day
+      margin-bottom 1em
+      .calendar-agenda-side
+        width 4em
+        .calendar-agenda-side-date
+          font-size 1.75em
+          font-weight bold
+        .calendar-agenda-side-day
+          font-size 1.1em
+      .calendar-agenda-events
+        width 100%
+      .calendar-agenda-event
+        width 100%
+        padding .5em .5em
+        margin-bottom .5em
+        text-overflow clip
+        border-radius .25em
+        cursor pointer
+        .calendar-agenda-event-summary
+          font-weight bold
+    .calendar-agenda-style-dot
+      .calendar-agenda-day
+        margin-bottom .5em
+        padding-bottom .5em
+        border-bottom $borderOuter
+        .calendar-agenda-side
+          width 6em
+          max-width 6em
+          .calendar-agenda-side-date
+            font-size 1.1em
+            font-weight normal
+          .calendar-agenda-side-day
+            font-size 0.9em
 </style>

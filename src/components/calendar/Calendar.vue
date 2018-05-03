@@ -99,7 +99,7 @@
                     :ref="'agenda-' + thisRefName"
                     :start-date="workingDate"
                     :parsed-events="parsed"
-                    :num-days="30"
+                    :num-days="28"
                     :event-ref="eventRef"
                     scroll-height="300px"
                     :full-component-ref="eventRef"
