@@ -24,7 +24,7 @@ export default {
     getEventById: function (eventId) {
       return this.parsed.byId[eventId]
     },
-    dateGetEvents: function (thisDate) {
+    dateGetEvents: function (thisDate, skipSlotIndicators) {
       let hasAllDayEvents = this.hasAllDayEvents(thisDate)
       let hasEvents = this.hasEvents(thisDate)
       let returnArray = []
@@ -76,7 +76,12 @@ export default {
             }
           }
           // console.debug('pushing %O', this.stripObject(tempObject))
-          returnArray.push(tempObject)
+          if (skipSlotIndicators && tempObject.slot) {
+            // bypass this - we don't want slot indicators
+          }
+          else {
+            returnArray.push(tempObject)
+          }
         }
 
         // returnArray.push(this.getEventById(thisEvent.id))
