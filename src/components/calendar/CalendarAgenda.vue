@@ -48,17 +48,15 @@
               </div>
             </div>
             <div class="col row calendar-agenda-events">
-              <template
-                v-if="dateGetEvents(forwardDate)"
+              <calendar-agenda-event
+                v-if="dateGetEvents(forwardDate, true)"
                 v-for="thisEvent in dateGetEvents(forwardDate)"
-              >
-                <calendar-agenda-event
-                  :event-object="thisEvent"
-                  :event-ref="eventRef"
-                  :calendar-locale="calendarLocale"
-                  :calendar-timezone="calendarTimezone"
-                />
-              </template>
+                :key="makeDT(forwardDate).toISODate() + thisEvent.id.toString()"
+                :event-object="thisEvent"
+                :event-ref="eventRef"
+                :calendar-locale="calendarLocale"
+                :calendar-timezone="calendarTimezone"
+              />
             </div>
           </div>
         </div>
@@ -75,7 +73,9 @@
         :move-time-period-emit="eventRef + ':navMovePeriod'"
         :calendar-locale="calendarLocale"
       >
-        {{ formatDate(workingDate, 'EEE, MMM d')}} - <template v-if="workingDate.plus({})">{{ formatDate(workingDate.plus({ days: numJumpDays }), 'MMM d')}}</template>
+        {{ formatDate(workingDate, 'EEE, MMM d')}}
+        -
+        {{ formatDate(makeDT(workingDate).plus({ days: numJumpDays }), 'MMM d')}}
       </calendar-header-nav>
 
       <div
@@ -109,7 +109,8 @@
               <div
                 class="full-width"
                 v-if="dateGetEvents(forwardDate)"
-                v-for="thisEvent in dateGetEvents(forwardDate)"
+                v-for="thisEvent in dateGetEvents(forwardDate, true)"
+                :key="makeDT(forwardDate).toISODate() + thisEvent.id.toString()"
               >
                 <calendar-agenda-event
                   :event-object="thisEvent"
