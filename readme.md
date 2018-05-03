@@ -171,6 +171,8 @@ In addition, each individual components have the following properties:
 | Vue Property | Type | Description |
 | --- | --- | --- |
 | `num-days` | Number | The number of days to initially display and also the number of additional days to load up when the user scrolls to the bottom of the agenda. |
+| `agenda-style` | String | Defaults to "dot". You can also set this as "block" to use an infinite scroll design that is meant for mobile use. |
+| `scroll-height` | String | Defaults to `200px`, this is meant to define the size of the "block" style. |
 
 ## Roadmap
 
