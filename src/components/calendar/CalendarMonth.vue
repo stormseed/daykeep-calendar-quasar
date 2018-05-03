@@ -20,6 +20,7 @@
             />
             <div
                 v-for="(thisWeek, index) in weekArray"
+                :key="index"
                 :class="{
                     'calendar-multi-day': true,
                     'row': true,
@@ -37,6 +38,7 @@
                         'calendar-day-current': isCurrentDate(thisDay.dateObject)
                         }"
                     v-for="(thisDay, weekDayIndex) in thisWeek"
+                    :key="makeDT(thisDay.dateObject).toISODate()"
                 >
                     <div
                         v-if="isCurrentDate(thisDay.dateObject)"

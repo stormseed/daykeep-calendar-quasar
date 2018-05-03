@@ -59,6 +59,7 @@
                     <div class="calendar-multiple-days col row">
                         <calendar-day-column
                             v-for="thisDate in weekDateArray"
+                            :key="makeDT(thisDate).toISODate()"
                             :start-date="thisDate"
                             :date-events="dateGetEvents(thisDate)"
                             column-css-class="calendar-day-column-content"
