@@ -1,27 +1,27 @@
 <template>
-    <div class="calendar-all-day-events row no-wrap justify-end items-start">
-        <div
-            v-for="(addDays, index) in numberOfDays"
-            :key="addDays"
-            :style="{
-              'width': cellWidth,
-              'max-width': cellWidth
-            }"
-        >
-            <calendar-event
-                v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))"
-                :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + thisEvent.id.toString()"
-                v-if="thisEvent.start.isAllDay"
-                :event-object="thisEvent"
-                :show-time="false"
-                :event-ref="eventRef"
-                :prevent-event-detail="preventEventDetail"
-                :has-previous-day="thisEvent.hasPrev"
-                :has-next-day="thisEvent.hasNext"
-                :force-all-day="true"
-            />
-        </div>
+  <div class="calendar-all-day-events row no-wrap justify-end items-start">
+    <div
+      v-for="(addDays, index) in numberOfDays"
+      :key="addDays"
+      :style="{
+        'width': cellWidth,
+        'max-width': cellWidth
+      }"
+    >
+      <calendar-event
+        v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))"
+        :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + thisEvent.id.toString()"
+        v-if="thisEvent.start.isAllDay"
+        :event-object="thisEvent"
+        :show-time="false"
+        :event-ref="eventRef"
+        :prevent-event-detail="preventEventDetail"
+        :has-previous-day="thisEvent.hasPrev"
+        :has-next-day="thisEvent.hasNext"
+        :force-all-day="true"
+      />
     </div>
+  </div>
 </template>
 
 <script>
@@ -94,12 +94,12 @@
 </script>
 
 <style lang="stylus">
-    .calendar-day-labels
-        .calendar-day-label
-            font-size 1.1em
-            .calendar-day-label-date
-                font-size 1.75em
-        .calendar-day-label-current
-            font-weight bold
+  .calendar-day-labels
+    .calendar-day-label
+      font-size 1.1em
+      .calendar-day-label-date
+        font-size 1.75em
+    .calendar-day-label-current
+      font-weight bold
 
 </style>

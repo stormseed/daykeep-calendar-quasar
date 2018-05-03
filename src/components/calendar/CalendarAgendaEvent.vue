@@ -1,45 +1,46 @@
 <template>
+  <div
+    v-if="agendaStyle === 'dot'"
+    :class="getDotEventClass()"
+    :style="getEventStyle()"
+    @mouseup="handleClick"
+  >
+    <!-- dot style -->
+    <div class="col-auto calendar-agenda-event-dot" :class="getDotClass()"></div>
     <div
-        v-if="agendaStyle === 'dot'"
-        :class="getDotEventClass()"
-        :style="getEventStyle()"
-        @mouseup="handleClick"
+      v-if="showTime"
+      class="col-auto calendar-agenda-event-time"
     >
-        <!-- dot style -->
-        <div class="col-auto calendar-agenda-event-dot" :class="getDotClass()"></div>
-        <div
-            v-if="showTime"
-            class="col-auto calendar-agenda-event-time"
-        >
-            <template v-if="eventObject.start.isAllDay">
-                All day
-            </template>
-            <template v-else>
-                {{ formatTimeRange(eventObject.start.dateObject, eventObject.end.dateObject) }}
-            </template>
-        </div>
-        <div class="col calendar-agenda-event-summary">
-            {{ eventObject.summary }}
-        </div>
+      <template v-if="eventObject.start.isAllDay">
+        All day
+      </template>
+      <template v-else>
+        {{ formatTimeRange(eventObject.start.dateObject,
+        eventObject.end.dateObject) }}
+      </template>
+    </div>
+    <div class="col calendar-agenda-event-summary">
+      {{ eventObject.summary }}
+    </div>
+  </div>
+  <div
+    v-else
+    :class="getEventClass()"
+    :style="getEventStyle()"
+    @mouseup="handleClick"
+  >
+    <!-- block style -->
+    <div class="calendar-agenda-event-summary">
+      {{ eventObject.summary }}
     </div>
     <div
-        v-else
-        :class="getEventClass()"
-        :style="getEventStyle()"
-        @mouseup="handleClick"
+      v-if="showTime && !eventObject.start.isAllDay"
+      class="calendar-agenda-event-time"
     >
-        <!-- block style -->
-        <div class="calendar-agenda-event-summary">
-            {{ eventObject.summary }}
-        </div>
-        <div
-            v-if="showTime && !eventObject.start.isAllDay"
-            class="calendar-agenda-event-time"
-        >
-            {{ formatTimeRange(eventObject.start.dateObject,
-            eventObject.end.dateObject) }}
-        </div>
+      {{ formatTimeRange(eventObject.start.dateObject,
+      eventObject.end.dateObject) }}
     </div>
+  </div>
 </template>
 
 <script>
@@ -168,23 +169,23 @@
 </script>
 
 <style lang="stylus">
-    @import 'calendar.vars.styl'
-    .calendar-agenda-event-empty-slot
-        display none
-        background green
+  @import 'calendar.vars.styl'
+  .calendar-agenda-event-empty-slot
+    display none
+    background green
 
-    .calendar-agenda-event-dot-style
-        width 100%
-        background-color inherit
-        transition background-color 0.3s ease
-        &:hover
-            background-color $whiteHighlightBackgroundColor
-            transition background-color 0.3s ease
-        .calendar-agenda-event-time
-            margin-left 1em
-            width 160px
-        .calendar-agenda-event-dot
-            border-radius 12px
-            width 12px
-            height 12px
+  .calendar-agenda-event-dot-style
+    width 100%
+    background-color inherit
+    transition background-color 0.3s ease
+    &:hover
+      background-color $whiteHighlightBackgroundColor
+      transition background-color 0.3s ease
+    .calendar-agenda-event-time
+      margin-left 1em
+      width 160px
+    .calendar-agenda-event-dot
+      border-radius 12px
+      width 12px
+      height 12px
 </style>

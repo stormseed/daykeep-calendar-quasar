@@ -1,30 +1,29 @@
 <template>
-    <div class="calendar-day-labels row no-wrap justify-end">
-        <div
-            v-for="thisDay in weekDateArray"
-            :key="formatDate(thisDay, 'EEE')"
-            :class="{
-              'calendar-day-label': true,
-              'calendar-cell': true,
-              'calendar-day-label-current': isCurrentDayLabel(thisDay),
-              'cursor-pointer': calendarDaysAreClickable
-            }"
-            :style="{
-              'width': cellWidth,
-              'max-width': cellWidth,
-            }"
-            @click="handleDayClick(thisDay)"
-        >
-            {{ formatDate(thisDay, 'EEE') }}
-            <!--{{ thisDay.toFormat('ddd') }}-->
-            <div
-                v-if="showDates"
-                class="calendar-day-label-date"
-            >
-                {{ formatDate(thisDay, 'd') }}
-            </div>
-        </div>
+  <div class="calendar-day-labels row no-wrap justify-end">
+    <div
+      v-for="thisDay in weekDateArray"
+      :key="formatDate(thisDay, 'EEE')"
+      :class="{
+        'calendar-day-label': true,
+        'calendar-cell': true,
+        'calendar-day-label-current': isCurrentDayLabel(thisDay),
+        'cursor-pointer': calendarDaysAreClickable
+      }"
+      :style="{
+        'width': cellWidth,
+        'max-width': cellWidth,
+      }"
+      @click="handleDayClick(thisDay)"
+    >
+      {{ formatDate(thisDay, 'EEE') }}
+      <div
+        v-if="showDates"
+        class="calendar-day-label-date"
+      >
+        {{ formatDate(thisDay, 'd') }}
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -121,13 +120,13 @@
 </script>
 
 <style lang="stylus">
-    .calendar-day-labels
-        .calendar-day-label
-            font-size 1.1em
-            padding-left 4px
-            .calendar-day-label-date
-                font-size 1.75em
-        .calendar-day-label-current
-            font-weight bold
+  .calendar-day-labels
+    .calendar-day-label
+      font-size 1.1em
+      padding-left 4px
+      .calendar-day-label-date
+        font-size 1.75em
+    .calendar-day-label-current
+      font-weight bold
 
 </style>

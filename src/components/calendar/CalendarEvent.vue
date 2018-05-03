@@ -1,24 +1,24 @@
 <template>
-    <div
-        :class="getEventClass()"
-        :style="getEventStyle()"
-        @click="handleClick"
-    >
-        <template v-if="!eventHasPreviousDay() || (firstDayOfWeek && eventHasPreviousDay())">
-          <span v-if="!isAllDayEvent() && showTime" class="calendar-event-start-time">
-            {{ formatTime(eventObject.start.dateObject) }}
-          </span>
-            <span v-if="isEmptySlot()" class="calendar-event-summary">
-              &nbsp;
-          </span>
-            <span v-else class="calendar-event-summary">
-              {{ eventObject.summary }}
-          </span>
-        </template>
-        <template v-else>
-          &nbsp;
-        </template>
-    </div>
+  <div
+    :class="getEventClass()"
+    :style="getEventStyle()"
+    @click="handleClick"
+  >
+    <template v-if="!eventHasPreviousDay() || (firstDayOfWeek && eventHasPreviousDay())">
+      <span v-if="!isAllDayEvent() && showTime" class="calendar-event-start-time">
+        {{ formatTime(eventObject.start.dateObject) }}
+      </span>
+      <span v-if="isEmptySlot()" class="calendar-event-summary">
+        &nbsp;
+      </span>
+      <span v-else class="calendar-event-summary">
+        {{ eventObject.summary }}
+      </span>
+    </template>
+    <template v-else>
+      &nbsp;
+    </template>
+  </div>
 </template>
 
 <script>

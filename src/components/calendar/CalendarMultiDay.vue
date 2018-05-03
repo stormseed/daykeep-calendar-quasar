@@ -1,89 +1,89 @@
 <template>
-    <div class="calendar-multi-day-component column fit no-wrap">
-        <!-- week nav -->
-        <template v-if="numDays === 1">
-            <calendar-header-nav
-                time-period-unit="days"
-                :time-period-amount="navDays"
-                :move-time-period-emit="eventRef + ':navMovePeriod'"
-                :calendar-locale="calendarLocale"
-            >
-                {{ formatDate(workingDate, 'EEEE, MMMM d, yyyy')}}
-            </calendar-header-nav>
-        </template>
-        <template v-else>
-            <calendar-header-nav
-                time-period-unit="days"
-                :time-period-amount="navDays"
-                :move-time-period-emit="eventRef + ':navMovePeriod'"
-            >
-                {{ getHeaderLabel() }}
-            </calendar-header-nav>
-        </template>
+  <div class="calendar-multi-day-component column fit no-wrap">
+    <!-- week nav -->
+    <template v-if="numDays === 1">
+      <calendar-header-nav
+        time-period-unit="days"
+        :time-period-amount="navDays"
+        :move-time-period-emit="eventRef + ':navMovePeriod'"
+        :calendar-locale="calendarLocale"
+      >
+        {{ formatDate(workingDate, 'EEEE, MMMM d, yyyy')}}
+      </calendar-header-nav>
+    </template>
+    <template v-else>
+      <calendar-header-nav
+        time-period-unit="days"
+        :time-period-amount="navDays"
+        :move-time-period-emit="eventRef + ':navMovePeriod'"
+      >
+        {{ getHeaderLabel() }}
+      </calendar-header-nav>
+    </template>
 
-        <div v-if="numDays > 1" class="calendar-time-margin">
-            <calendar-day-labels
-                :number-of-days="numDays"
-                :show-dates="true"
-                :start-date="workingDate"
-                :force-start-of-week="forceStartOfWeek"
-                :full-component-ref="fullComponentRef"
-                :sunday-first-day-of-week="sundayFirstDayOfWeek"
-                :calendar-locale="calendarLocale"
-            />
-        </div>
-
-        <!-- all day events -->
-        <div class="calendar-time-margin">
-            <calendar-all-day-events
-                :number-of-days="numDays"
-                :start-date="weekDateArray[0]"
-                :parsed="parsed"
-                :event-ref="eventRef"
-                :prevent-event-detail="preventEventDetail"
-                :calendar-locale="calendarLocale"
-                :calendar-timezone="calendarTimezone"
-            />
-        </div>
-
-        <!-- content -->
-        <q-scroll-area
-            :style="getScrollStyle"
-            :class="getScrollClass"
-        >
-            <div class="col">
-                <div class="calendar-day row">
-                    <calendar-time-label-column
-                      :calendar-locale="calendarLocale"
-                    />
-                    <div class="calendar-multiple-days col row">
-                        <calendar-day-column
-                            v-for="thisDate in weekDateArray"
-                            :key="makeDT(thisDate).toISODate()"
-                            :start-date="thisDate"
-                            :date-events="dateGetEvents(thisDate)"
-                            column-css-class="calendar-day-column-content"
-                            :style="{ 'width': dayCellWidth }"
-                            :event-ref="eventRef"
-                            :prevent-event-detail="preventEventDetail"
-                            :calendar-locale="calendarLocale"
-                            :calendar-timezone="calendarTimezone"
-                        />
-                    </div>
-                </div>
-            </div>
-
-        </q-scroll-area>
-
-        <calendar-event-detail
-            ref="defaultEventDetail"
-            v-if="!preventEventDetail"
-            :event-object="eventDetailEventObject"
-            :calendar-locale="calendarLocale"
-            :calendar-timezone="calendarTimezone"
-        />
-
+    <div v-if="numDays > 1" class="calendar-time-margin">
+      <calendar-day-labels
+        :number-of-days="numDays"
+        :show-dates="true"
+        :start-date="workingDate"
+        :force-start-of-week="forceStartOfWeek"
+        :full-component-ref="fullComponentRef"
+        :sunday-first-day-of-week="sundayFirstDayOfWeek"
+        :calendar-locale="calendarLocale"
+      />
     </div>
+
+    <!-- all day events -->
+    <div class="calendar-time-margin">
+      <calendar-all-day-events
+        :number-of-days="numDays"
+        :start-date="weekDateArray[0]"
+        :parsed="parsed"
+        :event-ref="eventRef"
+        :prevent-event-detail="preventEventDetail"
+        :calendar-locale="calendarLocale"
+        :calendar-timezone="calendarTimezone"
+      />
+    </div>
+
+    <!-- content -->
+    <q-scroll-area
+      :style="getScrollStyle"
+      :class="getScrollClass"
+    >
+      <div class="col">
+        <div class="calendar-day row">
+          <calendar-time-label-column
+            :calendar-locale="calendarLocale"
+          />
+          <div class="calendar-multiple-days col row">
+            <calendar-day-column
+              v-for="thisDate in weekDateArray"
+              :key="makeDT(thisDate).toISODate()"
+              :start-date="thisDate"
+              :date-events="dateGetEvents(thisDate)"
+              column-css-class="calendar-day-column-content"
+              :style="{ 'width': dayCellWidth }"
+              :event-ref="eventRef"
+              :prevent-event-detail="preventEventDetail"
+              :calendar-locale="calendarLocale"
+              :calendar-timezone="calendarTimezone"
+            />
+          </div>
+        </div>
+      </div>
+
+    </q-scroll-area>
+
+    <calendar-event-detail
+      ref="defaultEventDetail"
+      v-if="!preventEventDetail"
+      :event-object="eventDetailEventObject"
+      :calendar-locale="calendarLocale"
+      :calendar-timezone="calendarTimezone"
+    />
+
+  </div>
 </template>
 
 <script>
@@ -282,25 +282,25 @@
 </script>
 
 <style lang="stylus">
-    @import 'calendar.vars.styl'
+  @import 'calendar.vars.styl'
 
-    .calendar-multi-day-component
-        .calendar-time-margin
-            margin-left $dayTimeLabelWidth
-        .calendar-header
-            .calendar-header-label
-                font-size 1.25em
-                font-weight bold
-        .calendar-day
-            .calendar-day-column-label
-                width $dayTimeLabelWidth
-            .calendar-day-column-content
-                border-right $borderThin
-                position relative
-            .calendar-day-time
-                padding-right .5em
-                border-right $borderOuter
-            .calendar-day-time-content
-                border-top $borderThin
+  .calendar-multi-day-component
+    .calendar-time-margin
+      margin-left $dayTimeLabelWidth
+    .calendar-header
+      .calendar-header-label
+        font-size 1.25em
+        font-weight bold
+    .calendar-day
+      .calendar-day-column-label
+        width $dayTimeLabelWidth
+      .calendar-day-column-content
+        border-right $borderThin
+        position relative
+      .calendar-day-time
+        padding-right .5em
+        border-right $borderOuter
+      .calendar-day-time-content
+        border-top $borderThin
 
 </style>

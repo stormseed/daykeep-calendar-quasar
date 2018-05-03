@@ -1,33 +1,33 @@
 <template>
-    <div :class="columnCss">
-        <!-- underlying cells -->
-        <div
-          v-for="thisHour in 24"
-          :key="thisHour"
-          :style="getCellStyle"
-        >
-            <div class="calendar-day-time-content"></div>
-        </div>
-
-        <!-- events -->
-        <div
-            v-if="dateEvents.length > 0"
-            v-for="eventObject in dateEvents"
-            :key="makeDT(workingDate).toISODate() + eventObject.id.toString()"
-            :class="calculateDayEventClass(eventObject)"
-            :style="calculateDayEventStyle(eventObject)"
-        >
-            <calendar-event
-                v-if="!eventObject.start.isAllDay"
-                :event-object="eventObject"
-                :event-ref="eventRef"
-                :calendar-locale="calendarLocale"
-                :calendar-timezone="calendarTimezone"
-                :prevent-event-detail="preventEventDetail"
-            />
-        </div>
-
+  <div :class="columnCss">
+    <!-- underlying cells -->
+    <div
+      v-for="thisHour in 24"
+      :key="thisHour"
+      :style="getCellStyle"
+    >
+      <div class="calendar-day-time-content"></div>
     </div>
+
+    <!-- events -->
+    <div
+      v-if="dateEvents.length > 0"
+      v-for="eventObject in dateEvents"
+      :key="makeDT(workingDate).toISODate() + eventObject.id.toString()"
+      :class="calculateDayEventClass(eventObject)"
+      :style="calculateDayEventStyle(eventObject)"
+    >
+      <calendar-event
+        v-if="!eventObject.start.isAllDay"
+        :event-object="eventObject"
+        :event-ref="eventRef"
+        :calendar-locale="calendarLocale"
+        :calendar-timezone="calendarTimezone"
+        :prevent-event-detail="preventEventDetail"
+      />
+    </div>
+
+  </div>
 </template>
 
 <script>
@@ -168,30 +168,30 @@
 </script>
 
 <style lang="stylus">
-    @import 'calendar.vars.styl'
+  @import 'calendar.vars.styl'
 
-    .calendar-day
-        position relative
-        .calendar-day-cell-height
-            height 5rem
-            max-height 5rem
-        .calendar-day-column-label
-            //
-        .calendar-day-column-content
-            position relative
-        .calendar-day-column-current
-            background-color $currentDayBackgroundColor
-        .calendar-day-column-weekend
-            background-color $weekendDayBackgroundColor
-        .calendar-day-time
-            padding-right .5em
-            border-right $borderOuter
-        .calendar-day-time-content
-            border-top $borderThin
-        .calendar-day-event-overlap
-            margin-left 1px
-        .calendar-day-event-overlap-first
-            margin-left 0
+  .calendar-day
+    position relative
+    .calendar-day-cell-height
+      height 5rem
+      max-height 5rem
+    .calendar-day-column-label
+      //
+    .calendar-day-column-content
+      position relative
+    .calendar-day-column-current
+      background-color $currentDayBackgroundColor
+    .calendar-day-column-weekend
+      background-color $weekendDayBackgroundColor
+    .calendar-day-time
+      padding-right .5em
+      border-right $borderOuter
+    .calendar-day-time-content
+      border-top $borderThin
+    .calendar-day-event-overlap
+      margin-left 1px
+    .calendar-day-event-overlap-first
+      margin-left 0
 
 
 </style>

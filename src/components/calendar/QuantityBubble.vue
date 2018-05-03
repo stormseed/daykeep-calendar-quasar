@@ -1,16 +1,16 @@
 <template>
-    <div
-        class="quantity-bubble-holder"
-        v-if="quantity > 0"
-    >
-        &nbsp;
-        <div :class="bubbleClass">
-            <div class="quantity-value">
-                {{ quantity }}
-            </div>
-        </div>
+  <div
+    class="quantity-bubble-holder"
+    v-if="quantity > 0"
+  >
+    &nbsp;
+    <div :class="bubbleClass">
+      <div class="quantity-value">
+        {{ quantity }}
+      </div>
     </div>
- </template>
+  </div>
+</template>
 
 <script>
   export default {
@@ -60,22 +60,22 @@
 </script>
 
 <style lang="stylus">
-    .quantity-bubble-holder
-        position relative
-        display inline-block
-        .quantity-bubble
-            border-radius 50%
-            font-size 0.75em
-            text-align center
-            font-weight bold
-            height 2em
-            width 2em
-            position absolute
-            top 0
-            left 0
-            .quantity-value
-                vertical-align middle
-        .quantity-bubble-offset
-            bottom 0.25em
-            left -0.25em
+  .quantity-bubble-holder
+    position relative
+    display inline-block
+    .quantity-bubble
+      border-radius 50%
+      font-size 0.75em
+      text-align center
+      font-weight bold
+      height 2em
+      width 2em
+      position absolute
+      top 0
+      left 0
+      .quantity-value
+        vertical-align middle
+    .quantity-bubble-offset
+      bottom 0.25em
+      left -0.25em
 </style>

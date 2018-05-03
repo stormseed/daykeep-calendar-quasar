@@ -1,98 +1,98 @@
 <template>
-    <div class="calendar-month">
+  <div class="calendar-month">
 
-        <!-- calendar header -->
-        <calendar-header-nav
-            time-period-unit="month"
-            :time-period-amount="1"
-            :move-time-period-emit="eventRef + ':navMovePeriod'"
+    <!-- calendar header -->
+    <calendar-header-nav
+      time-period-unit="month"
+      :time-period-amount="1"
+      :move-time-period-emit="eventRef + ':navMovePeriod'"
+    >
+      {{ formatDate(workingDate, 'MMMM yyyy') }}
+    </calendar-header-nav>
+
+    <div class="calendar-content">
+      <calendar-day-labels
+        :number-of-days="7"
+        :start-date="workingDate"
+        :force-start-of-week="true"
+        :sunday-first-day-of-week="sundayFirstDayOfWeek"
+        :calendar-locale="calendarLocale"
+      />
+      <div
+        v-for="(thisWeek, index) in weekArray"
+        :key="index"
+        :class="{
+          'calendar-multi-day': true,
+          'row': true,
+          'no-wrap': true,
+          'items-start': true,
+          'justify-end': index < (weekArray.length - 1),
+          'justify-start': index === (weekArray.length - 1)
+        }"
+      >
+        <div
+          :class="{
+            'calendar-day': true,
+            'calendar-cell': true,
+            'calendar-day-weekend': isWeekendDay(thisDay.dateObject),
+            'calendar-day-current': isCurrentDate(thisDay.dateObject)
+          }"
+          v-for="(thisDay, weekDayIndex) in thisWeek"
+          :key="makeDT(thisDay.dateObject).toISODate()"
         >
-            {{ formatDate(workingDate, 'MMMM yyyy') }}
-        </calendar-header-nav>
-
-        <div class="calendar-content">
-            <calendar-day-labels
-                :number-of-days="7"
-                :start-date="workingDate"
-                :force-start-of-week="true"
-                :sunday-first-day-of-week="sundayFirstDayOfWeek"
-                :calendar-locale="calendarLocale"
+          <div
+            v-if="isCurrentDate(thisDay.dateObject)"
+            :class="{ 'cursor-pointer': calendarDaysAreClickable }"
+            @click="handleDayClick(thisDay.dateObject)"
+          >
+            <quantity-bubble
+              :quantity="thisDay.dateObject.day"
+              :offset="false"
             />
-            <div
-                v-for="(thisWeek, index) in weekArray"
-                :key="index"
-                :class="{
-                    'calendar-multi-day': true,
-                    'row': true,
-                    'no-wrap': true,
-                    'items-start': true,
-                    'justify-end': index < (weekArray.length - 1),
-                    'justify-start': index === (weekArray.length - 1)
-                }"
-            >
-                <div
-                    :class="{
-                        'calendar-day': true,
-                        'calendar-cell': true,
-                        'calendar-day-weekend': isWeekendDay(thisDay.dateObject),
-                        'calendar-day-current': isCurrentDate(thisDay.dateObject)
-                        }"
-                    v-for="(thisDay, weekDayIndex) in thisWeek"
-                    :key="makeDT(thisDay.dateObject).toISODate()"
-                >
-                    <div
-                        v-if="isCurrentDate(thisDay.dateObject)"
-                        :class="{ 'cursor-pointer': calendarDaysAreClickable }"
-                        @click="handleDayClick(thisDay.dateObject)"
-                    >
-                        <quantity-bubble
-                            :quantity="thisDay.dateObject.day"
-                            :offset="false"
-                        />
-                    </div>
-                    <div
-                        v-else
-                        :class="{
-                            'calendar-day-number': true,
-                            'cursor-pointer': calendarDaysAreClickable
-                        }"
-                        @click="handleDayClick(thisDay.dateObject)"
-                    >
-                        {{ thisDay.dateObject.day }}
-                    </div>
-                    <div class="calendar-day-content">
-                        <template v-if="hasAnyEvents(thisDay.dateObject)">
-                            <div
-                                v-for="thisEvent in monthGetDateEvents(thisDay.dateObject)"
-                                :key="thisEvent.id"
-                            >
-                                <calendar-event
-                                    :event-object="thisEvent"
-                                    :month-style="true"
-                                    :event-ref="eventRef"
-                                    :prevent-event-detail="preventEventDetail"
-                                    :current-calendar-day="thisDay.dateObject"
-                                    :has-previous-day="thisEvent.hasPrev"
-                                    :has-next-day="thisEvent.hasNext"
-                                    :first-day-of-week="(weekDayIndex === 0)"
-                                    :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
-                                />
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <div
+            v-else
+            :class="{
+              'calendar-day-number': true,
+              'cursor-pointer': calendarDaysAreClickable
+            }"
+            @click="handleDayClick(thisDay.dateObject)"
+          >
+            {{ thisDay.dateObject.day }}
+          </div>
+          <div class="calendar-day-content">
+            <template v-if="hasAnyEvents(thisDay.dateObject)">
+              <div
+                v-for="thisEvent in monthGetDateEvents(thisDay.dateObject)"
+                :key="thisEvent.id"
+              >
+                <calendar-event
+                  :event-object="thisEvent"
+                  :month-style="true"
+                  :event-ref="eventRef"
+                  :prevent-event-detail="preventEventDetail"
+                  :current-calendar-day="thisDay.dateObject"
+                  :has-previous-day="thisEvent.hasPrev"
+                  :has-next-day="thisEvent.hasNext"
+                  :first-day-of-week="(weekDayIndex === 0)"
+                  :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
+                />
+              </div>
+            </template>
+          </div>
         </div>
-
-        <calendar-event-detail
-            ref="defaultEventDetail"
-            v-if="!preventEventDetail"
-            :event-object="eventDetailEventObject"
-            :calendar-locale="calendarLocale"
-            :calendar-timezone="calendarTimezone"
-        />
-
+      </div>
     </div>
+
+    <calendar-event-detail
+      ref="defaultEventDetail"
+      v-if="!preventEventDetail"
+      :event-object="eventDetailEventObject"
+      :calendar-locale="calendarLocale"
+      :calendar-timezone="calendarTimezone"
+    />
+
+  </div>
 </template>
 
 <script>
@@ -295,51 +295,50 @@
 </script>
 
 <style lang="stylus">
-    @import 'calendar.vars.styl'
+  @import 'calendar.vars.styl'
 
-    .calendar-month
+  .calendar-month
 
-        .calendar-time-width
-            width $dayTimeLabelWidth
-        .calendar-time-margin
-            margin-left $dayTimeLabelWidth
+    .calendar-time-width
+      width $dayTimeLabelWidth
+    .calendar-time-margin
+      margin-left $dayTimeLabelWidth
 
-        .calendar-header
-            .calendar-header-label
-                font-size 1.25em
-                font-weight bold
-        .calendar-content
-            padding 4px 12px
-            .calendar-cell
-                width $cellWidth
-                max-width $cellWidth
-                /*padding 2px*/
-                padding 0
-            .calendar-day-labels
-                .calendar-day-label
-                    font-size 1.1em
-                .calendar-day-label-current
-                    font-weight bold
-            .calendar-multi-day
-                border-bottom 1px solid $borderColor
-                :last-child
-                    border-bottom none
-            .calendar-day
-                background-color none
-                height $cellHeight
-                max-height $cellHeight
-                overflow hidden
-                width $sevenCellWidth
-                .calendar-day-number
-                    font-size 0.9em
-                    height 2em
-                    width 2em
-                    vertical-align middle
-                    padding-top .25em
-                    padding-left .25em
-            .calendar-day-current
-                background-color $currentDayBackgroundColor
-            .calendar-day-weekend
-                background-color $weekendDayBackgroundColor
+    .calendar-header
+      .calendar-header-label
+        font-size 1.25em
+        font-weight bold
+    .calendar-content
+      padding 4px 12px
+      .calendar-cell
+        width $cellWidth
+        max-width $cellWidth
+        padding 0
+      .calendar-day-labels
+        .calendar-day-label
+          font-size 1.1em
+        .calendar-day-label-current
+          font-weight bold
+      .calendar-multi-day
+        border-bottom 1px solid $borderColor
+        :last-child
+          border-bottom none
+      .calendar-day
+        background-color none
+        height $cellHeight
+        max-height $cellHeight
+        overflow hidden
+        width $sevenCellWidth
+        .calendar-day-number
+          font-size 0.9em
+          height 2em
+          width 2em
+          vertical-align middle
+          padding-top .25em
+          padding-left .25em
+      .calendar-day-current
+        background-color $currentDayBackgroundColor
+      .calendar-day-weekend
+        background-color $weekendDayBackgroundColor
 
 </style>

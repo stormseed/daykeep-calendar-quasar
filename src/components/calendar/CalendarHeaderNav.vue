@@ -1,27 +1,27 @@
 <template>
-    <div class="calendar-header col-auto row justify-between items-center">
-        <div class="calendar-header-left col-auto">
-            <q-btn
-                @click="doMoveTimePeriod(timePeriodUnit, -timePeriodAmount)"
-                icon="chevron_left"
-                color="primary"
-                round
-                flat
-            />
-        </div>
-        <div class="calendar-header-label">
-            <slot />
-        </div>
-        <div class="calendar-header-right col-auto">
-            <q-btn
-                @click="doMoveTimePeriod(timePeriodUnit, timePeriodAmount)"
-                icon="chevron_right"
-                color="primary"
-                round
-                flat
-            />
-        </div>
+  <div class="calendar-header col-auto row justify-between items-center">
+    <div class="calendar-header-left col-auto">
+      <q-btn
+        @click="doMoveTimePeriod(timePeriodUnit, -timePeriodAmount)"
+        icon="chevron_left"
+        color="primary"
+        round
+        flat
+      />
     </div>
+    <div class="calendar-header-label">
+      <slot/>
+    </div>
+    <div class="calendar-header-right col-auto">
+      <q-btn
+        @click="doMoveTimePeriod(timePeriodUnit, timePeriodAmount)"
+        icon="chevron_right"
+        color="primary"
+        round
+        flat
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -68,8 +68,8 @@
 </script>
 
 <style lang="stylus">
-    .calendar-header
-        .calendar-month-year
-            font-size 1.25em
-            font-weight bold
+  .calendar-header
+    .calendar-month-year
+      font-size 1.25em
+      font-weight bold
 </style>

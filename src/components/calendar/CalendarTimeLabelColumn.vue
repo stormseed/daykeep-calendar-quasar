@@ -1,14 +1,14 @@
 <template>
-    <div class="calendar-day-column-label col-auto">
-        <div
-            class="calendar-day-time"
-            v-for="thisHour in 24"
-            :key="thisHour"
-            :style="{ 'height': dayCellHeight, 'max-height': dayCellHeight }"
-        >
-            {{ formatTimeFromNumber(thisHour - 1) }}
-        </div>
+  <div class="calendar-day-column-label col-auto">
+    <div
+      class="calendar-day-time"
+      v-for="thisHour in 24"
+      :key="thisHour"
+      :style="{ 'height': dayCellHeight, 'max-height': dayCellHeight }"
+    >
+      {{ formatTimeFromNumber(thisHour - 1) }}
     </div>
+  </div>
 </template>
 
 <script>
