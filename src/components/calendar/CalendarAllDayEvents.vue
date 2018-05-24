@@ -10,7 +10,7 @@
     >
       <calendar-event
         v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))"
-        :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + thisEvent.id.toString()"
+        :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + getEventIdString(thisEvent)"
         v-if="thisEvent.start.isAllDay"
         :event-object="thisEvent"
         :show-time="false"
@@ -28,8 +28,8 @@
   import CalendarMixin from './mixins/CalendarMixin'
   import CalendarEventMixin from './mixins/CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
-  import { date } from 'quasar'
-  const { DateTime } = require('luxon')
+  // import { date } from 'quasar'
+  // const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAllDayEvents',
     props: {
@@ -39,7 +39,7 @@
       },
       parsed: {
         type: Object,
-        default: {}
+        default: () => {}
       },
       numberOfDays: {
         type: Number,
@@ -67,12 +67,12 @@
     computed: {
       cellWidth: function () {
         return this.calculateDayCellWidth(this.numberOfDays)
-      },
+      }
     },
     methods: {
-      handleStartChange: function (val, oldVal) {
-        this.doUpdate()
-      },
+      // handleStartChange: function (val, oldVal) {
+      //   this.doUpdate()
+      // },
       doUpdate: function () {
         this.mountSetDate()
       },

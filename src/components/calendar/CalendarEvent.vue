@@ -23,7 +23,6 @@
 
 <script>
   import {
-    date,
     QBtn,
     QTooltip
   } from 'quasar'
@@ -36,7 +35,7 @@
     props: {
       eventObject: {
         type: Object,
-        default: this.blankCalendarEvent
+        default: () => {}
       },
       color: {
         type: String,
@@ -76,23 +75,7 @@
     },
     mixins: [CalendarMixin, CalendarEventMixin],
     data () {
-      return {
-        blankCalendarEvent: {
-          id: 0,
-          summary: '...',
-          description: '...',
-          start: {
-            dateTime: '2020-01-01 00:00:00',
-            isAllDay: false,
-            timeZone: 'America/New_York'
-          },
-          end: {
-            dateTime: '2020-01-01 01:00:00',
-            isAllDay: false,
-            timeZone: 'American/New_York'
-          }
-        }
-      }
+      return {}
     },
     computed: {
     },

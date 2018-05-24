@@ -168,7 +168,7 @@
     props: {
       eventObject: {
         type: Object,
-        default: this.blankCalendarEvent
+        default: () => {}
       },
       calendarLocale: {
         type: String,

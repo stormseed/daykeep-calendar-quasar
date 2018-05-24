@@ -51,7 +51,7 @@
               <calendar-agenda-event
                 v-if="dateGetEvents(forwardDate, true)"
                 v-for="thisEvent in dateGetEvents(forwardDate)"
-                :key="makeDT(forwardDate).toISODate() + thisEvent.id.toString()"
+                :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
                 :event-object="thisEvent"
                 :event-ref="eventRef"
                 :calendar-locale="calendarLocale"
@@ -110,7 +110,7 @@
                 class="full-width"
                 v-if="dateGetEvents(forwardDate)"
                 v-for="thisEvent in dateGetEvents(forwardDate, true)"
-                :key="makeDT(forwardDate).toISODate() + thisEvent.id.toString()"
+                :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
               >
                 <calendar-agenda-event
                   :event-object="thisEvent"
@@ -247,9 +247,9 @@
         this.localNumDays += this.numJumpDays
         done()
       },
-      handleStartChange: function (val, oldVal) {
-        this.doUpdate()
-      },
+      // handleStartChange: function (val, oldVal) {
+      //   this.doUpdate()
+      // },
       doUpdate: function () {
         this.mountSetDate()
       },
@@ -294,11 +294,13 @@
       )
     },
     watch: {
-      startYear: 'handleStartChange',
-      startMonth: 'handleStartChange',
-      startDay: 'handleStartChange',
-      eventArray: 'getPassedInEventArray',
-      parsedEvents: 'getPassedInParsedEvents'
+      startDate: 'handleStartChange',
+      eventArray: function () {
+        this.getPassedInEventArray()
+      },
+      parsedEvents: function () {
+        this.getPassedInParsedEvents()
+      }
     }
   }
 </script>

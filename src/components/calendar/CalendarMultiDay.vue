@@ -61,7 +61,7 @@
               v-for="thisDate in weekDateArray"
               :key="makeDT(thisDate).toISODate()"
               :start-date="thisDate"
-              :date-events="dateGetEvents(thisDate)"
+              :date-events="dateGetEvents(thisDate, true)"
               column-css-class="calendar-day-column-content"
               :style="{ 'width': dayCellWidth }"
               :event-ref="eventRef"
@@ -242,9 +242,9 @@
           return this.makeDT(this.workingDate).toFormat('MMMM yyyy')
         }
       },
-      handleStartChange: function (val, oldVal) {
-        this.doUpdate()
-      },
+      // handleStartChange: function (val, oldVal) {
+      //   this.doUpdate()
+      // },
       doUpdate: function () {
         this.mountSetDate()
         this.buildWeekDateArray(this.numDays, this.sundayFirstDayOfWeek)

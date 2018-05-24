@@ -145,7 +145,7 @@
       },
       eventArray: {
         type: Array,
-        default: []
+        default: () => []
       },
       eventRef: {
         type: String,
@@ -234,12 +234,24 @@
       switchToSingleDay: function (params) {
         this.setTimePeriod(params)
         this.$refs.fullCalendarTabs.selectTab('tab-single-day-component')
+      },
+      doUpdate: function () {
+        this.mountSetDate()
       }
     },
     mounted () {
       this.mountSetDate()
       this.parseEventList()
       this.setupEventsHandling()
+    },
+    watch: {
+      startDate: 'handleStartChange',
+      eventArray: function () {
+        this.getPassedInEventArray()
+      },
+      parsedEvents: function () {
+        this.getPassedInParsedEvents()
+      }
     }
   }
 </script>

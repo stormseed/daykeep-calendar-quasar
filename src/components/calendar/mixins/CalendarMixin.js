@@ -1,12 +1,11 @@
 import dashHas from 'lodash.has'
-import {
-  date
-} from 'quasar'
 const { DateTime } = require('luxon')
 export default {
   computed: {},
   methods: {
-
+    handleStartChange: function (val, oldVal) {
+      this.doUpdate()
+    },
     makeDT: function (dateObject, adjustTimezone) {
       if (typeof dateObject === 'undefined') {
         return null
@@ -257,6 +256,22 @@ export default {
     },
     createRandomString: function () {
       return Math.random().toString(36).substring(2, 15)
+    },
+    getEventIdString: function (eventObj) {
+      if (dashHas(eventObj, 'id')) {
+        if (typeof eventObj.id === 'number') {
+          return eventObj.id.toString()
+        }
+        else if (typeof eventObj.id === 'string') {
+          return eventObj.id
+        }
+        else {
+          return '' + eventObj.id
+        }
+      }
+      else {
+        return 'NOID' + this.createRandomString()
+      }
     }
   },
   mounted () {}

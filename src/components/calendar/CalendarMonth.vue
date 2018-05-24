@@ -99,7 +99,6 @@
   import CalendarMixin from './mixins/CalendarMixin'
   import CalendarEventMixin from './mixins/CalendarEventMixin'
   import {
-    date,
     QBtn,
     QTooltip,
     QTabs,
@@ -186,9 +185,9 @@
         // console.debug('monthGetDateEvents called with %s, returning %O', this.formatToSqlDate(dateObject), this.stripObject(returnVal))
         return returnVal
       },
-      handleStartChange: function (val, oldVal) {
-        debounce(this.doUpdate, 300)
-      },
+      // handleStartChange: function (val, oldVal) {
+      //   debounce(this.doUpdate, 300)
+      // },
       doUpdate: function () {
         this.mountSetDate()
         this.generateCalendarCellArray()
