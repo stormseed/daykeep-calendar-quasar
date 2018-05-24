@@ -145,7 +145,7 @@
       },
       eventArray: {
         type: Array,
-        default: []
+        default: () => []
       },
       eventRef: {
         type: String,
