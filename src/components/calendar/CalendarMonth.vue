@@ -90,6 +90,7 @@
       :event-object="eventDetailEventObject"
       :calendar-locale="calendarLocale"
       :calendar-timezone="calendarTimezone"
+      :event-ref="eventRef"
     />
 
   </div>
@@ -98,14 +99,14 @@
 <script>
   import CalendarMixin from './mixins/CalendarMixin'
   import CalendarEventMixin from './mixins/CalendarEventMixin'
+  import CalendarParentComponentMixin from './mixins/CalendarParentComponentMixin'
   import {
     QBtn,
     QTooltip,
     QTabs,
     QTab,
     QTabPane,
-    QScrollArea,
-    debounce
+    QScrollArea
   } from 'quasar'
   import QuantityBubble from './QuantityBubble'
   import CalendarEvent from './CalendarEvent'
@@ -128,44 +129,12 @@
       QTabPane,
       QScrollArea
     },
-    mixins: [CalendarMixin, CalendarEventMixin],
+    mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
     props: {
-      startDate: {
-        type: [Object, Date],
-        default: () => { return new Date() }
-      },
-      eventArray: {
-        type: Array,
-        default: () => []
-      },
-      parsedEvents: {
-        type: Object,
-        default: () => {}
-      },
-      eventRef: {
-        type: String,
-        default: 'cal-' + Math.random().toString(36).substring(2, 15)
-      },
-      preventEventDetail: {
-        type: Boolean,
-        default: false
-      },
-      fullComponentRef: String,
-      sundayFirstDayOfWeek: {
-        type: Boolean,
-        default: false
-      },
-      calendarLocale: {
-        type: String,
-        default: () => { return DateTime.local().locale }
-      },
-      calendarTimezone: {
-        type: String,
-        default: () => { return DateTime.local().zoneName }
-      }
+      fullComponentRef: String
     },
     data () {
-      return  {
+      return {
         dayCellHeight: 5,
         dayCellHeightUnit: 'rem',
         workingDate: new Date(),
@@ -181,23 +150,13 @@
     },
     methods: {
       monthGetDateEvents: function (dateObject) {
-        let returnVal = this.dateGetEvents(dateObject)
-        // console.debug('monthGetDateEvents called with %s, returning %O', this.formatToSqlDate(dateObject), this.stripObject(returnVal))
-        return returnVal
+        return this.dateGetEvents(dateObject)
       },
-      // handleStartChange: function (val, oldVal) {
-      //   debounce(this.doUpdate, 300)
-      // },
       doUpdate: function () {
         this.mountSetDate()
         this.generateCalendarCellArray()
       },
       getCalendarCellArray: function (monthNumber, yearNumber) {
-        // let currentDay = date.buildDate({
-        //   year: yearNumber,
-        //   month: monthNumber + 1, // TODO: is this correct? This should be in the Quasar docs
-        //   date: 1
-        // })
         let currentDay = this.makeDT(
           DateTime.fromObject({
             year: yearNumber,
@@ -205,8 +164,6 @@
             day: 1
           })
         )
-        // let currentWeekOfYear = date.getWeekOfYear(currentDay)
-        // let currentWeekOfYear = currentDay.weekNumber
         let currentWeekOfYear = this.getWeekNumber(currentDay, this.sundayFirstDayOfWeek)
         let weekArray = []
         let currentWeekArray = []
@@ -267,7 +224,7 @@
         if (this.fullComponentRef) {
           this.fullMoveToDay(dateObject)
         }
-      },
+      }
     },
     mounted () {
       this.doUpdate()
@@ -279,6 +236,10 @@
       this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
+      )
+      this.$root.$on(
+        'update-event-' + this.eventRef,
+        this.handleEventUpdate
       )
     },
     watch: {

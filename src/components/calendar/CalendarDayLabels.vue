@@ -28,7 +28,6 @@
 
 <script>
   import CalendarMixin from './mixins/CalendarMixin'
-  import { date } from 'quasar'
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarDayLabels',
@@ -87,20 +86,15 @@
         this.buildWeekDateArray(this.numberOfDays, this.sundayFirstDayOfWeek)
       },
       isCurrentDayLabel: function (thisDay, checkMonthOnly) {
-        // let now = new Date()
         let now = DateTime.local()
         thisDay = this.makeDT(thisDay)
-        // console.debug('isCurrentDayLabel called', thisDayNum, date.getDayOfWeek(now))
         if (checkMonthOnly === true) {
           return (
-            // date.getDayOfWeek(now) === date.getDayOfWeek(thisDay) &&
             now.weekday === thisDay.weekday &&
-            // now.getMonth() === thisDay.getMonth()
             now.month === thisDay.month
           )
         }
         else {
-          // return (date.isSameDate(now, thisDay, 'day'))
           return now.hasSame(thisDay, 'day')
         }
       },

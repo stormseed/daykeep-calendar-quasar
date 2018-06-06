@@ -159,7 +159,7 @@
           top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,
           height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
         }
-      },
+      }
     },
     mounted () {
       this.mountSetDate()

@@ -79,6 +79,7 @@
       ref="defaultEventDetail"
       v-if="!preventEventDetail"
       :event-object="eventDetailEventObject"
+      :event-ref="eventRef"
       :calendar-locale="calendarLocale"
       :calendar-timezone="calendarTimezone"
     />
@@ -89,6 +90,7 @@
 <script>
   import CalendarMixin from './mixins/CalendarMixin'
   import CalendarEventMixin from './mixins/CalendarEventMixin'
+  import CalendarParentComponentMixin from './mixins/CalendarParentComponentMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarDayColumn from './CalendarDayColumn'
   import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
@@ -97,36 +99,14 @@
   import CalendarAllDayEvents from './CalendarAllDayEvents'
   import CalendarEventDetail from './CalendarEventDetail'
   import {
-    date,
     QBtn,
     QTooltip,
     QScrollArea
   } from 'quasar'
-  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarMultiDay',
+    mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
     props: {
-      startDate: {
-        type: [Object, Date],
-        default: () => { return new Date() }
-      },
-      eventArray: {
-        type: Array,
-        default: () => []
-      },
-      parsedEvents: {
-        type: Object,
-        default: () => {}
-      },
-      eventRef: {
-        type: String,
-        // default: 'calendar'
-        default: 'cal-' + Math.random().toString(36).substring(2, 15)
-      },
-      preventEventDetail: {
-        type: Boolean,
-        default: false
-      },
       numDays: {
         type: Number,
         default: 7
@@ -157,19 +137,7 @@
         type: String,
         default: 'auto'
       },
-      fullComponentRef: String,
-      sundayFirstDayOfWeek: {
-        type: Boolean,
-        default: false
-      },
-      calendarLocale: {
-        type: String,
-        default: () => { return DateTime.local().locale }
-      },
-      calendarTimezone: {
-        type: String,
-        default: () => { return DateTime.local().zoneName }
-      }
+      fullComponentRef: String
     },
     components: {
       CalendarEvent,
@@ -183,7 +151,6 @@
       QTooltip,
       QScrollArea
     },
-    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {
         workingDate: new Date(),
@@ -224,13 +191,9 @@
         if (this.forceStartOfWeek) {
           let dateReturn = ''
           let bookendDates = this.getForcedWeekBookendDates()
-          // if (bookendDates.first.getMonth() !== bookendDates.last.getMonth()) {
           if (bookendDates.first.month !== bookendDates.last.month) {
-            // dateReturn += date.formatDate(bookendDates.first, 'MMM')
             dateReturn += bookendDates.first.toFormat('MMM')
-            // if (bookendDates.first.getFullYear() !== bookendDates.last.getFullYear()) {
             if (bookendDates.first.year !== bookendDates.last.year) {
-              // dateReturn += date.formatDate(bookendDates.first, ' YYYY')
               dateReturn += bookendDates.first.toFormat(' yyyy')
             }
             dateReturn += ' - '
@@ -242,9 +205,6 @@
           return this.makeDT(this.workingDate).toFormat('MMMM yyyy')
         }
       },
-      // handleStartChange: function (val, oldVal) {
-      //   this.doUpdate()
-      // },
       doUpdate: function () {
         this.mountSetDate()
         this.buildWeekDateArray(this.numDays, this.sundayFirstDayOfWeek)
@@ -271,6 +231,10 @@
       this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
+      )
+      this.$root.$on(
+        'update-event-' + this.eventRef,
+        this.handleEventUpdate
       )
     },
     watch: {

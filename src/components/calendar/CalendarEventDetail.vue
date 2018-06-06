@@ -2,28 +2,131 @@
 
   <q-modal v-model="modalIsOpen" class="calendar-event-detail">
     <div :class="getTopColorClasses">
-      <div class="row justify-end items-start ced-toolbar">
+      <div class="absolute-top-right row justify-end items-start ced-toolbar">
         <q-btn
           flat
           icon-right="close"
           @click="__close()"
         />
       </div>
-      <div class="ced-top-title" v-if="eventObject.summary">
+      <div
+        v-if="allowEditing && inEditMode"
+        class="ced-top-title"
+      >
+        <div
+          v-if="allowEditing && inEditMode"
+          class="ced-toolbar-edit-spacer">
+        </div>
+        <q-input
+          v-model="editEventObject.summary"
+          float-label="Summary"
+          inverted-light
+          :color="fieldColor"
+          class="no-shadow"
+        />
+      </div>
+      <div
+        v-else-if="eventObject.summary"
+        class="ced-top-title"
+      >
         {{ eventObject.summary }}
+      </div>
+      <div
+        v-if="allowEditing && !inEditMode"
+        class="ced-edit-button-container"
+      >
+        <div class="ced-edit-button">
+          <q-btn
+            round
+            icon="edit"
+            :color="getEventColor(eventObject, 'color')"
+            :text-color="getEventColor(eventObject, 'textColor')"
+            @click="startEditMode"
+          />
+        </div>
+
       </div>
 
     </div>
 
     <div class="ced-content">
-      <q-list>
+      <div
+        v-if="allowEditing && !inEditMode"
+        class="ced-edit-button-content-spacer"
+      ></div>
+      <q-list no-border>
 
         <!-- date / time -->
-        <q-item>
+        <q-item multiline>
           <q-item-side>
             <q-item-tile icon="access_time"/>
           </q-item-side>
-          <q-item-main>
+
+          <!-- edit mode -->
+          <q-item-main v-if="allowEditing && inEditMode">
+
+            <div class="row items-center gutter-xs">
+              <div>
+                <q-datetime
+                  v-model="startDateObject"
+                  type="date"
+                  inverted-light
+                  :color="fieldColor"
+                  class="no-shadow"
+                  format="MMM D, YYYY"
+                />
+              </div>
+
+              <div v-if="!editEventObject.start.isAllDay">
+                <q-datetime
+                  v-model="startTimeObject"
+                  type="time"
+                  inverted-light
+                  :color="fieldColor"
+                  class="no-shadow"
+                />
+              </div>
+
+              {{ startTimeObject }}
+
+              <div>to</div>
+
+              <div>
+                <q-datetime
+                  v-model="endDateObject"
+                  type="date"
+                  inverted-light
+                  :color="fieldColor"
+                  class="no-shadow"
+                  format="MMM D, YYYY"
+                />
+              </div>
+
+              <div v-if="!editEventObject.start.isAllDay">
+                <q-datetime
+                  v-model="endTimeObject"
+                  type="time"
+                  inverted-light
+                  :color="fieldColor"
+                  class="no-shadow"
+                />
+              </div>
+
+            </div>
+
+            <!-- all-day -->
+            <q-field>
+              <q-checkbox
+                label="All day"
+                v-model="editEventObject.start.isAllDay"
+                :toggle-indeterminate="false"
+              />
+            </q-field>
+
+          </q-item-main>
+
+          <!-- display mode -->
+          <q-item-main v-else>
             <div
               v-if="eventObject.start && eventObject.start.dateObject"
               class="ced-list-title"
@@ -54,9 +157,26 @@
         </q-item>
 
         <!-- location -->
-        <q-item
-          v-if="textExists('location')"
-        >
+        <q-item v-if="allowEditing && inEditMode" multiline>
+          <q-item-side>
+            <q-item-tile icon="location_on"/>
+          </q-item-side>
+          <q-item-main class="ced-list-title">
+            <q-field
+              helper="Location"
+            >
+              <q-input
+                v-model="editEventObject.location"
+                NOfloat-label="Location"
+                inverted-light
+                :color="fieldColor"
+                class="no-shadow"
+              />
+            </q-field>
+
+          </q-item-main>
+        </q-item>
+        <q-item v-else-if="textExists('location')">
           <q-item-side>
             <q-item-tile icon="location_on"/>
           </q-item-side>
@@ -128,9 +248,23 @@
         </q-item>
 
         <!-- description -->
+        <q-item v-if="allowEditing && inEditMode">
+          <q-item-side>
+            <q-item-tile icon="format_align_left"/>
+          </q-item-side>
+          <q-item-main>
+            <q-input
+              v-model="editEventObject.description"
+              float-label="Description"
+              inverted-light
+              :color="fieldColor"
+              class="no-shadow"
+            />
+          </q-item-main>
+        </q-item>
         <q-item
+          v-else-if="textExists('description')"
           multiline
-          v-if="textExists('description')"
         >
           <q-item-side>
             <q-item-tile icon="format_align_left"/>
@@ -141,8 +275,32 @@
         </q-item>
 
       </q-list>
+    </div>
+
+    <!-- editing close buttons -->
+    <div
+      v-if="allowEditing && inEditMode"
+      class="row justify-end q-pa-md gutter-sm"
+    >
+      <div>
+        <q-btn
+          color="warning"
+          icon="cancel"
+          label="Cancel"
+          @click="__close()"
+        />
+      </div>
+      <div>
+        <q-btn
+          color="positive"
+          icon="check"
+          label="Save"
+          @click="__save()"
+        />
+      </div>
 
     </div>
+
   </q-modal>
 
 </template>
@@ -150,7 +308,6 @@
 <script>
   import dashHas from 'lodash.has'
   import {
-    date,
     QList,
     QItem,
     QItemSide,
@@ -158,7 +315,11 @@
     QItemMain,
     QModal,
     QBtn,
-    QIcon
+    QIcon,
+    QField,
+    QCheckbox,
+    QDatetime,
+    QInput
   } from 'quasar'
   import CalendarMixin from './mixins/CalendarMixin'
   const { DateTime } = require('luxon')
@@ -169,6 +330,10 @@
         type: Object,
         default: () => {}
       },
+      eventRef: {
+        type: String,
+        default: 'cal-' + Math.random().toString(36).substring(2, 15)
+      },
       calendarLocale: {
         type: String,
         default: () => { return DateTime.local().locale }
@@ -176,6 +341,14 @@
       calendarTimezone: {
         type: String,
         default: () => { return DateTime.local().zoneName }
+      },
+      allowEditing: {
+        type: Boolean,
+        default: true
+      },
+      fieldColor: {
+        type: String,
+        default: 'grey-2'
       }
     },
     components: {
@@ -186,12 +359,22 @@
       QItemMain,
       QModal,
       QBtn,
-      QIcon
+      QIcon,
+      QField,
+      QCheckbox,
+      QDatetime,
+      QInput
     },
     mixins: [CalendarMixin],
     data () {
       return {
-        modalIsOpen: false
+        modalIsOpen: false,
+        inEditMode: false,
+        editEventObject: {},
+        startDateObject: new Date(),
+        startTimeObject: new Date(),
+        endDateObject: new Date(),
+        endTimeObject: new Date()
       }
     },
     computed: {
@@ -221,7 +404,10 @@
       },
       getTopColorClasses: function () {
         return this.addCssColorClasses({
-          'ced-top': true
+          'ced-top': true,
+          'q-pr-md': true,
+          'q-py-md': true,
+          'relative-position': true
         },
         this.eventObject)
       },
@@ -239,7 +425,7 @@
           },
           this.eventObject
         )
-      },
+      }
     },
     methods: {
       textExists: function (fieldLocation) {
@@ -248,14 +434,63 @@
           this.eventObject[fieldLocation].length > 0
         )
       },
-      formatDateTime: function (dateObject, format) {
-        return date.formatDate(dateObject, format)
-      },
       __open: function () {
         this.modalIsOpen = true
       },
       __close: function () {
         this.modalIsOpen = false
+        this.inEditMode = false
+      },
+      startEditMode: function () {
+        this.editEventObject = this.eventObject
+        // fixes for any values that will cause errors
+        if (!dashHas(this.editEventObject, 'start.isAllDay')) {
+          this.editEventObject.start.isAllDay = false
+        }
+        let dateObj = {}
+        if (typeof this.editEventObject.start.dateObject.toJSDate === 'function') {
+          dateObj = this.editEventObject.start.dateObject.toJSDate()
+        }
+        else {
+          dateObj = this.editEventObject.start.dateObject
+        }
+        this.startDateObject = dateObj
+        this.startTimeObject = dateObj
+        if (dashHas(this.editEventObject, 'end.dateObject')) {
+          if (typeof this.editEventObject.end.dateObject.toJSDate === 'function') {
+            dateObj = this.editEventObject.end.dateObject.toJSDate()
+          }
+          else {
+            dateObj = this.editEventObject.end.dateObject
+          }
+          this.endDateObject = dateObj
+          this.endTimeObject = dateObj
+        }
+        this.inEditMode = true
+      },
+      __save: function () {
+        // convert elements back to parsed format
+        let stepList = ['start', 'end']
+        for (let step of stepList) {
+          let dateObj = DateTime.fromJSDate(this[step + 'DateObject'])
+          let timeObj = this[step + 'TimeObject']
+          dateObj = dateObj.set({
+            hour: timeObj.getHours(),
+            minute: timeObj.getMinutes(),
+            second: timeObj.getSeconds()
+          })
+          this.editEventObject[step] = {
+            dateObject: dateObj,
+            dateTime: dateObj.toISO()
+          }
+        }
+        // done modifying
+        this.eventObject = this.editEventObject
+        this.$root.$emit(
+          'update-event-' + this.eventRef,
+          this.eventObject
+        )
+        this.__close()
       }
     },
     mounted () {}
@@ -277,12 +512,24 @@
       font-size .8em
       opacity 0.8
     .ced-top
-      padding .25em 0 1em
+      /*padding .25em 0 1em*/
       .ced-top-title
         font-size 1.25em
         margin-left $forcedLeftMargin
+        .ced-toolbar-edit-spacer
+          min-height 1em
+          height 1em
+      .ced-edit-button-container
+        position relative
+        .ced-edit-button
+          position absolute
+          left 8px
+          bottom -32px
     .ced-content
       font-size 1em
+      .ced-edit-button-content-spacer
+        min-height 1em
+        height 1em
     .ced-nested-item
       padding-left 0
     .ced-small-inverted-icon

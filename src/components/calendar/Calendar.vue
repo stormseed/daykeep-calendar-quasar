@@ -117,6 +117,7 @@
 <script>
   import CalendarMixin from './mixins/CalendarMixin'
   import CalendarEventMixin from './mixins/CalendarEventMixin'
+  import CalendarParentComponentMixin from './mixins/CalendarParentComponentMixin'
   import CalendarEvent from './CalendarEvent'
   import CalendarMonth from './CalendarMonth'
   import CalendarMultiDay from './CalendarMultiDay'
@@ -126,7 +127,6 @@
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import {
-    date,
     QBtn,
     QTooltip,
     QTabs,
@@ -135,38 +135,10 @@
     QScrollArea
   } from 'quasar'
   import QuantityBubble from './QuantityBubble'
-  const { DateTime } = require('luxon')
   export default {
     name: 'Calendar',
+    mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
     props: {
-      startDate: {
-        type: [Object, Date],
-        default: () => { return new Date() }
-      },
-      eventArray: {
-        type: Array,
-        default: () => []
-      },
-      eventRef: {
-        type: String,
-        default: 'cal-' + Math.random().toString(36).substring(2, 15)
-      },
-      preventEventDetail: {
-        type: Boolean,
-        default: false
-      },
-      calendarLocale: {
-        type: String,
-        default: () => { return DateTime.local().locale }
-      },
-      calendarTimezone: {
-        type: String,
-        default: () => { return DateTime.local().zoneName }
-      },
-      sundayFirstDayOfWeek: {
-        type: Boolean,
-        default: false
-      },
       tabLabels: {
         type: Object,
         default: () => {
@@ -197,7 +169,6 @@
       QTabPane,
       QScrollArea
     },
-    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {
         dayCellHeight: 5,
@@ -222,6 +193,10 @@
         this.$root.$on(
           this.eventRef + ':moveToSingleDay',
           this.switchToSingleDay
+        )
+        this.$root.$on(
+          'update-event-' + this.eventRef,
+          this.handleEventUpdate
         )
       },
       calPackageMoveTimePeriod: function (params) {

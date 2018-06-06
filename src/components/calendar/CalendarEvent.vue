@@ -87,7 +87,7 @@
         }
       },
       getEventClass: function () {
-        let returnVal = this.addCssColorClasses(
+        return this.addCssColorClasses(
           {
             'calendar-event': true,
             'calendar-event-month': this.monthStyle,
@@ -101,7 +101,6 @@
           },
           this.eventObject
         )
-        return returnVal
       },
       isEmptySlot: function () {
         return this.eventObject.start.isEmptySlot
@@ -147,13 +146,6 @@
         return false
       },
       formatTime: function (startTime) {
-        // let returnString = ''
-        // returnString += date.formatDate(startTime, 'h')
-        // if (startTime.getMinutes() > 0) {
-        //   returnString += ':' + date.formatDate(startTime, 'mm')
-        // }
-        // returnString += date.formatDate(startTime, 'a').slice(0, 1)
-        // return returnString
         let returnString = this.makeDT(startTime).toLocaleString(DateTime.TIME_SIMPLE)
         // simplify if AM / PM present
         if (returnString.includes('M')) {

@@ -28,8 +28,6 @@
   import CalendarMixin from './mixins/CalendarMixin'
   import CalendarEventMixin from './mixins/CalendarEventMixin'
   import CalendarEvent from './CalendarEvent'
-  // import { date } from 'quasar'
-  // const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAllDayEvents',
     props: {
@@ -70,15 +68,11 @@
       }
     },
     methods: {
-      // handleStartChange: function (val, oldVal) {
-      //   this.doUpdate()
-      // },
       doUpdate: function () {
         this.mountSetDate()
       },
       addDaysToDate: function (thisDateObject, numDays) {
         return this.makeDT(thisDateObject).plus({ days: numDays })
-        // return date.addToDate(thisDateObject, { days: numDays })
       }
     },
     mounted () {

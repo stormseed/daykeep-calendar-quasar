@@ -130,6 +130,7 @@
       ref="defaultEventDetail"
       v-if="!preventEventDetail"
       :event-object="eventDetailEventObject"
+      :event-ref="eventRef"
     />
 
   </div>
@@ -138,6 +139,7 @@
 <script>
   import CalendarMixin from './mixins/CalendarMixin'
   import CalendarEventMixin from './mixins/CalendarEventMixin'
+  import CalendarParentComponentMixin from './mixins/CalendarParentComponentMixin'
   import CalendarAgendaEvent from './CalendarAgendaEvent'
   import CalendarEventDetail from './CalendarEventDetail'
   import CalendarHeaderNav from './CalendarHeaderNav'
@@ -149,7 +151,6 @@
     QInfiniteScroll,
     QSpinnerDots
   } from 'quasar'
-  const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAgenda',
     components: {
@@ -162,17 +163,11 @@
       QInfiniteScroll,
       QSpinnerDots
     },
-    mixins: [CalendarMixin, CalendarEventMixin],
+    mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
     props: {
       agendaStyle: {
         type: String,
         default: 'dot'
-      },
-      startDate: {
-        type: [Object, Date],
-        default: () => {
-          return new Date()
-        }
       },
       numDays: {
         type: Number,
@@ -182,40 +177,11 @@
         type: String,
         default: '4rem'
       },
-      eventArray: {
-        type: Array,
-        default: () => []
-      },
-      parsedEvents: {
-        type: Object,
-        default: () => {
-        }
-      },
-      eventRef: {
-        type: String,
-        default: 'calendar'
-      },
-      preventEventDetail: {
-        type: Boolean,
-        default: false
-      },
       scrollHeight: {
         type: String,
         default: '200px'
       },
-      fullComponentRef: String,
-      calendarLocale: {
-        type: String,
-        default: () => {
-          return DateTime.local().locale
-        }
-      },
-      calendarTimezone: {
-        type: String,
-        default: () => {
-          return DateTime.local().zoneName
-        }
-      }
+      fullComponentRef: String
     },
     data () {
       return {
@@ -247,9 +213,6 @@
         this.localNumDays += this.numJumpDays
         done()
       },
-      // handleStartChange: function (val, oldVal) {
-      //   this.doUpdate()
-      // },
       doUpdate: function () {
         this.mountSetDate()
       },
@@ -263,7 +226,6 @@
         }
       },
       handleNavMove: function (params) {
-        console.debug('agenda handleNavMove called')
         this.moveTimePeriod(params)
         this.$emit(
           this.eventRef + ':navMovePeriod',
@@ -272,7 +234,6 @@
             amount: params.amount
           }
         )
-        // this.generateCalendarCellArray()
       },
       handleDayClick: function (dateObject) {
         if (this.fullComponentRef) {
@@ -291,6 +252,10 @@
       this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
+      )
+      this.$root.$on(
+        'update-event-' + this.eventRef,
+        this.handleEventUpdate
       )
     },
     watch: {

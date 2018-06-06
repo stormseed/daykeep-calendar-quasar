@@ -53,7 +53,7 @@ export default {
         )
       }
     },
-    getEventColor: function (cssObject, eventObject, colorName) {
+    getEventColor: function (eventObject, colorName) {
       if (dashHas(eventObject, colorName)) {
         return eventObject[colorName]
       }
@@ -68,12 +68,11 @@ export default {
       }
     },
     addCssColorClasses: function (cssObject, eventObject) {
-      cssObject['bg-' + this.getEventColor(cssObject, eventObject, 'color')] = true
-      cssObject['text-' + this.getEventColor(cssObject, eventObject, 'textColor')] = true
+      cssObject['bg-' + this.getEventColor(eventObject, 'color')] = true
+      cssObject['text-' + this.getEventColor(eventObject, 'textColor')] = true
       return cssObject
     },
     formatDate: function (dateObject, formatString, usePredefined) {
-      // return date.formatDate(dateObject, formatString)
       if (usePredefined) {
         return this.makeDT(dateObject).toLocaleString(DateTime[formatString])
       }
@@ -141,29 +140,20 @@ export default {
       }
     },
     getForcedWeekDateArray: function (numberOfDays, sundayFirstDayOfWeek) {
-      // console.debug('getForcedWeekDateArray called, numberOfDays = ', numberOfDays)
       let bookendDates = this.getForcedWeekBookendDates(numberOfDays, sundayFirstDayOfWeek)
-      // console.debug('getForcedWeekDateArray says bookendDates = ', bookendDates)
       let returnArray = []
-      // console.debug('about to count')
       for (let counter = 0; counter <= numberOfDays - 1; counter++) {
-        // console.debug('counter = ', counter)
         returnArray.push(
-          // date.addToDate(bookendDates.first, { days: counter })
           this.makeDT(bookendDates.first).plus({days: counter})
-          // bookendDates.first.add({ days: counter })
         )
       }
-      // console.debug('about to return from getForcedWeekDateArray')
       return returnArray
     },
     getWeekDateArray: function (numberOfDays) {
       let returnArray = []
       for (let counter = 0; counter <= numberOfDays - 1; counter++) {
         returnArray.push(
-          // this.workingDate.add({ days: counter })
-          // date.addToDate(this.workingDate, { days: counter })
-          this.makeDT(this.workingDate).plus({ days: counter }  )
+          this.makeDT(this.workingDate).plus({ days: counter })
         )
       }
       return returnArray
@@ -189,8 +179,6 @@ export default {
     moveTimePeriod: function (params) {
       let paramObj = {}
       paramObj[params.unitType] = params.amount
-      // console.debug('moveTimePeriod', params, this.workingDate)
-      // this.workingDate = date.addToDate(this.workingDate, paramObj)
       this.workingDate = this.workingDate.plus(paramObj)
     },
     setTimePeriod: function (params) {
@@ -221,9 +209,7 @@ export default {
       }
     },
     mountSetDate: function () {
-      // this.workingDate = this.startDate
       this.workingDate = this.makeDT(this.startDate)
-      // this.workingDate = DateTime.fromJSDate(this.startDate)
     },
     decimalAdjust: function (type, value, exp) {
       // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor

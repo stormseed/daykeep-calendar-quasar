@@ -106,7 +106,6 @@
           'items-center': true,
           'justify-start': true,
           'cursor-pointer': true,
-          // 'all-pointer-events': true,
           'calendar-agenda-event': true,
           'calendar-agenda-event-dot-style': true,
           'calendar-agenda-event-allday': this.eventObject.start.isAllDay,
@@ -118,8 +117,7 @@
           {
             'calendar-agenda-event': true,
             'calendar-agenda-event-allday': this.eventObject.start.isAllDay,
-            'calendar-agenda-event-empty-slot': this.eventObject.start.isEmptySlot,
-            // 'cursor-pointer': true
+            'calendar-agenda-event-empty-slot': this.eventObject.start.isEmptySlot
           },
           this.eventObject
         )
@@ -143,7 +141,6 @@
         return returnString
       },
       handleClick: function (e) {
-        // console.debug('event clicked')
         this.$emit('click', this.eventObject)
         this.triggerEventClick(this.eventObject, this.eventRef)
       }
