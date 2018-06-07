@@ -46,6 +46,7 @@ Or you can pass in parameters to customize
   :sunday-first-day-of-week="true"
   calendar-locale="fr"
   calendar-timezone="Europe/Paris"
+  :allow-editing="false"
 />
 ```
 
@@ -107,6 +108,10 @@ The event data format is meant to be a subset of the [Google Calendar v3 API](ht
 
 Each object needs to have a unique ID. The date time should be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. A value in the optional `timeZone` field will override the timezone.
 
+## Calendar event referencing
+
+Each calendar is given a random reference string so that we can distinguish between multiple calendars on a page. You can override this and pass in a string so that you can listen for events from that calendar. In this case, if we pass in the string `MYCALENDAR`, the Vue.js event `click-event-MYCALENDAR` would fire on the [global event bus](http://quasar-framework.org/components/global-event-bus.html) when a calendar event is clicked on. 
+
 ## Custom event detail handling
 
 By default we use our own event detail popup when an event is clicked. You can override this and use your own by doing a few things:
@@ -114,8 +119,6 @@ By default we use our own event detail popup when an event is clicked. You can o
 * Pass in an event reference string
 * Prevent the default event detail from showing up
 * Listen for a click event to trigger your own detail content
-
-Each calendar is given a random reference string so that we can distinguish between multiple calendars on a page. You can override this and pass in a string so that you can listen for events from that calendar. In this case, if we pass in the string `MYCALENDAR`, the Vue.js event `click-event-MYCALENDAR` would fire on the [global event bus](http://quasar-framework.org/components/global-event-bus.html) when a calendar event is clicked on. 
 
 So to implement, be sure to have `prevent-event-detail` and `event-ref` set when you embed a calendar component:
 
@@ -138,6 +141,19 @@ this.$root.$on(
 )
 ```
 
+## Event editing
+
+Starting with v0.3 we are setting up the framework to allow for editing individual events. By default this functionality is turned off, but you can pass a value of `true` into the `allow-editing` parameter on one of the main calendar components. The functionality if very limited to start but we expect to be adding more features in the near future.
+
+When an event is edited, a global event bus message in the format of `update-event-MYCALENDAR` is sent with the updated event information as the payload. You can listen for this to trigger a call to whatever API you are using for calendar communication. Right now when an an update is detected the passed in `events` array is updated and the array is parsed again.
+
+Only a subset of fields are currently editable:
+
+* Start / end time and date
+* Is an all-day event
+* Summary / title
+* Description
+
 ## Individual Vue components
 
 The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `CalendarAgenda` share the following properties:
@@ -150,6 +166,7 @@ The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `Ca
 | `calendar-timezone` | String | Manually set the timezone for the calendar. Many strings can be passed in including `UTC` or any valid [IANA zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). This is better explained [here](https://moment.github.io/luxon/docs/manual/zones.html). |
 | `event-ref` | String | Give the calendar component a custom name so that events triggered on the global event bus can be watched. |
 | `prevent-event-detail` | Boolean | Prevent the default event detail popup from appearing when an event is clicked in a calendar. |
+| `allow-editing` | Boolean | Allows for individual events to be edited. See the editing section. |
 
 In addition, each individual components have the following properties:
 

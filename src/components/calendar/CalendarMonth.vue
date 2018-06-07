@@ -76,6 +76,7 @@
                   :has-next-day="thisEvent.hasNext"
                   :first-day-of-week="(weekDayIndex === 0)"
                   :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
+                  :allow-editing="allowEditing"
                 />
               </div>
             </template>
@@ -91,6 +92,7 @@
       :calendar-locale="calendarLocale"
       :calendar-timezone="calendarTimezone"
       :event-ref="eventRef"
+      :allow-editing="allowEditing"
     />
 
   </div>

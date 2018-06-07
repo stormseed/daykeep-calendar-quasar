@@ -68,6 +68,7 @@
               :prevent-event-detail="preventEventDetail"
               :calendar-locale="calendarLocale"
               :calendar-timezone="calendarTimezone"
+              :allow-editing="allowEditing"
             />
           </div>
         </div>
@@ -82,6 +83,7 @@
       :event-ref="eventRef"
       :calendar-locale="calendarLocale"
       :calendar-timezone="calendarTimezone"
+      :allow-editing="allowEditing"
     />
 
   </div>

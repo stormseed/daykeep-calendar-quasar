@@ -32,6 +32,10 @@ export default {
     sundayFirstDayOfWeek: {
       type: Boolean,
       default: false
+    },
+    allowEditing: {
+      type: Boolean,
+      default: false
     }
   },
   mounted () {}

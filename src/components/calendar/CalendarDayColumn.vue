@@ -24,6 +24,7 @@
         :calendar-locale="calendarLocale"
         :calendar-timezone="calendarTimezone"
         :prevent-event-detail="preventEventDetail"
+        :allow-editing="allowEditing"
       />
     </div>
 
@@ -70,6 +71,10 @@
       calendarTimezone: {
         type: String,
         default: () => { return DateTime.local().zoneName }
+      },
+      allowEditing: {
+        type: Boolean,
+        default: false
       }
     },
     components: {

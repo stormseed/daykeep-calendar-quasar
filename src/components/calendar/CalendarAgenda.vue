@@ -56,6 +56,7 @@
                 :event-ref="eventRef"
                 :calendar-locale="calendarLocale"
                 :calendar-timezone="calendarTimezone"
+                :allow-editing="allowEditing"
               />
             </div>
           </div>
@@ -131,6 +132,7 @@
       v-if="!preventEventDetail"
       :event-object="eventDetailEventObject"
       :event-ref="eventRef"
+      :allow-editing="allowEditing"
     />
 
   </div>

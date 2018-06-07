@@ -85,6 +85,10 @@
       calendarTimezone: {
         type: String,
         default: () => { return DateTime.local().zoneName }
+      },
+      allowEditing: {
+        type: Boolean,
+        default: false
       }
     },
     components: {
@@ -141,6 +145,7 @@
         return returnString
       },
       handleClick: function (e) {
+        this.eventObject.allowEditing = this.allowEditing
         this.$emit('click', this.eventObject)
         this.triggerEventClick(this.eventObject, this.eventRef)
       }

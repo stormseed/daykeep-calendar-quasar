@@ -1,6 +1,11 @@
 <template>
 
-  <q-modal v-model="modalIsOpen" class="calendar-event-detail">
+  <q-modal
+    v-model="modalIsOpen"
+    class="calendar-event-detail"
+    @hide="__close()"
+    @escape-key="__close()"
+  >
     <div :class="getTopColorClasses">
       <div class="absolute-top-right row justify-end items-start ced-toolbar">
         <q-btn
@@ -10,11 +15,11 @@
         />
       </div>
       <div
-        v-if="allowEditing && inEditMode"
+        v-if="isEditingAllowed && inEditMode"
         class="ced-top-title"
       >
         <div
-          v-if="allowEditing && inEditMode"
+          v-if="isEditingAllowed && inEditMode"
           class="ced-toolbar-edit-spacer">
         </div>
         <q-input
@@ -32,7 +37,7 @@
         {{ eventObject.summary }}
       </div>
       <div
-        v-if="allowEditing && !inEditMode"
+        v-if="isEditingAllowed && !inEditMode"
         class="ced-edit-button-container"
       >
         <div class="ced-edit-button">
@@ -51,7 +56,7 @@
 
     <div class="ced-content">
       <div
-        v-if="allowEditing && !inEditMode"
+        v-if="isEditingAllowed && !inEditMode"
         class="ced-edit-button-content-spacer"
       ></div>
       <q-list no-border>
@@ -63,53 +68,61 @@
           </q-item-side>
 
           <!-- edit mode -->
-          <q-item-main v-if="allowEditing && inEditMode">
+          <q-item-main v-if="isEditingAllowed && inEditMode">
 
             <div class="row items-center gutter-xs">
               <div>
-                <q-datetime
-                  v-model="startDateObject"
-                  type="date"
-                  inverted-light
-                  :color="fieldColor"
-                  class="no-shadow"
-                  format="MMM D, YYYY"
-                />
+                <q-field>
+                  <q-datetime
+                    v-model="startDateObject"
+                    type="date"
+                    inverted-light
+                    :color="fieldColor"
+                    class="no-shadow"
+                    format="MMM D, YYYY"
+                  />
+                </q-field>
+
               </div>
 
               <div v-if="!editEventObject.start.isAllDay">
-                <q-datetime
-                  v-model="startTimeObject"
-                  type="time"
-                  inverted-light
-                  :color="fieldColor"
-                  class="no-shadow"
-                />
+                <q-field>
+                  <q-datetime
+                    v-model="startTimeObject"
+                    type="time"
+                    inverted-light
+                    :color="fieldColor"
+                    class="no-shadow"
+                  />
+                </q-field>
+
               </div>
-
-              {{ startTimeObject }}
-
               <div>to</div>
-
               <div>
-                <q-datetime
-                  v-model="endDateObject"
-                  type="date"
-                  inverted-light
-                  :color="fieldColor"
-                  class="no-shadow"
-                  format="MMM D, YYYY"
-                />
+                <q-field>
+                  <q-datetime
+                    v-model="endDateObject"
+                    type="date"
+                    inverted-light
+                    :color="fieldColor"
+                    class="no-shadow"
+                    format="MMM D, YYYY"
+                  />
+                </q-field>
+
               </div>
 
               <div v-if="!editEventObject.start.isAllDay">
-                <q-datetime
-                  v-model="endTimeObject"
-                  type="time"
-                  inverted-light
-                  :color="fieldColor"
-                  class="no-shadow"
-                />
+                <q-field>
+                  <q-datetime
+                    v-model="endTimeObject"
+                    type="time"
+                    inverted-light
+                    :color="fieldColor"
+                    class="no-shadow"
+                  />
+                </q-field>
+
               </div>
 
             </div>
@@ -157,17 +170,15 @@
         </q-item>
 
         <!-- location -->
-        <q-item v-if="allowEditing && inEditMode" multiline>
+        <q-item v-if="isEditingAllowed && inEditMode" multiline>
           <q-item-side>
             <q-item-tile icon="location_on"/>
           </q-item-side>
           <q-item-main class="ced-list-title">
-            <q-field
-              helper="Location"
-            >
+            <q-field>
               <q-input
                 v-model="editEventObject.location"
-                NOfloat-label="Location"
+                float-label="Location"
                 inverted-light
                 :color="fieldColor"
                 class="no-shadow"
@@ -248,18 +259,21 @@
         </q-item>
 
         <!-- description -->
-        <q-item v-if="allowEditing && inEditMode">
+        <q-item v-if="isEditingAllowed && inEditMode">
           <q-item-side>
             <q-item-tile icon="format_align_left"/>
           </q-item-side>
           <q-item-main>
-            <q-input
-              v-model="editEventObject.description"
-              float-label="Description"
-              inverted-light
-              :color="fieldColor"
-              class="no-shadow"
-            />
+            <q-field>
+              <q-input
+                v-model="editEventObject.description"
+                float-label="Description"
+                inverted-light
+                :color="fieldColor"
+                class="no-shadow"
+              />
+            </q-field>
+
           </q-item-main>
         </q-item>
         <q-item
@@ -279,7 +293,7 @@
 
     <!-- editing close buttons -->
     <div
-      v-if="allowEditing && inEditMode"
+      v-if="isEditingAllowed && inEditMode"
       class="row justify-end q-pa-md gutter-sm"
     >
       <div>
@@ -344,7 +358,7 @@
       },
       allowEditing: {
         type: Boolean,
-        default: true
+        default: false
       },
       fieldColor: {
         type: String,
@@ -425,7 +439,14 @@
           },
           this.eventObject
         )
+      },
+      isEditingAllowed: function () {
+        if (dashHas(this.eventObject, 'allowEditing')) {
+          return this.eventObject.allowEditing
+        }
+        return this.allowEditing
       }
+
     },
     methods: {
       textExists: function (fieldLocation) {
@@ -491,7 +512,7 @@
           this.eventObject
         )
         this.__close()
-      }
+      },
     },
     mounted () {}
   }

@@ -14,9 +14,6 @@ export default {
   computed: {},
   methods: {
 
-    stripObject: function (thisObj) {
-      return JSON.parse(JSON.stringify(thisObj))
-    },
     formatToSqlDate: function (dateObject) {
       return this.makeDT(dateObject).toISODate()
     },
@@ -129,8 +126,11 @@ export default {
           // start date
           thisEvent.start['dateObject'] = DateTime.fromISO(thisEvent.start.dateTime)
           if (dashHas(thisEvent.start, 'timeZone')) {
+            // convert to local timezone
             thisEvent.start.dateObject = thisEvent.start.dateObject
               .setZone(thisEvent.start.timeZone, { keepLocalTime: true })
+              .toLocal()
+            delete thisEvent.start.timeZone
             thisEvent.start.dateTime = thisEvent.start.dateObject.toISO() // fix time zone
           }
           thisEvent.start.dateObject = this.moveToDisplayZone(
@@ -139,8 +139,11 @@ export default {
           // end date
           thisEvent.end['dateObject'] = DateTime.fromISO(thisEvent.end.dateTime)
           if (dashHas(thisEvent.end, 'timeZone')) {
+            // convert to local timezone
             thisEvent.end.dateObject = thisEvent.end.dateObject
               .setZone(thisEvent.end.timeZone, { keepLocalTime: true })
+              .toLocal()
+            delete thisEvent.end.timeZone
             thisEvent.end.dateTime = thisEvent.end.dateObject.toISO() // fix time zone
           }
           thisEvent.end.dateObject = this.moveToDisplayZone(
