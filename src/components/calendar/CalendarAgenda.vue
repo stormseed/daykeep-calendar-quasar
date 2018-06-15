@@ -213,7 +213,7 @@
       },
       loadMore: function (index, done) {
         this.localNumDays += this.numJumpDays
-        done()
+        done(true)
       },
       doUpdate: function () {
         this.mountSetDate()
