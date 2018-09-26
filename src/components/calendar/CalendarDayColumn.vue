@@ -5,6 +5,7 @@
       v-for="thisHour in 24"
       :key="thisHour"
       :style="getCellStyle"
+      :id="makeDT(workingDate).toISODate() + '-hour-' + (thisHour - 1)"
     >
       <div class="calendar-day-time-content"></div>
     </div>
@@ -27,6 +28,12 @@
         :allow-editing="allowEditing"
       />
     </div>
+
+    <!-- current time -->
+    <div
+      class="current-time-line"
+      :style="calculateTimePosition"
+    ></div>
 
   </div>
 </template>
@@ -102,9 +109,27 @@
         return returnVal
       },
       getCellStyle: function () {
+        let thisHeight = this.dayCellHeight + this.dayCellHeightUnit
         return {
-          height: this.dayCellHeight + this.dayCellHeightUnit,
-          'max-height': this.dayCellHeight + this.dayCellHeightUnit
+          height: thisHeight,
+          'max-height': thisHeight
+        }
+      },
+      calculateTimePosition: function () {
+        let thisDateObject = this.makeDT(DateTime.local())
+        if (
+          thisDateObject.hasSame(this.workingDate, 'day') &&
+          thisDateObject.hasSame(this.workingDate, 'month') &&
+          thisDateObject.hasSame(this.workingDate, 'year')
+        ) {
+          let pos = this.calculateDayEventPosition(thisDateObject, thisDateObject)
+          pos.height = pos.top + 1
+          return pos
+        }
+        else {
+          return {
+            display: 'none'
+          }
         }
       }
     },
@@ -197,6 +222,10 @@
       margin-left 1px
     .calendar-day-event-overlap-first
       margin-left 0
+    .current-time-line
+      position absolute
+      border 1px solid red
+      width 100%
 
 
 </style>
