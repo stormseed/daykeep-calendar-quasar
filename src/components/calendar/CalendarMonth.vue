@@ -42,7 +42,10 @@
         >
           <div
             v-if="isCurrentDate(thisDay.dateObject)"
-            :class="{ 'cursor-pointer': calendarDaysAreClickable }"
+            :class="{
+              'calendar-day-number': true,
+              'cursor-pointer': calendarDaysAreClickable
+            }"
             @click="handleDayClick(thisDay.dateObject)"
           >
             <quantity-bubble

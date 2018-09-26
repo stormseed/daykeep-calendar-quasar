@@ -71,8 +71,8 @@
       height 2em
       width 2em
       position absolute
-      top 0
-      left 0
+      top 2px
+      left 2px
       .quantity-value
         vertical-align middle
     .quantity-bubble-offset
