@@ -32,7 +32,7 @@
     <!-- current time -->
     <div
       class="current-time-line"
-      :style="calculateTimePosition"
+      :style="timePosition"
     ></div>
 
   </div>
@@ -91,7 +91,11 @@
     data () {
       return {
         workingDate: new Date(),
-        eventDetailEventObject: {}
+        eventDetailEventObject: {},
+        timePosition: {
+          display: 'none'
+        },
+        timePositionInterval: {}
       }
     },
     watch: {
@@ -113,23 +117,6 @@
         return {
           height: thisHeight,
           'max-height': thisHeight
-        }
-      },
-      calculateTimePosition: function () {
-        let thisDateObject = this.makeDT(DateTime.local())
-        if (
-          thisDateObject.hasSame(this.workingDate, 'day') &&
-          thisDateObject.hasSame(this.workingDate, 'month') &&
-          thisDateObject.hasSame(this.workingDate, 'year')
-        ) {
-          let pos = this.calculateDayEventPosition(thisDateObject, thisDateObject)
-          pos.height = pos.top + 1
-          return pos
-        }
-        else {
-          return {
-            display: 'none'
-          }
         }
       }
     },
@@ -189,10 +176,48 @@
           top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,
           height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
         }
+      },
+      calculateTimePosition: function () {
+        let pos = {}
+        let thisDateObject = this.makeDT(DateTime.local())
+        console.debug(
+          'calculateTimePosition called',
+          thisDateObject.toISODate(),
+          this.workingDate.toISODate()
+        )
+        if (
+          thisDateObject.hasSame(this.workingDate, 'day') &&
+          thisDateObject.hasSame(this.workingDate, 'month') &&
+          thisDateObject.hasSame(this.workingDate, 'year')
+        ) {
+          pos = this.calculateDayEventPosition(thisDateObject, thisDateObject)
+          pos.height = pos.top + 1
+        }
+        else {
+          console.debug('else hit')
+          pos = {
+            display: 'none'
+          }
+        }
+        this.timePosition = pos
+      },
+      startTimePositionInterval: function () {
+        this.calculateTimePosition()
+        this.timePositionInterval = setInterval(
+          this.calculateTimePosition,
+          60000 // one minute
+        )
+      },
+      endTimePositionInterval: function () {
+        clearInterval(this.timePositionInterval)
       }
     },
     mounted () {
       this.mountSetDate()
+      this.startTimePositionInterval()
+    },
+    beforeDestroy () {
+      this.endTimePositionInterval()
     }
   }
 </script>
