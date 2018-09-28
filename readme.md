@@ -42,7 +42,7 @@ Or you can pass in parameters to customize
 ```html
 <calendar-month
   :start-date="Date('2019-01-01')"
-  :events="someEventObject"
+  :event-array="someEventObject"
   :sunday-first-day-of-week="true"
   calendar-locale="fr"
   calendar-timezone="Europe/Paris"
@@ -110,7 +110,7 @@ Each object needs to have a unique ID. The date time should be in [ISO 8601](htt
 
 ## Calendar event referencing
 
-Each calendar is given a random reference string so that we can distinguish between multiple calendars on a page. You can override this and pass in a string so that you can listen for events from that calendar. In this case, if we pass in the string `MYCALENDAR`, the Vue.js event `click-event-MYCALENDAR` would fire on the [global event bus](http://quasar-framework.org/components/global-event-bus.html) when a calendar event is clicked on. 
+Each calendar is given a random reference string so that we can distinguish between multiple calendars on a page. You can override this and pass in a string so that you can listen for events from that calendar. In this case, if we pass in the string `MYCALENDAR`, the Vue.js event `click-event-MYCALENDAR` would fire on the [global event bus](http://quasar-framework.org/components/global-event-bus.html) when a calendar event is clicked on.
 
 ## Custom event detail handling
 
@@ -126,7 +126,7 @@ So to implement, be sure to have `prevent-event-detail` and `event-ref` set when
 <calendar
   event-ref="MYCALENDAR"
   :prevent-event-detail="true"
-  :events="someEventObject"
+  :event-array="someEventObject"
 />
 ```
 
@@ -145,7 +145,7 @@ this.$root.$on(
 
 Starting with v0.3 we are setting up the framework to allow for editing individual events. By default this functionality is turned off, but you can pass a value of `true` into the `allow-editing` parameter on one of the main calendar components. The functionality if very limited to start but we expect to be adding more features in the near future.
 
-When an event is edited, a global event bus message in the format of `update-event-MYCALENDAR` is sent with the updated event information as the payload. You can listen for this to trigger a call to whatever API you are using for calendar communication. Right now when an an update is detected the passed in `events` array is updated and the array is parsed again.
+When an event is edited, a global event bus message in the format of `update-event-MYCALENDAR` is sent with the updated event information as the payload. You can listen for this to trigger a call to whatever API you are using for calendar communication. Right now when an an update is detected the passed in `eventArray` array is updated and the array is parsed again.
 
 Only a subset of fields are currently editable:
 
@@ -167,6 +167,7 @@ The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `Ca
 | `event-ref` | String | Give the calendar component a custom name so that events triggered on the global event bus can be watched. |
 | `prevent-event-detail` | Boolean | Prevent the default event detail popup from appearing when an event is clicked in a calendar. |
 | `allow-editing` | Boolean | Allows for individual events to be edited. See the editing section. |
+| `day-display-start-hour` | Number| Will scroll to a defined start hour when a day / multi-day component is rendered. Pass in the hour of the day from 0-23, the default being `7`. Current has no effect on the `CalendarAgenda` component. |
 
 In addition, each individual components have the following properties:
 
@@ -190,11 +191,3 @@ In addition, each individual components have the following properties:
 | `num-days` | Number | The number of days to initially display and also the number of additional days to load up when the user scrolls to the bottom of the agenda. |
 | `agenda-style` | String | Defaults to "dot". You can also set this as "block" to use an infinite scroll design that is meant for mobile use. |
 | `scroll-height` | String | Defaults to `200px`, this is meant to define the size of the "block" style. |
-
-## Roadmap
-
-Our near-term roadmap is as follows:
-
-| Version | Description |
-| --- | --- |
-| v0.3.x | Have some basic editing abilities such as changing the data for an event and drag and drop editing. |

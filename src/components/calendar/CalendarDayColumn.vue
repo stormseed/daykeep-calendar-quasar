@@ -5,6 +5,7 @@
       v-for="thisHour in 24"
       :key="thisHour"
       :style="getCellStyle"
+      :id="getDayHourId(eventRef, workingDate, thisHour - 1)"
     >
       <div class="calendar-day-time-content"></div>
     </div>
@@ -27,6 +28,12 @@
         :allow-editing="allowEditing"
       />
     </div>
+
+    <!-- current time -->
+    <div
+      class="current-time-line"
+      :style="timePosition"
+    ></div>
 
   </div>
 </template>
@@ -84,7 +91,11 @@
     data () {
       return {
         workingDate: new Date(),
-        eventDetailEventObject: {}
+        eventDetailEventObject: {},
+        timePosition: {
+          display: 'none'
+        },
+        timePositionInterval: {}
       }
     },
     watch: {
@@ -102,9 +113,10 @@
         return returnVal
       },
       getCellStyle: function () {
+        let thisHeight = this.dayCellHeight + this.dayCellHeightUnit
         return {
-          height: this.dayCellHeight + this.dayCellHeightUnit,
-          'max-height': this.dayCellHeight + this.dayCellHeightUnit
+          height: thisHeight,
+          'max-height': thisHeight
         }
       }
     },
@@ -164,10 +176,42 @@
           top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,
           height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
         }
+      },
+      calculateTimePosition: function () {
+        let pos = {}
+        let thisDateObject = this.makeDT(DateTime.local())
+        if (
+          thisDateObject.hasSame(this.workingDate, 'day') &&
+          thisDateObject.hasSame(this.workingDate, 'month') &&
+          thisDateObject.hasSame(this.workingDate, 'year')
+        ) {
+          pos = this.calculateDayEventPosition(thisDateObject, thisDateObject)
+          pos.height = pos.top + 1
+        }
+        else {
+          pos = {
+            display: 'none'
+          }
+        }
+        this.timePosition = pos
+      },
+      startTimePositionInterval: function () {
+        this.calculateTimePosition()
+        this.timePositionInterval = setInterval(
+          this.calculateTimePosition,
+          60000 // one minute
+        )
+      },
+      endTimePositionInterval: function () {
+        clearInterval(this.timePositionInterval)
       }
     },
     mounted () {
       this.mountSetDate()
+      this.startTimePositionInterval()
+    },
+    beforeDestroy () {
+      this.endTimePositionInterval()
     }
   }
 </script>
@@ -197,6 +241,10 @@
       margin-left 1px
     .calendar-day-event-overlap-first
       margin-left 0
+    .current-time-line
+      position absolute
+      border 1px solid red
+      width 100%
 
 
 </style>

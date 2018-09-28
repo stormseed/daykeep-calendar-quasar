@@ -103,8 +103,10 @@
   import {
     QBtn,
     QTooltip,
-    QScrollArea
+    QScrollArea,
+    scroll
   } from 'quasar'
+  const { getScrollTarget, setScrollPosition } = scroll
   export default {
     name: 'CalendarMultiDay',
     mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
@@ -210,6 +212,9 @@
       doUpdate: function () {
         this.mountSetDate()
         this.buildWeekDateArray(this.numDays, this.sundayFirstDayOfWeek)
+        this.$nextTick(() => {
+          this.scrollToFirstDay()
+        })
       },
       handleNavMove: function (unitType, amount) {
         this.moveTimePeriod(unitType, amount)
@@ -221,6 +226,21 @@
           }
         )
         this.buildWeekDateArray()
+      },
+      scrollToElement: function (el) {
+        let target = getScrollTarget(el)
+        let offset = el.offsetTop - el.scrollHeight
+        let duration = 0
+        setScrollPosition(target, offset, duration)
+      },
+      scrollToFirstDay: function () {
+        let thisId = this.getDayHourId(
+          this.eventRef,
+          this.weekDateArray[0],
+          (this.dayDisplayStartHour + 1)
+        )
+        let thisEl = document.getElementById(thisId)
+        this.scrollToElement(thisEl)
       }
     },
     mounted () {

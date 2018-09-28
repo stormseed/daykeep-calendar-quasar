@@ -36,6 +36,10 @@ export default {
     allowEditing: {
       type: Boolean,
       default: false
+    },
+    dayDisplayStartHour: {
+      type: Number,
+      default: 7
     }
   },
   mounted () {}

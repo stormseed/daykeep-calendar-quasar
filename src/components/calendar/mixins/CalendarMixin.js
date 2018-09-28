@@ -258,6 +258,13 @@ export default {
       else {
         return 'NOID' + this.createRandomString()
       }
+    },
+    getDayHourId: function (eventRef, workingDate, thisHour) {
+      return eventRef +
+        '-' +
+        this.makeDT(workingDate).toISODate() +
+        '-hour-' +
+        thisHour
     }
   },
   mounted () {}
