@@ -5,7 +5,7 @@
       v-for="thisHour in 24"
       :key="thisHour"
       :style="getCellStyle"
-      :id="makeDT(workingDate).toISODate() + '-hour-' + (thisHour - 1)"
+      :id="getDayHourId(eventRef, workingDate, thisHour - 1)"
     >
       <div class="calendar-day-time-content"></div>
     </div>
@@ -180,11 +180,6 @@
       calculateTimePosition: function () {
         let pos = {}
         let thisDateObject = this.makeDT(DateTime.local())
-        console.debug(
-          'calculateTimePosition called',
-          thisDateObject.toISODate(),
-          this.workingDate.toISODate()
-        )
         if (
           thisDateObject.hasSame(this.workingDate, 'day') &&
           thisDateObject.hasSame(this.workingDate, 'month') &&
@@ -194,7 +189,6 @@
           pos.height = pos.top + 1
         }
         else {
-          console.debug('else hit')
           pos = {
             display: 'none'
           }

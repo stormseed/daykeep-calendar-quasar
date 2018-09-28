@@ -167,6 +167,7 @@ The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `Ca
 | `event-ref` | String | Give the calendar component a custom name so that events triggered on the global event bus can be watched. |
 | `prevent-event-detail` | Boolean | Prevent the default event detail popup from appearing when an event is clicked in a calendar. |
 | `allow-editing` | Boolean | Allows for individual events to be edited. See the editing section. |
+| `day-display-start-hour` | Number| Will scroll to a defined start hour when a day / multi-day component is rendered. Pass in the hour of the day from 0-23, the default being `7`. Current has no effect on the `CalendarAgenda` component. |
 
 In addition, each individual components have the following properties:
 
@@ -190,11 +191,3 @@ In addition, each individual components have the following properties:
 | `num-days` | Number | The number of days to initially display and also the number of additional days to load up when the user scrolls to the bottom of the agenda. |
 | `agenda-style` | String | Defaults to "dot". You can also set this as "block" to use an infinite scroll design that is meant for mobile use. |
 | `scroll-height` | String | Defaults to `200px`, this is meant to define the size of the "block" style. |
-
-## Roadmap
-
-Our near-term roadmap is as follows:
-
-| Version | Description |
-| --- | --- |
-| v0.3.x | Have some basic editing abilities such as changing the data for an event and drag and drop editing. |

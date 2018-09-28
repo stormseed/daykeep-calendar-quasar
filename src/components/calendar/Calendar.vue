@@ -62,6 +62,7 @@
           :calendar-timezone="calendarTimezone"
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
+          :day-display-start-hour="dayDisplayStartHour"
         />
       </q-tab-pane>
       <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
@@ -79,6 +80,7 @@
           :calendar-timezone="calendarTimezone"
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
+          :day-display-start-hour="dayDisplayStartHour"
         />
       </q-tab-pane>
       <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
@@ -96,6 +98,7 @@
           :calendar-timezone="calendarTimezone"
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
+          :day-display-start-hour="dayDisplayStartHour"
         />
       </q-tab-pane>
       <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
