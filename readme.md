@@ -145,7 +145,7 @@ this.$root.$on(
 
 Starting with v0.3 we are setting up the framework to allow for editing individual events. By default this functionality is turned off, but you can pass a value of `true` into the `allow-editing` parameter on one of the main calendar components. The functionality if very limited to start but we expect to be adding more features in the near future.
 
-When an event is edited, a global event bus message in the format of `update-event-MYCALENDAR` is sent with the updated event information as the payload. You can listen for this to trigger a call to whatever API you are using for calendar communication. Right now when an an update is detected the passed in `eventArray` array is updated and the array is parsed again.
+When an event is edited, a global event bus message in the format of `update-event-MYCALENDAR` is sent with the updated event information as the payload. You can listen for this to trigger a call to whatever API you are using for calendar communication. Right now when an update is detected the passed in `eventArray` array is updated and the array is parsed again.
 
 Only a subset of fields are currently editable:
 
