@@ -39,6 +39,7 @@
           }"
           v-for="(thisDay, weekDayIndex) in thisWeek"
           :key="makeDT(thisDay.dateObject).toISODate()"
+          @click="handleDayClick(thisDay.dateObject)"
         >
           <div
             v-if="isCurrentDate(thisDay.dateObject)"
@@ -46,7 +47,6 @@
               'calendar-day-number': true,
               'cursor-pointer': calendarDaysAreClickable
             }"
-            @click="handleDayClick(thisDay.dateObject)"
           >
             <quantity-bubble
               :quantity="thisDay.dateObject.day"
@@ -59,7 +59,6 @@
               'calendar-day-number': true,
               'cursor-pointer': calendarDaysAreClickable
             }"
-            @click="handleDayClick(thisDay.dateObject)"
           >
             {{ thisDay.dateObject.day }}
           </div>
@@ -80,6 +79,7 @@
                   :first-day-of-week="(weekDayIndex === 0)"
                   :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
                   :allow-editing="allowEditing"
+                  @click="handleCalendarEventClick"
                 />
               </div>
             </template>
@@ -145,7 +145,8 @@
         workingDate: new Date(),
         weekArray: [],
         parsed: this.getDefaultParsed(),
-        eventDetailEventObject: {}
+        eventDetailEventObject: {},
+        eventClicked: false
       }
     },
     computed: {
@@ -226,9 +227,18 @@
         this.generateCalendarCellArray()
       },
       handleDayClick: function (dateObject) {
+        // event item clicked; prevent "day" event
+        if (this.eventClicked) {
+          this.eventClicked = false;
+          return;
+        }
         if (this.fullComponentRef) {
           this.fullMoveToDay(dateObject)
         }
+        this.triggerDayClick(dateObject, this.eventRef);
+      },
+      handleCalendarEventClick: function () {
+        this.eventClicked = true;
       }
     },
     mounted () {
