@@ -154,6 +154,21 @@ Only a subset of fields are currently editable:
 * Summary / title
 * Description
 
+## Calendar Month Day Click Events
+
+The `CalendarMonth` component triggers a "click-day-{eventRef}" event when a calendar cell is clicked. The event data is an object describing the day, with a `day`, `month`, and `year` property each set to the appropriate value for the selected day.
+
+So for a `<calendar-month>` component with a "MYCALENDAR" `event-ref`:
+```js
+this.$root.$on(
+  'click-day-MYCALENDAR',
+  function (day) {
+    // do something here
+  }
+)
+```
+
+
 ## Individual Vue components
 
 The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `CalendarAgenda` share the following properties:
