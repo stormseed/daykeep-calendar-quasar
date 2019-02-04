@@ -275,33 +275,77 @@ export default {
       }
       return returnArray
     },
+
     parseDateEvents: function (eventArray) {
-      let overlapSegment = 1
-      let overlapIteration = 1
+      // thanks @Jasqui and @kdmon
+      let overlapArray = [] // We are going to parse the events first as how they overlap between each other
+
       for (let eventId of eventArray) {
-        let numberOfOverlaps = 0
-        for (let compareEventId of eventArray) {
-          let thisEvent = this.parsed.byId[eventId]
-          let compareEvent = this.parsed.byId[compareEventId]
+        let thisEvent = this.parsed.byId[eventId]
+        let thisEventInOverlapArray = false
+
+        let thisEventStart = new Date(thisEvent.start.dateTime)
+        let thisEventEnd = new Date(thisEvent.end.dateTime)
+
+        // We iterate the overlapArray to check if the current event is in any array of those
+        for (let ovIndex in overlapArray) {
+          thisEventInOverlapArray = overlapArray[ovIndex].overlapped.find(ov => ov.id === eventId)
+
+          if (thisEventInOverlapArray) { // If we did find it, we break out of the loop
+            break
+          }
+
+          let overlapMinStart = overlapArray[ovIndex].start
+          let overlapMaxEnd = overlapArray[ovIndex].end
+
+          // We check if the event date range start or end is between the range defined in the overlap object.
+          // We also check if it happens to be an event that is longer than that date range and contains it.
+          // If any of this is true, we proceed to add it in the overlapArray
+
           if (
-            eventId !== compareEventId &&
-            this.parseHasOverlap(thisEvent, compareEvent)
+            (date.isBetweenDates(thisEventStart, overlapMinStart, overlapMaxEnd)) ||
+            (date.isBetweenDates(thisEventEnd, overlapMinStart, overlapMaxEnd)) ||
+            (thisEventStart < overlapMinStart && thisEventEnd > overlapMaxEnd)
           ) {
-            numberOfOverlaps++
+            overlapArray[ovIndex].overlapped.push({
+              id: thisEvent.id,
+              start: thisEvent.start.dateTime,
+              end: thisEvent.end.dateTime
+            })
+
+            let startDates = overlapArray[ovIndex].overlapped.map(ov => new Date(ov.start))
+            let endDates = overlapArray[ovIndex].overlapped.map(ov => new Date(ov.end))
+
+            // Now we update the range of the overlap object by getting the minimum start date and the max end date.
+            overlapArray[ovIndex].start = new Date(date.getMinDate(...startDates))
+            overlapArray[ovIndex].end = new Date(date.getMaxDate(...endDates))
+
+            thisEventInOverlapArray = true
+            break
           }
         }
-        this.parsed.byId[eventId]['numberOfOverlaps'] = numberOfOverlaps
-        if (numberOfOverlaps > 0) {
-          this.parsed.byId[eventId]['overlapSegment'] = overlapSegment
-          this.parsed.byId[eventId]['overlapIteration'] = overlapIteration
-          overlapIteration++
-        }
-        else {
-          this.parsed.byId[eventId]['overlapSegment'] = 0
-          overlapSegment++
-          overlapIteration = 1
+
+        if (!thisEventInOverlapArray) { // If we didnt find it or it didnt meet the requirements to be added to an overlap object, we create a new object
+          overlapArray.push({
+            start: new Date(thisEvent.start.dateTime),
+            end: new Date(thisEvent.end.dateTime),
+            overlapped: [{
+              id: thisEvent.id,
+              start: thisEvent.start.dateTime,
+              end: thisEvent.end.dateTime
+            }]
+          })
         }
       }
+
+      // Now we go through all the overlaps and set their numberOfOverlaps and overlap]Iterations
+      overlapArray.forEach(ov => {
+        ov.overlapped.forEach((overlappedEvent, index) => {
+          let thisEvent = this.parsed.byId[overlappedEvent.id]
+          thisEvent.numberOfOverlaps = ov.overlapped.length - 1
+          thisEvent.overlapIteration = index + 1
+        })
+      })
     },
     parseGetDurationMinutes: function (eventObj) {
       if (eventObj.start.isAllDay) {
@@ -313,10 +357,6 @@ export default {
           'minutes'
         )
       }
-    },
-    parseHasOverlap: function (event1, event2) {
-      return (event1.start.dateObject <= event2.end.dateObject) &&
-        (event1.end.dateObject >= event2.start.dateObject)
     },
     getPassedInParsedEvents: function () {
       this.parsed = defaultParsed
