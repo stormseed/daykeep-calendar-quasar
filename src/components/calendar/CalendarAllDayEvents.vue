@@ -26,8 +26,10 @@
 </template>
 
 <script>
-  import CalendarMixin from './mixins/CalendarMixin'
-  import CalendarEventMixin from './mixins/CalendarEventMixin'
+  import {
+    CalendarMixin,
+    CalendarEventMixin
+  } from './mixins'
   import CalendarEvent from './CalendarEvent'
   export default {
     name: 'CalendarAllDayEvents',

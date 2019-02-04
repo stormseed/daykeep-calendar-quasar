@@ -26,58 +26,28 @@
     QBtn,
     QTooltip
   } from 'quasar'
-  import CalendarMixin from './mixins/CalendarMixin'
-  import CalendarEventMixin from './mixins/CalendarEventMixin'
+  import {
+    CalendarMixin,
+    CalendarEventMixin,
+    EventPropsMixin
+  } from './mixins'
   import dashHas from 'lodash.has'
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarEvent',
+    mixins: [CalendarMixin, CalendarEventMixin, EventPropsMixin],
     props: {
-      eventObject: {
-        type: Object,
-        default: () => {}
-      },
-      color: {
-        type: String,
-        default: 'primary'
-      },
-      textColor: {
-        type: String,
-        default: 'white'
-      },
-      showTime: {
-        type: Boolean,
-        default: true
-      },
-      monthStyle: {
-        type: Boolean,
-        default: false
-      },
-      eventRef: String,
-      preventEventDetail: {
-        type: Boolean,
-        default: false
-      },
       forceAllDay: Boolean,
       currentCalendarDay: Object,
       hasPreviousDay: Boolean,
       hasNextDay: Boolean,
       firstDayOfWeek: Boolean,
       lastDayOfWeek: Boolean,
-      calendarLocale: {
-        type: String,
-        default: () => { return DateTime.local().locale }
-      },
-      allowEditing: {
-        type: Boolean,
-        default: false
-      }
     },
     components: {
       QBtn,
       QTooltip
     },
-    mixins: [CalendarMixin, CalendarEventMixin],
     data () {
       return {}
     },

@@ -40,7 +40,9 @@
 
 <script>
   import CalendarEvent from './CalendarEvent'
-  import CalendarMixin from './mixins/CalendarMixin'
+  import {
+    CalendarMixin
+  } from './mixins'
   import { date } from 'quasar'
   const { DateTime } = require('luxon')
   export default {

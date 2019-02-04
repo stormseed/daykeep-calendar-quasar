@@ -47,6 +47,7 @@ Or you can pass in parameters to customize
   calendar-locale="fr"
   calendar-timezone="Europe/Paris"
   :allow-editing="false"
+  :render-html="true"
 />
 ```
 
@@ -182,6 +183,7 @@ The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `Ca
 | `event-ref` | String | Give the calendar component a custom name so that events triggered on the global event bus can be watched. |
 | `prevent-event-detail` | Boolean | Prevent the default event detail popup from appearing when an event is clicked in a calendar. |
 | `allow-editing` | Boolean | Allows for individual events to be edited. See the editing section. |
+| `render-html` | Boolean | Event descriptions render HTML tags and provide a WYSIWYG editor when editing. No HTML validation is performed so be sure to pass the data passed in does not present a security threat. |
 | `day-display-start-hour` | Number| Will scroll to a defined start hour when a day / multi-day component is rendered. Pass in the hour of the day from 0-23, the default being `7`. Current has no effect on the `CalendarAgenda` component. |
 
 In addition, each individual components have the following properties:

@@ -85,15 +85,18 @@
       :calendar-locale="calendarLocale"
       :calendar-timezone="calendarTimezone"
       :allow-editing="allowEditing"
+      :render-html="renderHtml"
     />
 
   </div>
 </template>
 
 <script>
-  import CalendarMixin from './mixins/CalendarMixin'
-  import CalendarEventMixin from './mixins/CalendarEventMixin'
-  import CalendarParentComponentMixin from './mixins/CalendarParentComponentMixin'
+  import {
+    CalendarMixin,
+    CalendarEventMixin,
+    CalendarParentComponentMixin
+  } from './mixins'
   import CalendarEvent from './CalendarEvent'
   import CalendarDayColumn from './CalendarDayColumn'
   import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'

@@ -27,7 +27,9 @@
 </template>
 
 <script>
-  import CalendarMixin from './mixins/CalendarMixin'
+  import {
+    CalendarMixin
+  } from './mixins'
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarDayLabels',

@@ -96,15 +96,18 @@
       :calendar-timezone="calendarTimezone"
       :event-ref="eventRef"
       :allow-editing="allowEditing"
+      :render-html="renderHtml"
     />
 
   </div>
 </template>
 
 <script>
-  import CalendarMixin from './mixins/CalendarMixin'
-  import CalendarEventMixin from './mixins/CalendarEventMixin'
-  import CalendarParentComponentMixin from './mixins/CalendarParentComponentMixin'
+  import {
+    CalendarMixin,
+    CalendarEventMixin,
+    CalendarParentComponentMixin
+  } from './mixins'
   import {
     QBtn,
     QTooltip,

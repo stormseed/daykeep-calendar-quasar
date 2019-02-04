@@ -95,7 +95,6 @@
           >
             <div
               class="col-auto calendar-agenda-side"
-              :NOstyle="{ 'width': leftMargin, 'max-width': leftMargin }"
               :class="{ 'cursor-pointer': calendarDaysAreClickable }"
               @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
             >
@@ -115,9 +114,12 @@
               >
                 <calendar-agenda-event
                   :event-object="thisEvent"
+                  :prevent-event-detail="preventEventDetail"
                   :event-ref="eventRef"
                   :calendar-locale="calendarLocale"
                   :calendar-timezone="calendarTimezone"
+                  :allow-editing="allowEditing"
+                  :render-html="renderHtml"
                   agenda-style="dot"
                 />
               </div>
@@ -131,17 +133,23 @@
       ref="defaultEventDetail"
       v-if="!preventEventDetail"
       :event-object="eventDetailEventObject"
+      :prevent-event-detail="preventEventDetail"
       :event-ref="eventRef"
+      :calendar-locale="calendarLocale"
+      :calendar-timezone="calendarTimezone"
       :allow-editing="allowEditing"
+      :render-html="renderHtml"
     />
 
   </div>
 </template>
 
 <script>
-  import CalendarMixin from './mixins/CalendarMixin'
-  import CalendarEventMixin from './mixins/CalendarEventMixin'
-  import CalendarParentComponentMixin from './mixins/CalendarParentComponentMixin'
+  import {
+    CalendarMixin,
+    CalendarEventMixin,
+    CalendarParentComponentMixin
+  } from './mixins'
   import CalendarAgendaEvent from './CalendarAgendaEvent'
   import CalendarEventDetail from './CalendarEventDetail'
   import CalendarHeaderNav from './CalendarHeaderNav'

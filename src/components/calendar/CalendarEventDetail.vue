@@ -171,27 +171,20 @@
         </q-item>
 
         <!-- location -->
-        <q-item v-if="isEditingAllowed && inEditMode" multiline>
-          <q-item-side>
-            <q-item-tile icon="location_on"/>
-          </q-item-side>
+        <q-item v-if="isEditingAllowed && inEditMode">
+          <q-item-side icon="location_on" />
           <q-item-main class="ced-list-title">
-            <q-field>
-              <q-input
-                v-model="editEventObject.location"
-                float-label="Location"
-                inverted-light
-                :color="fieldColor"
-                class="no-shadow"
-              />
-            </q-field>
-
+            <q-input
+              v-model="editEventObject.location"
+              float-label="Location"
+              inverted-light
+              :color="fieldColor"
+              class="no-shadow"
+            />
           </q-item-main>
         </q-item>
         <q-item v-else-if="textExists('location')">
-          <q-item-side>
-            <q-item-tile icon="location_on"/>
-          </q-item-side>
+          <q-item-side icon="location_on" />
           <q-item-main class="ced-list-title">
             {{ eventObject.location }}
           </q-item-main>
@@ -265,7 +258,16 @@
             <q-item-tile icon="format_align_left"/>
           </q-item-side>
           <q-item-main>
-            <q-field>
+            <q-field v-if="renderHtml">
+              <q-editor
+                v-model="editEventObject.description"
+                float-label="Description"
+                inverted-light
+                :color="fieldColor"
+                class="no-shadow"
+              />
+            </q-field>
+            <q-field v-else>
               <q-input
                 v-model="editEventObject.description"
                 float-label="Description"
@@ -285,7 +287,12 @@
             <q-item-tile icon="format_align_left"/>
           </q-item-side>
           <q-item-main class="ced-list-title">
-            {{ eventObject.description }}
+            <template v-if="renderHtml">
+              <div v-html="eventObject.description"></div>
+            </template>
+            <template v-else>
+              {{ eventObject.description }}
+            </template>
           </q-item-main>
         </q-item>
 
@@ -334,33 +341,17 @@
     QField,
     QCheckbox,
     QDatetime,
-    QInput
+    QInput,
+    QEditor
   } from 'quasar'
-  import CalendarMixin from './mixins/CalendarMixin'
+  import {
+    CalendarMixin, EventPropsMixin
+  } from './mixins'
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarEventDetail',
+    mixins: [CalendarMixin, EventPropsMixin],
     props: {
-      eventObject: {
-        type: Object,
-        default: () => {}
-      },
-      eventRef: {
-        type: String,
-        default: 'cal-' + Math.random().toString(36).substring(2, 15)
-      },
-      calendarLocale: {
-        type: String,
-        default: () => { return DateTime.local().locale }
-      },
-      calendarTimezone: {
-        type: String,
-        default: () => { return DateTime.local().zoneName }
-      },
-      allowEditing: {
-        type: Boolean,
-        default: false
-      },
       fieldColor: {
         type: String,
         default: 'grey-2'
@@ -378,9 +369,9 @@
       QField,
       QCheckbox,
       QDatetime,
-      QInput
+      QInput,
+      QEditor
     },
-    mixins: [CalendarMixin],
     data () {
       return {
         modalIsOpen: false,

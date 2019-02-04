@@ -44,7 +44,10 @@
 </template>
 
 <script>
-  import CalendarMixin from './mixins/CalendarMixin'
+  import {
+    CalendarMixin,
+    EventPropsMixin
+  } from './mixins'
   import {
     QBtn,
     QTooltip
@@ -52,50 +55,17 @@
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAgendaEvent',
+    mixins: [CalendarMixin, EventPropsMixin],
     props: {
-      eventObject: {
-        type: Object,
-        default: () => {}
-      },
       agendaStyle: {
         type: String,
         default: 'block'
-      },
-      color: {
-        type: String,
-        default: 'primary'
-      },
-      textColor: {
-        type: String,
-        default: 'white'
-      },
-      showTime: {
-        type: Boolean,
-        default: true
-      },
-      monthStyle: {
-        type: Boolean,
-        default: false
-      },
-      eventRef: String,
-      calendarLocale: {
-        type: String,
-        default: () => { return DateTime.local().locale }
-      },
-      calendarTimezone: {
-        type: String,
-        default: () => { return DateTime.local().zoneName }
-      },
-      allowEditing: {
-        type: Boolean,
-        default: false
       }
     },
     components: {
       QBtn,
       QTooltip
     },
-    mixins: [CalendarMixin],
     data () {
       return {}
     },

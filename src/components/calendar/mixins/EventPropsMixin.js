@@ -1,23 +1,27 @@
-// this file contains shared properties for Calendar, CalendarAgenda, CalendarMonth and CalendarMultiday
 const { DateTime } = require('luxon')
 export default {
   props: {
-    startDate: {
-      type: [Object, Date],
-      default: () => { return new Date() }
-    },
-    eventArray: {
-      type: Array,
-      default: () => []
-    },
-    parsedEvents: {
+    eventObject: {
       type: Object,
       default: () => {}
     },
-    eventRef: {
+    color: {
       type: String,
-      default: () => { return 'cal-' + Math.random().toString(36).substring(2, 15) }
+      default: 'primary'
     },
+    textColor: {
+      type: String,
+      default: 'white'
+    },
+    showTime: {
+      type: Boolean,
+      default: true
+    },
+    monthStyle: {
+      type: Boolean,
+      default: false
+    },
+    eventRef: String,
     preventEventDetail: {
       type: Boolean,
       default: false
@@ -30,10 +34,6 @@ export default {
       type: String,
       default: () => { return DateTime.local().zoneName }
     },
-    sundayFirstDayOfWeek: {
-      type: Boolean,
-      default: false
-    },
     allowEditing: {
       type: Boolean,
       default: false
@@ -41,11 +41,6 @@ export default {
     renderHtml: {
       type: Boolean,
       default: false
-    },
-    dayDisplayStartHour: {
-      type: Number,
-      default: 7
     }
-  },
-  mounted () {}
+  }
 }
