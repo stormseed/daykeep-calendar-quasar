@@ -19,6 +19,7 @@
         :has-previous-day="thisEvent.hasPrev"
         :has-next-day="thisEvent.hasNext"
         :force-all-day="true"
+        :allow-editing="allowEditing"
       />
     </div>
   </div>
@@ -45,6 +46,10 @@
       },
       eventRef: String,
       preventEventDetail: {
+        type: Boolean,
+        default: false
+      },
+      allowEditing: {
         type: Boolean,
         default: false
       }

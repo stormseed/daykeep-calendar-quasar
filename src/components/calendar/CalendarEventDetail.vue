@@ -512,7 +512,7 @@
           this.eventObject
         )
         this.__close()
-      },
+      }
     },
     mounted () {}
   }

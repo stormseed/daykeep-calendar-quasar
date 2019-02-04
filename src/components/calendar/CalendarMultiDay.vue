@@ -43,6 +43,7 @@
         :prevent-event-detail="preventEventDetail"
         :calendar-locale="calendarLocale"
         :calendar-timezone="calendarTimezone"
+        :allow-editing="allowEditing"
       />
     </div>
 
