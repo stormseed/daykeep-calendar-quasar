@@ -132,6 +132,7 @@
               <q-checkbox
                 label="All day"
                 v-model="editEventObject.start.isAllDay"
+                @input="$forceUpdate()"
                 :toggle-indeterminate="false"
               />
             </q-field>
@@ -491,20 +492,35 @@
       },
       __save: function () {
         // convert elements back to parsed format
-        let stepList = ['start', 'end']
+        const stepList = ['start', 'end']
+        const isAllDay = this.editEventObject.start.isAllDay
+
         for (let step of stepList) {
           let dateObj = DateTime.fromJSDate(this[step + 'DateObject'])
-          let timeObj = this[step + 'TimeObject']
-          dateObj = dateObj.set({
-            hour: timeObj.getHours(),
-            minute: timeObj.getMinutes(),
-            second: timeObj.getSeconds()
-          })
-          this.editEventObject[step] = {
-            dateObject: dateObj,
-            dateTime: dateObj.toISO()
+          if (isAllDay) {
+            this.editEventObject[step] = {
+              date: dateObj.toISODate()
+            }
+          }
+          else {
+            let timeObj = this[step + 'TimeObject']
+            dateObj = dateObj.set({
+              hour: timeObj.getHours(),
+              minute: timeObj.getMinutes(),
+              second: timeObj.getSeconds()
+            })
+            this.editEventObject[step] = {
+              dateTime: dateObj.toISO()
+            }
           }
         }
+
+        // strip out calculated fields
+        let fieldList = ['daysFromStart', 'durationDays', 'hasNext', 'hasPrev', 'slot', 'allowEditing']
+        for (let thisField of fieldList) {
+          delete this.editEventObject[thisField]
+        }
+
         // done modifying
         this.eventObject = this.editEventObject
         this.$root.$emit(
