@@ -405,7 +405,7 @@ export default {
     },
 
     handleEventUpdate: function (eventObject) {
-      if (dashHas(this._props, 'fullComponentRef')) {
+      if (dashHas(this._props, 'fullComponentRef') && this._props.fullComponentRef) {
         // this component has a calendar parent, so don't move forward
         return
       }
