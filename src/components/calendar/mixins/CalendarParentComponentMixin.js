@@ -15,7 +15,7 @@ export default {
     },
     eventRef: {
       type: String,
-      default: 'cal-' + Math.random().toString(36).substring(2, 15)
+      default: () => { return 'cal-' + Math.random().toString(36).substring(2, 15) }
     },
     preventEventDetail: {
       type: Boolean,
