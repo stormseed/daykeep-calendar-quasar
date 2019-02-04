@@ -30,6 +30,13 @@ export default {
         eventObject
       )
     },
+    triggerDayClick: function (dateObject, eventRef) {
+      this.$root.$emit(
+        'click-day-' + eventRef, {
+          day: dateObject.toObject()
+        }
+      )
+    },
     handleEventDetailEvent: function (params, thisRef) {
       if (!this.preventEventDetail) {
         if (thisRef === undefined) {
