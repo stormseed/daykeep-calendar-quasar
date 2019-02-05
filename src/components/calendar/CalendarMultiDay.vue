@@ -215,7 +215,13 @@
       },
       doUpdate: function () {
         this.mountSetDate()
-        this.buildWeekDateArray(this.numDays, this.sundayFirstDayOfWeek)
+        let payload = this.getMultiDayDisplayDates(
+          this.buildWeekDateArray(this.numDays, this.sundayFirstDayOfWeek)
+        )
+        this.triggerDisplayChange(
+          this.eventRef,
+          payload
+        )
         this.$nextTick(() => {
           this.scrollToFirstDay()
         })
@@ -229,7 +235,15 @@
             amount: amount
           }
         )
-        this.buildWeekDateArray()
+        let payload = this.getMultiDayDisplayDates(
+          this.buildWeekDateArray()
+        )
+        payload['moveUnit'] = unitType
+        payload['moveAmount'] = amount
+        this.triggerDisplayChange(
+          this.eventRef,
+          payload
+        )
       },
       scrollToElement: function (el) {
         let target = getScrollTarget(el)
@@ -245,6 +259,14 @@
         )
         let thisEl = document.getElementById(thisId)
         this.scrollToElement(thisEl)
+      },
+      getMultiDayDisplayDates: function (weekDateArray) {
+        return {
+          startDate: weekDateArray[0].toISODate(),
+          endDate: weekDateArray[weekDateArray.length - 1].toISODate(),
+          numDays: this.numDays,
+          viewType: this.$options.name
+        }
       }
     },
     mounted () {

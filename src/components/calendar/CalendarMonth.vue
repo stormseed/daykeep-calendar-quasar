@@ -163,7 +163,11 @@
       },
       doUpdate: function () {
         this.mountSetDate()
-        this.generateCalendarCellArray()
+        let payload = this.getWeekArrayDisplayDates(this.generateCalendarCellArray())
+        this.triggerDisplayChange(
+          this.eventRef,
+          payload
+        )
       },
       getCalendarCellArray: function (monthNumber, yearNumber) {
         let currentDay = this.makeDT(
@@ -217,6 +221,7 @@
           this.makeDT(this.workingDate).month,
           this.makeDT(this.workingDate).year
         )
+        return this.weekArray
       },
       handleNavMove: function (params) {
         this.moveTimePeriod(params)
@@ -227,7 +232,25 @@
             amount: params.amount
           }
         )
-        this.generateCalendarCellArray()
+        let payload = this.getWeekArrayDisplayDates(this.generateCalendarCellArray())
+        payload['moveUnit'] = params.unitType
+        payload['moveAmount'] = params.amount
+        this.triggerDisplayChange(
+          this.eventRef,
+          payload
+        )
+      },
+      getWeekArrayDisplayDates: function (weekArray) {
+        // this takes a weekArray and figures out the values to send for a page display event
+        let startDateObj = weekArray[0][0].dateObject
+        const lastWeek = weekArray[weekArray.length - 1]
+        let endDateObj = lastWeek[lastWeek.length - 1].dateObject
+        return {
+          startDate: startDateObj.toISODate(),
+          endDate: endDateObj.toISODate(),
+          numDays: Math.ceil(endDateObj.diff(startDateObj).as('days') + 1),
+          viewType: this.$options.name
+        }
       },
       handleDayClick: function (dateObject) {
         // event item clicked; prevent "day" event

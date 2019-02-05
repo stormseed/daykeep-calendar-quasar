@@ -225,6 +225,10 @@
       },
       doUpdate: function () {
         this.mountSetDate()
+        this.triggerDisplayChange(
+          this.eventRef,
+          this.getAgendaDisplayDates()
+        )
       },
       getWeekTitle: function (firstDate) {
         let lastDate = date.addToDate(firstDate, {days: 6})
@@ -244,10 +248,25 @@
             amount: params.amount
           }
         )
+        let payload = this.getAgendaDisplayDates()
+        payload['moveUnit'] = params.unitType
+        payload['moveAmount'] = params.amount
+        this.triggerDisplayChange(
+          this.eventRef,
+          payload
+        )
       },
       handleDayClick: function (dateObject) {
         if (this.fullComponentRef) {
           this.fullMoveToDay(dateObject)
+        }
+      },
+      getAgendaDisplayDates: function () {
+        return {
+          startDate: this.makeDT(this.workingDate).toISODate(),
+          endDate: this.makeDT(this.getDaysForwardDate(this.localNumDays)).toISODate(),
+          numDays: this.localNumDays,
+          viewType: this.$options.name
         }
       }
     },

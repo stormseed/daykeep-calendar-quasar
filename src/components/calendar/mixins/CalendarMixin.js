@@ -37,6 +37,19 @@ export default {
         }
       )
     },
+    triggerDisplayChange: function (eventRef, payload) {
+      if (this.fullComponentRef) {
+        // this component is part of a parent calendar, so look at current tab
+        payload['visible'] = this.$parent.active
+      }
+      else {
+        payload['visible'] = true
+      }
+      this.$root.$emit(
+        'display-change-' + eventRef,
+        payload
+      )
+    },
     handleEventDetailEvent: function (params, thisRef) {
       if (!this.preventEventDetail) {
         if (thisRef === undefined) {
@@ -128,6 +141,7 @@ export default {
       else {
         this.weekDateArray = this.getWeekDateArray(numberOfDays)
       }
+      return this.weekDateArray
     },
     getForcedWeekBookendDates: function (numberOfDays, sundayFirstDayOfWeek) {
       if (numberOfDays === undefined) {
