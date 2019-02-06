@@ -41,6 +41,7 @@ export default {
       if (this.fullComponentRef) {
         // this component is part of a parent calendar, so look at current tab
         payload['visible'] = this.$parent.active
+        payload['tabName'] = this.$parent.name
       }
       else {
         payload['visible'] = true
