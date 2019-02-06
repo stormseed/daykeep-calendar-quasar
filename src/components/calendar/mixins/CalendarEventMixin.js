@@ -99,6 +99,7 @@ export default {
         byStartDate: {},
         byId: {},
         byMultiDay: {},
+        byNextDay: {},
         byContinuedMultiDay: {},
         byContinuedNextDay: {}
       }
@@ -193,16 +194,16 @@ export default {
 
           if (thisEvent.start.dateObject.toISODate() !== thisEvent.end.dateObject.toISODate()) {
             // this is a date where the time is set and spans across more than one day
-
-            if (!dashHas(this.parsed.byMultiDay, thisStartDate)) {
-              this.parsed.byMultiDay[thisStartDate] = []
-            }
-            this.parsed.byMultiDay[thisStartDate].push(thisEvent.id)
-
-            let diffDays = Math.floor(thisEvent.end.dateObject.diff(thisEvent.start.dateObject).as('days'))
+            const diffDays = Math.floor(thisEvent.end.dateObject.diff(thisEvent.start.dateObject).as('days'))
 
             if (diffDays > 1) {
               // this event spans multiple days
+
+              if (!dashHas(this.parsed.byMultiDay, thisStartDate)) {
+                this.parsed.byMultiDay[thisStartDate] = []
+              }
+              this.parsed.byMultiDay[thisStartDate].push(thisEvent.id)
+
               let multiDate = thisEvent.start.dateObject
               while (multiDate.toISODate() !== thisEvent.end.dateObject.toISODate()) {
                 multiDate = multiDate.plus({ days: 1 })
@@ -214,6 +215,12 @@ export default {
             }
             else {
               // this event crosses into the next day
+
+              if (!dashHas(this.parsed.byNextDay, thisStartDate)) {
+                this.parsed.byNextDay[thisStartDate] = []
+              }
+              this.parsed.byNextDay[thisStartDate].push(thisEvent.id)
+
               const multiDate = thisEvent.end.dateObject.toISODate()
               if (!dashHas(this.parsed.byContinuedNextDay, multiDate)) {
                 this.parsed.byContinuedNextDay[multiDate] = []
