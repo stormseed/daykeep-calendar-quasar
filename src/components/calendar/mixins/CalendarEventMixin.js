@@ -97,7 +97,10 @@ export default {
         byAllDayStartDate: {},
         byAllDayObject: {},
         byStartDate: {},
-        byId: {}
+        byId: {},
+        byMultiDay: {},
+        byContinuedMultiDay: {},
+        byContinuedNextDay: {}
       }
       return true
     },
@@ -150,6 +153,7 @@ export default {
             thisEvent.end.dateObject
           )
         }
+
         let thisStartDate = thisEvent.start.dateObject.toISODate()
         // get all-day events
         if (thisEvent.start.isAllDay) {
@@ -186,6 +190,37 @@ export default {
             this.parsed.byStartDate[thisStartDate] = []
           }
           this.parsed.byStartDate[thisStartDate].push(thisEvent.id)
+
+          if (thisEvent.start.dateObject.toISODate() !== thisEvent.end.dateObject.toISODate()) {
+            // this is a date where the time is set and spans across more than one day
+
+            if (!dashHas(this.parsed.byMultiDay, thisStartDate)) {
+              this.parsed.byMultiDay[thisStartDate] = []
+            }
+            this.parsed.byMultiDay[thisStartDate].push(thisEvent.id)
+
+            let diffDays = Math.floor(thisEvent.end.dateObject.diff(thisEvent.start.dateObject).as('days'))
+
+            if (diffDays > 1) {
+              // this event spans multiple days
+              let multiDate = thisEvent.start.dateObject
+              while (multiDate.toISODate() !== thisEvent.end.dateObject.toISODate()) {
+                multiDate = multiDate.plus({ days: 1 })
+                if (!dashHas(this.parsed.byContinuedMultiDay, multiDate.toISODate())) {
+                  this.parsed.byContinuedMultiDay[multiDate.toISODate()] = []
+                }
+                this.parsed.byContinuedMultiDay[multiDate.toISODate()].push(thisEvent.id)
+              }
+            }
+            else {
+              // this event crosses into the next day
+              const multiDate = thisEvent.end.dateObject.toISODate()
+              if (!dashHas(this.parsed.byContinuedNextDay, multiDate)) {
+                this.parsed.byContinuedNextDay[multiDate] = []
+              }
+              this.parsed.byContinuedNextDay[multiDate].push(thisEvent.id)
+            }
+          }
         }
       }
       // sort all day events
