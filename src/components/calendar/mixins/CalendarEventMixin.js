@@ -155,42 +155,57 @@ export default {
           )
         }
 
+        // put in duration for multiday events with an associated time
+        if (
+          !thisEvent.start['isAllDay'] &&
+          thisEvent.start.dateObject.toISODate() !== thisEvent.end.dateObject.toISODate()
+        ) {
+          thisEvent['durationDays'] = Math.ceil(
+            thisEvent.end.dateObject
+              .diff(thisEvent.start.dateObject)
+              .as('days')
+          )
+          if (thisEvent['durationDays'] > 2) {
+            thisEvent['timeSpansMultipleDays'] = true
+          }
+          else {
+            thisEvent['timeSpansOvernight'] = true
+          }
+        }
+
         let thisStartDate = thisEvent.start.dateObject.toISODate()
         // get all-day events
-        if (thisEvent.start.isAllDay) {
+        if (
+          thisEvent.start.isAllDay ||
+          Math.floor(thisEvent.end.dateObject.diff(thisEvent.start.dateObject).as('days')) > 1
+        ) {
           for (let dayAdd = 0; dayAdd < thisEvent.durationDays; dayAdd++) {
             let innerStartDate = thisEvent.start.dateObject
               .plus({ days: dayAdd })
               .toISODate()
-            if (!dashHas(this.parsed.byAllDayStartDate, innerStartDate)) {
-              this.parsed.byAllDayStartDate[innerStartDate] = []
-            }
-            this.parsed.byAllDayStartDate[innerStartDate].push(thisEvent.id)
+            this.addToParsedList('byAllDayStartDate', innerStartDate, thisEvent.id)
             // newer all-day events routine
-            if (!dashHas(this.parsed.byAllDayObject, innerStartDate)) {
-              this.parsed.byAllDayObject[innerStartDate] = []
-            }
-
-            this.parsed.byAllDayObject[innerStartDate].push({
-              id: thisEvent.id,
-              hasPrev: (dayAdd > 0),
-              hasNext: (dayAdd < (thisEvent.durationDays - 1)),
-              hasPreviousDay: (dayAdd > 0),
-              hasNextDay: (dayAdd < (thisEvent.durationDays - 1)),
-              durationDays: thisEvent.durationDays,
-              startDate: thisEvent.start.dateObject,
-              daysFromStart: dayAdd
-            })
+            this.addToParsedList(
+              'byAllDayObject',
+              innerStartDate,
+              {
+                id: thisEvent.id,
+                hasPrev: (dayAdd > 0),
+                hasNext: (dayAdd < (thisEvent.durationDays - 1)),
+                hasPreviousDay: (dayAdd > 0),
+                hasNextDay: (dayAdd < (thisEvent.durationDays - 1)),
+                durationDays: thisEvent.durationDays,
+                startDate: thisEvent.start.dateObject,
+                daysFromStart: dayAdd
+              }
+            )
           }
         }
 
         // get events with a start and end time
         else {
           thisEvent.durationMinutes = this.parseGetDurationMinutes(thisEvent)
-          if (!dashHas(this.parsed.byStartDate, thisStartDate)) {
-            this.parsed.byStartDate[thisStartDate] = []
-          }
-          this.parsed.byStartDate[thisStartDate].push(thisEvent.id)
+          this.addToParsedList('byStartDate', thisStartDate, thisEvent.id)
 
           if (thisEvent.start.dateObject.toISODate() !== thisEvent.end.dateObject.toISODate()) {
             // this is a date where the time is set and spans across more than one day
@@ -198,34 +213,21 @@ export default {
 
             if (diffDays > 1) {
               // this event spans multiple days
-
-              if (!dashHas(this.parsed.byMultiDay, thisStartDate)) {
-                this.parsed.byMultiDay[thisStartDate] = []
-              }
-              this.parsed.byMultiDay[thisStartDate].push(thisEvent.id)
-
+              this.addToParsedList('byMultiDay', thisStartDate, thisEvent.id)
+              this.addToParsedList('byAllDayObject', thisStartDate, thisEvent.id)
+              this.addToParsedList('byAllDayStartDate', thisStartDate, thisEvent.id)
               let multiDate = thisEvent.start.dateObject
               while (multiDate.toISODate() !== thisEvent.end.dateObject.toISODate()) {
                 multiDate = multiDate.plus({ days: 1 })
-                if (!dashHas(this.parsed.byContinuedMultiDay, multiDate.toISODate())) {
-                  this.parsed.byContinuedMultiDay[multiDate.toISODate()] = []
-                }
-                this.parsed.byContinuedMultiDay[multiDate.toISODate()].push(thisEvent.id)
+                this.addToParsedList('byContinuedMultiDay', multiDate.toISODate(), thisEvent.id)
+                this.addToParsedList('byAllDayObject', thisStartDate, thisEvent.id)
               }
             }
             else {
               // this event crosses into the next day
-
-              if (!dashHas(this.parsed.byNextDay, thisStartDate)) {
-                this.parsed.byNextDay[thisStartDate] = []
-              }
-              this.parsed.byNextDay[thisStartDate].push(thisEvent.id)
-
-              const multiDate = thisEvent.end.dateObject.toISODate()
-              if (!dashHas(this.parsed.byContinuedNextDay, multiDate)) {
-                this.parsed.byContinuedNextDay[multiDate] = []
-              }
-              this.parsed.byContinuedNextDay[multiDate].push(thisEvent.id)
+              this.addToParsedList('byNextDay', thisStartDate, thisEvent.id)
+              this.addToParsedList('byContinuedNextDay', thisEvent.end.dateObject.toISODate(), thisEvent.id)
+              this.addToParsedList('byStartDate', thisEvent.end.dateObject.toISODate(), thisEvent.id)
             }
           }
         }
@@ -241,6 +243,19 @@ export default {
       }
     },
 
+    addToParsedList: function (listName, thisDate, whatToPush) {
+      if (!dashHas(this.parsed[listName], thisDate)) {
+        this.parsed[listName][thisDate] = []
+      }
+      this.parsed[listName][thisDate].push(whatToPush)
+    },
+    eventIsContinuedFromPreviousDay(id, thisDayObject) {
+      const isoDate = this.makeDT(thisDayObject).toISODate()
+      return (
+        dashHas(this.parsed['byContinuedNextDay'], isoDate) &&
+        this.parsed['byContinuedNextDay'][isoDate].includes(id)
+      )
+    },
     buildAllDaySlotArray: function () {
       let slotAssignments = {}
 

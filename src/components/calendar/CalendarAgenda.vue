@@ -113,6 +113,7 @@
                 :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
               >
                 <calendar-agenda-event
+                  v-if="!thisEvent.timeSpansOvernight || makeDT(thisEvent.start.dateObject).toISODate() === makeDT(forwardDate).toISODate()"
                   :event-object="thisEvent"
                   :prevent-event-detail="preventEventDetail"
                   :event-ref="eventRef"
@@ -121,6 +122,7 @@
                   :allow-editing="allowEditing"
                   :render-html="renderHtml"
                   agenda-style="dot"
+                  :forward-date="forwardDate"
                 />
               </div>
             </div>
@@ -198,7 +200,6 @@
         workingDate: new Date(),
         numJumpDays: 28,
         localNumDays: 28,
-        dayRowArray: [],
         dayCounter: [],
         parsed: this.getDefaultParsed(),
         eventDetailEventObject: {}

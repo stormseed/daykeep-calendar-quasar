@@ -42,7 +42,7 @@
       hasPreviousDay: Boolean,
       hasNextDay: Boolean,
       firstDayOfWeek: Boolean,
-      lastDayOfWeek: Boolean,
+      lastDayOfWeek: Boolean
     },
     components: {
       QBtn,

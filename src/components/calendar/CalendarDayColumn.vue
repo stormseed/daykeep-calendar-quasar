@@ -19,7 +19,7 @@
       :style="calculateDayEventStyle(eventObject)"
     >
       <calendar-event
-        v-if="!eventObject.start.isAllDay"
+        v-if="!eventObject.start.isAllDay && !eventObject.timeSpansMultipleDays"
         :event-object="eventObject"
         :event-ref="eventRef"
         :calendar-locale="calendarLocale"
@@ -141,10 +141,28 @@
         }
         let positions = {}
         if (thisEvent.start.dateObject && thisEvent.end.dateObject) {
-          positions = this.calculateDayEventPosition(
-            thisEvent.start.dateObject,
-            thisEvent.end.dateObject
-          )
+          if (thisEvent.timeSpansOvernight) {
+            if (this.makeDT(this.workingDate).toISODate() === this.makeDT(thisEvent.start.dateObject).toISODate()) {
+              // this is a overnight event's first day
+              positions = this.calculateDayEventPosition(
+                thisEvent.start.dateObject,
+                thisEvent.start.dateObject.set({ hour: 23, minute: 59 }) // set to midnight
+              )
+            }
+            else {
+              // this is the second day of an overnight event
+              positions = this.calculateDayEventPosition(
+                thisEvent.end.dateObject.set({ hour: 0, minute: 0 }), // set to midnight
+                thisEvent.end.dateObject
+              )
+            }
+          }
+          else {
+            positions = this.calculateDayEventPosition(
+              thisEvent.start.dateObject,
+              thisEvent.end.dateObject
+            )
+          }
         }
         else {
           positions = {

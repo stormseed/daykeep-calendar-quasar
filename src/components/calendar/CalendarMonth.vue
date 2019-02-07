@@ -65,6 +65,7 @@
           <div class="calendar-day-content">
             <template v-if="hasAnyEvents(thisDay.dateObject)">
               <div
+                v-if="!eventIsContinuedFromPreviousDay(thisEvent.id, thisDay.dateObject)"
                 v-for="thisEvent in monthGetDateEvents(thisDay.dateObject)"
                 :key="thisEvent.id"
               >
@@ -158,6 +159,7 @@
       }
     },
     methods: {
+
       monthGetDateEvents: function (dateObject) {
         return this.dateGetEvents(dateObject)
       },

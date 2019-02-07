@@ -163,7 +163,6 @@
       return {
         workingDate: new Date(),
         weekDateArray: [],
-        dayRowArray: [],
         parsed: this.getDefaultParsed(),
         thisNavRef: this.createNewNavEventName(),
         eventDetailEventObject: {}

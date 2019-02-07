@@ -164,7 +164,6 @@
           byStartDate: {},
           byId: {}
         },
-        dayRowArray: [],
         thisRefName: this.createRandomString()
       }
     },

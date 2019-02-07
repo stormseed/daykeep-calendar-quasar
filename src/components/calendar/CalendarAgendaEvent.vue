@@ -11,7 +11,7 @@
       v-if="showTime"
       class="col-auto calendar-agenda-event-time"
     >
-      <template v-if="eventObject.start.isAllDay">
+      <template v-if="eventObject.start.isAllDay || eventObject.timeSpansMultipleDays">
         All day
       </template>
       <template v-else>
@@ -60,7 +60,8 @@
       agendaStyle: {
         type: String,
         default: 'block'
-      }
+      },
+      forwardDate: [Object, Date]
     },
     components: {
       QBtn,

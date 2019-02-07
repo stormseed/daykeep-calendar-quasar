@@ -11,9 +11,9 @@
       <calendar-event
         v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))"
         :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + getEventIdString(thisEvent)"
-        v-if="thisEvent.start.isAllDay"
+        v-if="thisEvent.start.isAllDay || thisEvent.timeSpansMultipleDays"
         :event-object="thisEvent"
-        :show-time="false"
+        :show-time="thisEvent.timeSpansMultipleDays"
         :event-ref="eventRef"
         :prevent-event-detail="preventEventDetail"
         :has-previous-day="thisEvent.hasPrev"
