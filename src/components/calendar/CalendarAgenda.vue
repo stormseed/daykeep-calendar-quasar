@@ -156,7 +156,6 @@
   import CalendarEventDetail from './CalendarEventDetail'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import {
-    date,
     QBtn,
     QTooltip,
     QScrollArea,
@@ -212,13 +211,13 @@
     },
     methods: {
       getDaysForwardDate: function (daysForward) {
-        return date.addToDate(this.workingDate, {days: daysForward})
+        return this.makeDT(this.workingDate).plus({days: daysForward})
       },
       isFirstOfMonth: function (thisDate) {
-        return thisDate.getDate() === 1
+        return this.makeDT(thisDate).day === 1
       },
       isFirstDayOfWeek: function (thisDate) {
-        return date.getDayOfWeek(thisDate) === 1
+        return this.makeDT(thisDate).weekday === 1
       },
       loadMore: function (index, done) {
         this.localNumDays += this.numJumpDays
@@ -232,8 +231,9 @@
         )
       },
       getWeekTitle: function (firstDate) {
-        let lastDate = date.addToDate(firstDate, {days: 6})
-        if (firstDate.getMonth() === lastDate.getMonth()) {
+        firstDate = this.makeDT(firstDate)
+        let lastDate = firstDate.plus({days: 6})
+        if (firstDate.month === lastDate.month) {
           return this.formatDate(firstDate, 'MMM d - ') + this.formatDate(lastDate, 'd')
         }
         else {

@@ -1,8 +1,8 @@
 import dashHas from 'lodash.has'
 // import DateTime from 'luxon'
-import {
-  date
-} from 'quasar'
+// import {
+//   date
+// } from 'quasar'
 const defaultParsed = {
   byAllDayStartDate: {},
   byAllDayObject: {},
@@ -303,21 +303,27 @@ export default {
       }
     },
 
-    sortPairOfAllDayObjects: function (a, b) {
-      if (a.daysFromStart < b.daysFromStart) return 1
-      if (a.daysFromStart > b.daysFromStart) return -1
+    sortPairOfAllDayObjects: function (eventA, eventB) {
+      if (eventA.daysFromStart < eventB.daysFromStart) return 1
+      if (eventA.daysFromStart > eventB.daysFromStart) return -1
       // okay, so daysFromStart are equal, now look at duration
-      if (a.durationDays > b.durationDays) return 1
-      if (a.durationDays < b.durationDays) return -1
+      if (eventA.durationDays > eventB.durationDays) return 1
+      if (eventA.durationDays < eventB.durationDays) return -1
       // daysFromStart are equal, so just take the first one
       return 0
     },
 
-    sortPairOfDateEvents: function (a, b) {
-      return date.getDateDiff(
-        date.addToDate(a.start.dateObject, { milliseconds: a.durationMinutes }),
-        date.addToDate(b.start.dateObject, { milliseconds: b.durationMinutes })
-      )
+    sortPairOfDateEvents: function (eventA, eventB) {
+      // return date.getDateDiff(
+      //   date.addToDate(eventA.start.dateObject, { milliseconds: eventA.durationMinutes }),
+      //   date.addToDate(eventB.start.dateObject, { milliseconds: eventB.durationMinutes })
+      // )
+      return eventB.start.dateObject
+        .plus({ milliseconds: eventA.durationMinutes })
+        .diff(
+          eventB.start.dateObject.plus({ milliseconds: eventA.durationMinutes })
+        )
+        .as('days')
     },
 
     sortDateEvents: function (eventArray) {
@@ -341,8 +347,11 @@ export default {
         let thisEvent = this.parsed.byId[eventId]
         let thisEventInOverlapArray = false
 
-        let thisEventStart = new Date(thisEvent.start.dateTime)
-        let thisEventEnd = new Date(thisEvent.end.dateTime)
+        // let thisEventStart = new Date(thisEvent.start.dateTime)
+        // let thisEventEnd = new Date(thisEvent.end.dateTime)
+        // console.debug('parseDateEvents alpha ', thisEvent.start.dateTime, thisEvent.start)
+        let thisEventStart = thisEvent.start.dateObject
+        let thisEventEnd = thisEvent.end.dateObject
 
         // We iterate the overlapArray to check if the current event is in any array of those
         for (let ovIndex in overlapArray) {
@@ -352,6 +361,7 @@ export default {
             break
           }
 
+          // console.debug('overlapArray = ', overlapArray)
           let overlapMinStart = overlapArray[ovIndex].start
           let overlapMaxEnd = overlapArray[ovIndex].end
 
@@ -360,23 +370,33 @@ export default {
           // If any of this is true, we proceed to add it in the overlapArray
 
           if (
-            (date.isBetweenDates(thisEventStart, overlapMinStart, overlapMaxEnd)) ||
-            (date.isBetweenDates(thisEventEnd, overlapMinStart, overlapMaxEnd)) ||
+            // (date.isBetweenDates(thisEventStart, overlapMinStart, overlapMaxEnd)) ||
+            // (date.isBetweenDates(thisEventEnd, overlapMinStart, overlapMaxEnd)) ||
+            (this.dateIsBetween(thisEventStart, overlapMinStart, overlapMaxEnd)) ||
+            (this.dateIsBetween(thisEventEnd, overlapMinStart, overlapMaxEnd)) ||
+
             (thisEventStart < overlapMinStart && thisEventEnd > overlapMaxEnd)
           ) {
             overlapArray[ovIndex].overlapped.push({
               id: thisEvent.id,
-              start: thisEvent.start.dateTime,
-              end: thisEvent.end.dateTime
+              // start: thisEvent.start.dateTime,
+              // end: thisEvent.end.dateTime
+              start: thisEvent.start.dateObject,
+              end: thisEvent.end.dateObject
             })
 
-            let startDates = overlapArray[ovIndex].overlapped.map(ov => new Date(ov.start))
-            let endDates = overlapArray[ovIndex].overlapped.map(ov => new Date(ov.end))
+            // let startDates = overlapArray[ovIndex].overlapped.map(ov => new Date(ov.start))
+            // let endDates = overlapArray[ovIndex].overlapped.map(ov => new Date(ov.end))
+            // let startDates = overlapArray[ovIndex].overlapped.map(ov => DateTime.fromISO(ov.start))
+            // let endDates = overlapArray[ovIndex].overlapped.map(ov => DateTime.fromISO(ov.end))
+            let startDates = overlapArray[ovIndex].overlapped.map(ov => ov.start)
+            let endDates = overlapArray[ovIndex].overlapped.map(ov => ov.end)
 
             // Now we update the range of the overlap object by getting the minimum start date and the max end date.
-            overlapArray[ovIndex].start = new Date(date.getMinDate(...startDates))
-            overlapArray[ovIndex].end = new Date(date.getMaxDate(...endDates))
-
+            // overlapArray[ovIndex].start = new Date(date.getMinDate(...startDates))
+            // overlapArray[ovIndex].end = new Date(date.getMaxDate(...endDates))
+            overlapArray[ovIndex].start = this.dateGetMin(...startDates)
+            overlapArray[ovIndex].end = this.dateGetMax(...endDates)
             thisEventInOverlapArray = true
             break
           }
@@ -384,12 +404,18 @@ export default {
 
         if (!thisEventInOverlapArray) { // If we didnt find it or it didnt meet the requirements to be added to an overlap object, we create a new object
           overlapArray.push({
-            start: new Date(thisEvent.start.dateTime),
-            end: new Date(thisEvent.end.dateTime),
+            // start: new Date(thisEvent.start.dateTime),
+            // end: new Date(thisEvent.end.dateTime),
+            // start: this.makeDT(DateTime.fromISO(thisEvent.start.dateTime)),
+            // end: this.makeDT(DateTime.fromISO(thisEvent.end.dateTime)),
+            start: thisEvent.start.dateObject,
+            end: thisEvent.end.dateObject,
             overlapped: [{
               id: thisEvent.id,
-              start: thisEvent.start.dateTime,
-              end: thisEvent.end.dateTime
+              // start: thisEvent.start.dateTime,
+              // end: thisEvent.end.dateTime
+              start: thisEvent.start.dateObject,
+              end: thisEvent.end.dateObject
             }]
           })
         }
@@ -404,6 +430,44 @@ export default {
         })
       })
     },
+    dateIsBetween: function (dateTarget, dateFrom, dateTo, options = {inclusiveFrom: false, inclusiveTo: false}) {
+      // const thisDateTarget = this.makeDT(dateTarget)
+      // const thisDateFrom = this.makeDT(dateFrom)
+      // const thisDateTo = this.makeDT(dateTo)
+      // return (
+      //   (thisDateTarget > thisDateFrom || (options.inclusiveFrom && thisDateTarget === thisDateFrom)) &&
+      //   (thisDateTarget < thisDateTo || (options.inclusiveTo && thisDateTarget === thisDateTo))
+      // )
+      return (
+        (dateTarget > dateFrom || (options.inclusiveFrom && dateTarget === dateFrom)) &&
+        (dateTarget < dateTo || (options.inclusiveTo && dateTarget === dateTo))
+      )
+    },
+    dateGetMin: function (...dateArray) {
+      // console.debug('dateGetMin received ', dateArray, typeof dateArray, typeof [1, 2, 3])
+      return this.dateGetMinMax(dateArray, 'min')
+    },
+    dateGetMax: function (...dateArray) {
+      return this.dateGetMinMax(dateArray, 'max')
+    },
+    dateGetMinMax: function (dateArray, whichOne = 'min') {
+      let returnDate = null
+      // let _this = this
+      // console.debug('dateArray = ', dateArray)
+      dateArray.forEach(function (thisDate) {
+        if (
+          returnDate === null ||
+          // (whichOne === 'min' && _this.makeDT(thisDate) < returnDate) ||
+          // (whichOne === 'max' && _this.makeDT(thisDate) > returnDate)
+          (whichOne === 'min' && thisDate < returnDate) ||
+          (whichOne === 'max' && thisDate > returnDate)
+        ) {
+          returnDate = thisDate
+        }
+      })
+      return returnDate
+    },
+
     parseGetDurationMinutes: function (eventObj) {
       if (eventObj.start.isAllDay) {
         return 24 * 60

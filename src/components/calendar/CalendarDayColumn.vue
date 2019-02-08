@@ -43,7 +43,6 @@
   import {
     CalendarMixin
   } from './mixins'
-  import { date } from 'quasar'
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarDayColumn',
@@ -183,14 +182,22 @@
         return style
       },
       calculateDayEventPosition: function (startDateObject, endDateObject) {
-        let startMidnight = date.adjustDate(startDateObject, {
+        // let startMidnight = date.adjustDate(startDateObject, {
+        //   hours: 0,
+        //   minutes: 0,
+        //   seconds: 0,
+        //   milliseconds: 0
+        // })
+        // let topMinuteCount = date.getDateDiff(startDateObject, startMidnight, 'minutes')
+        // let heightMinuteCount = date.getDateDiff(endDateObject, startDateObject, 'minutes')
+        let startMidnight = startDateObject.set({
           hours: 0,
           minutes: 0,
           seconds: 0,
           milliseconds: 0
         })
-        let topMinuteCount = date.getDateDiff(startDateObject, startMidnight, 'minutes')
-        let heightMinuteCount = date.getDateDiff(endDateObject, startDateObject, 'minutes')
+        let topMinuteCount = startDateObject.diff(startMidnight).as('minutes')
+        let heightMinuteCount = endDateObject.diff(startDateObject).as('minutes')
         let sizePerMinute = this.dayCellHeight / 60
         return {
           top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,

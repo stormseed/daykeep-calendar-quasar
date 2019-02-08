@@ -17,6 +17,7 @@ export default {
         this.calendarLocale &&
         (!dashHas(dateObject, 'locale') || this.calendarLocale !== dateObject.locale)
       ) {
+        // console.debug('dateObject = ', dateObject)
         dateObject = dateObject.setLocale(this.calendarLocale)
       }
       if (adjustTimezone && adjustTimezone !== dateObject.zoneName) {
