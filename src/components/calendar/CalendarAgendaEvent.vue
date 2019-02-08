@@ -46,6 +46,7 @@
 <script>
   import {
     CalendarMixin,
+    CalendarEventMixin,
     EventPropsMixin
   } from './mixins'
   import {
@@ -55,7 +56,7 @@
   const { DateTime } = require('luxon')
   export default {
     name: 'CalendarAgendaEvent',
-    mixins: [CalendarMixin, EventPropsMixin],
+    mixins: [CalendarMixin, CalendarEventMixin, EventPropsMixin],
     props: {
       agendaStyle: {
         type: String,
@@ -99,21 +100,6 @@
       },
       getEventStyle: function () {
         return {}
-      },
-      formatTimeRange: function (startTime, endTime) {
-        let returnString = ''
-        // start time
-        returnString += this.simplifyTimeFormat(
-          this.makeDT(startTime).toLocaleString(DateTime.TIME_SIMPLE),
-          (this.formatDate(startTime, 'a') === this.formatDate(endTime, 'a'))
-        )
-        returnString += ' - '
-        // end time
-        returnString += this.simplifyTimeFormat(
-          this.makeDT(endTime).toLocaleString(DateTime.TIME_SIMPLE),
-          false
-        )
-        return returnString
       },
       handleClick: function (e) {
         this.eventObject.allowEditing = this.allowEditing

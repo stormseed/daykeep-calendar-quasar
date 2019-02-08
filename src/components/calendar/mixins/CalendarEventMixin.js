@@ -538,6 +538,37 @@ export default {
           this.parseEventList()
         }
       }
+    },
+
+    formatTimeRange: function (startTime, endTime) {
+      let returnString = ''
+      // start time
+      returnString += this.simplifyTimeFormat(
+        this.makeDT(startTime).toLocaleString(DateTime.TIME_SIMPLE),
+        (this.formatDate(startTime, 'a') === this.formatDate(endTime, 'a'))
+      )
+      returnString += ' - '
+      // end time
+      returnString += this.simplifyTimeFormat(
+        this.makeDT(endTime).toLocaleString(DateTime.TIME_SIMPLE),
+        false
+      )
+      return returnString
+    },
+    formatTime: function (startTime) {
+      let returnString = this.makeDT(startTime).toLocaleString(DateTime.TIME_SIMPLE)
+      // simplify if AM / PM present
+      if (returnString.includes('M')) {
+        returnString = returnString.replace(':00', '') // remove minutes if = ':00'
+          .replace(' AM', 'am')
+          .replace(' PM', 'pm')
+      }
+      return returnString
+    },
+    getEventDuration: function (startTime, endTime) {
+      return Math.floor(
+        this.makeDT(endTime).diff(this.makeDT(startTime)).as('minutes')
+      )
     }
   },
   mounted () {}

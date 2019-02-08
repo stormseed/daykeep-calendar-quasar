@@ -81,6 +81,7 @@
                   :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
                   :allow-editing="allowEditing"
                   @click="handleCalendarEventClick"
+                  render-style="singleLine"
                 />
               </div>
             </template>

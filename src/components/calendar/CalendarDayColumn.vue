@@ -26,6 +26,7 @@
         :calendar-timezone="calendarTimezone"
         :prevent-event-detail="preventEventDetail"
         :allow-editing="allowEditing"
+        render-style="doubleLine"
       />
     </div>
 
