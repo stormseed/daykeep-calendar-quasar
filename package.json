@@ -1,6 +1,6 @@
 {
   "name": "quasar-calendar",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A full display calendar for the Quasar vue.js framework",
   "keywords": [
     "vue",
