@@ -374,8 +374,7 @@ export default {
             // (date.isBetweenDates(thisEventEnd, overlapMinStart, overlapMaxEnd)) ||
             (this.dateIsBetween(thisEventStart, overlapMinStart, overlapMaxEnd)) ||
             (this.dateIsBetween(thisEventEnd, overlapMinStart, overlapMaxEnd)) ||
-
-            (thisEventStart < overlapMinStart && thisEventEnd > overlapMaxEnd)
+            (thisEventStart <= overlapMinStart && thisEventEnd >= overlapMaxEnd)
           ) {
             overlapArray[ovIndex].overlapped.push({
               id: thisEvent.id,
