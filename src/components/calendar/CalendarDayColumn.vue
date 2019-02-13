@@ -11,24 +11,25 @@
     </div>
 
     <!-- events -->
-    <div
-      v-if="dateEvents.length > 0"
-      v-for="eventObject in dateEvents"
-      :key="makeDT(workingDate).toISODate() + getEventIdString(eventObject)"
-      :class="calculateDayEventClass(eventObject)"
-      :style="calculateDayEventStyle(eventObject)"
-    >
-      <calendar-event
+    <template v-if="dateEvents.length > 0">
+      <div
+        v-for="eventObject in dateEvents"
         v-if="!eventObject.start.isAllDay && !eventObject.timeSpansMultipleDays"
-        :event-object="eventObject"
-        :event-ref="eventRef"
-        :calendar-locale="calendarLocale"
-        :calendar-timezone="calendarTimezone"
-        :prevent-event-detail="preventEventDetail"
-        :allow-editing="allowEditing"
-        render-style="doubleLine"
-      />
-    </div>
+        :key="makeDT(workingDate).toISODate() + getEventIdString(eventObject)"
+        :class="calculateDayEventClass(eventObject)"
+        :style="calculateDayEventStyle(eventObject)"
+      >
+        <calendar-event
+          :event-object="eventObject"
+          :event-ref="eventRef"
+          :calendar-locale="calendarLocale"
+          :calendar-timezone="calendarTimezone"
+          :prevent-event-detail="preventEventDetail"
+          :allow-editing="allowEditing"
+          render-style="doubleLine"
+        />
+      </div>
+    </template>
 
     <!-- current time -->
     <div
