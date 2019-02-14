@@ -17,7 +17,6 @@ export default {
         this.calendarLocale &&
         (!dashHas(dateObject, 'locale') || this.calendarLocale !== dateObject.locale)
       ) {
-        // console.debug('dateObject = ', dateObject)
         dateObject = dateObject.setLocale(this.calendarLocale)
       }
       if (adjustTimezone && adjustTimezone !== dateObject.zoneName) {
@@ -200,13 +199,28 @@ export default {
         .toLowerCase()
     },
     moveTimePeriod: function (params) {
-      let paramObj = {}
-      paramObj[params.unitType] = params.amount
-      this.workingDate = this.workingDate.plus(paramObj)
+      if (dashHas(params, 'absolute')) {
+        this.workingDate = this.makeDT(params.absolute)
+      }
+      else {
+        let paramObj = {}
+        paramObj[params.unitType] = params.amount
+        this.workingDate = this.workingDate.plus(paramObj)
+      }
     },
     setTimePeriod: function (params) {
       this.workingDate = params.dateObject
     },
+    handleDateChange: function (dateObject) {
+      this.workingDate = this.makeDT(dateObject)
+      this.triggerDisplayChange(
+        this.eventRef,
+        {
+          newDate: this.workingDate
+        }
+      )
+    },
+
     getDayOfWeek: function () {
       return this.createThisDate(this.dayNumber).format('dddd')
     },

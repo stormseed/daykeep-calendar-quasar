@@ -35,61 +35,90 @@
 
       <q-tab-pane name="tab-month" class="calendar-tab-pane-month">
         <calendar-month
-          v-bind="$props"
           :ref="'month-' + thisRefName"
           :start-date="workingDate"
           :parsed-events="parsed"
+          :event-ref="eventRef"
           :full-component-ref="eventRef"
+          :sunday-first-day-of-week="sundayFirstDayOfWeek"
+          :calendar-locale="calendarLocale"
+          :calendar-timezone="calendarTimezone"
+          :prevent-event-detail="preventEventDetail"
+          :allow-editing="allowEditing"
+
         />
       </q-tab-pane>
       <q-tab-pane name="tab-week-component" class="calendar-tab-pane-week">
         <calendar-multi-day
-          v-bind="$props"
           :ref="'week-' + thisRefName"
           :start-date="workingDate"
           :parsed-events="parsed"
           :num-days="7"
           :nav-days="7"
           :force-start-of-week="true"
+          :event-ref="eventRef"
           :full-component-ref="eventRef"
+          :sunday-first-day-of-week="sundayFirstDayOfWeek"
+          :calendar-locale="calendarLocale"
+          :calendar-timezone="calendarTimezone"
+          :prevent-event-detail="preventEventDetail"
+          :allow-editing="allowEditing"
           :day-display-start-hour="dayDisplayStartHour"
+
         />
       </q-tab-pane>
       <q-tab-pane name="tab-days-component" class="calendar-tab-pane-week">
         <calendar-multi-day
-          v-bind="$props"
           :ref="'days-' + thisRefName"
           :start-date="workingDate"
           :parsed-events="parsed"
           :num-days="3"
           :nav-days="1"
           :force-start-of-week="false"
+          :event-ref="eventRef"
           :full-component-ref="eventRef"
+          :sunday-first-day-of-week="sundayFirstDayOfWeek"
+          :calendar-locale="calendarLocale"
+          :calendar-timezone="calendarTimezone"
+          :prevent-event-detail="preventEventDetail"
+          :allow-editing="allowEditing"
           :day-display-start-hour="dayDisplayStartHour"
+
         />
       </q-tab-pane>
       <q-tab-pane name="tab-single-day-component" class="calendar-tab-pane-week">
         <calendar-multi-day
-          v-bind="$props"
           :ref="'day-' + thisRefName"
           :start-date="workingDate"
           :parsed-events="parsed"
           :num-days="1"
           :nav-days="1"
           :force-start-of-week="false"
+          :event-ref="eventRef"
           :full-component-ref="eventRef"
+          :sunday-first-day-of-week="sundayFirstDayOfWeek"
+          :calendar-locale="calendarLocale"
+          :calendar-timezone="calendarTimezone"
+          :prevent-event-detail="preventEventDetail"
+          :allow-editing="allowEditing"
           :day-display-start-hour="dayDisplayStartHour"
+
         />
       </q-tab-pane>
       <q-tab-pane name="tab-agenda" class="calendar-tab-pane-agenda">
         <calendar-agenda
-          v-bind="$props"
           :ref="'agenda-' + thisRefName"
           :start-date="workingDate"
           :parsed-events="parsed"
           :num-days="28"
+          :event-ref="eventRef"
           scroll-height="300px"
           :full-component-ref="eventRef"
+          :sunday-first-day-of-week="sundayFirstDayOfWeek"
+          :calendar-locale="calendarLocale"
+          :calendar-timezone="calendarTimezone"
+          :prevent-event-detail="preventEventDetail"
+          :allow-editing="allowEditing"
         />
       </q-tab-pane>
 
@@ -124,6 +153,10 @@
     name: 'Calendar',
     mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
     props: {
+      startDate: {
+        type: [Object, Date],
+        default: () => { return new Date() }
+      },
       tabLabels: {
         type: Object,
         default: () => {
@@ -204,7 +237,9 @@
       this.setupEventsHandling()
     },
     watch: {
-      startDate: 'handleStartChange',
+      startDate: function () {
+        this.handleStartChange()
+      },
       eventArray: function () {
         this.getPassedInEventArray()
       },

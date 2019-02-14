@@ -191,8 +191,7 @@
       scrollHeight: {
         type: String,
         default: '200px'
-      },
-      fullComponentRef: String
+      }
     },
     data () {
       return {
@@ -240,14 +239,14 @@
           return this.formatDate(firstDate, 'MMM d - ') + this.formatDate(lastDate, 'MMM d')
         }
       },
+      handleStartChange: function () {
+        this.doUpdate()
+      },
       handleNavMove: function (params) {
         this.moveTimePeriod(params)
         this.$emit(
           this.eventRef + ':navMovePeriod',
-          {
-            unitType: params.unitType,
-            amount: params.amount
-          }
+          params
         )
         let payload = this.getAgendaDisplayDates()
         payload['moveUnit'] = params.unitType

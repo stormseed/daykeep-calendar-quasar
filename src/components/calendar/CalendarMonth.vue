@@ -48,10 +48,18 @@
               'cursor-pointer': calendarDaysAreClickable
             }"
           >
-            <quantity-bubble
-              :quantity="thisDay.dateObject.day"
-              :offset="false"
-            />
+            <q-btn
+              color="primary"
+              round
+              dense
+              size="xs"
+            >
+              <span class="inner-span">{{ thisDay.dateObject.day }}</span>
+            </q-btn>
+            <!--<quantity-bubble-->
+              <!--:quantity="thisDay.dateObject.day"-->
+              <!--:offset="false"-->
+            <!--/>-->
           </div>
           <div
             v-else
@@ -60,7 +68,15 @@
               'cursor-pointer': calendarDaysAreClickable
             }"
           >
-            {{ thisDay.dateObject.day }}
+            <q-btn
+              round
+              flat
+              dense
+              size="xs"
+            >
+              <span class="inner-span">{{ thisDay.dateObject.day }}</span>
+            </q-btn>
+            <!--{{ thisDay.dateObject.day }}-->
           </div>
           <div class="calendar-day-content">
             <template v-if="hasAnyEvents(thisDay.dateObject)">
@@ -140,9 +156,7 @@
       QScrollArea
     },
     mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
-    props: {
-      fullComponentRef: String
-    },
+    props: {},
     data () {
       return {
         dayCellHeight: 5,
@@ -230,10 +244,11 @@
         this.moveTimePeriod(params)
         this.$emit(
           this.eventRef + ':navMovePeriod',
-          {
-            unitType: params.unitType,
-            amount: params.amount
-          }
+          // {
+          //   unitType: params.unitType,
+          //   amount: params.amount
+          // }
+          params
         )
         let payload = this.getWeekArrayDisplayDates(this.generateCalendarCellArray())
         payload['moveUnit'] = params.unitType
@@ -258,16 +273,17 @@
       handleDayClick: function (dateObject) {
         // event item clicked; prevent "day" event
         if (this.eventClicked) {
-          this.eventClicked = false;
-          return;
+          this.eventClicked = false
+          return
         }
         if (this.fullComponentRef) {
           this.fullMoveToDay(dateObject)
         }
-        this.triggerDayClick(dateObject, this.eventRef);
+        this.handleNavMove({ absolute: dateObject })
+        this.triggerDayClick(dateObject, this.eventRef)
       },
       handleCalendarEventClick: function () {
-        this.eventClicked = true;
+        this.eventClicked = true
       }
     },
     mounted () {
@@ -287,7 +303,9 @@
       )
     },
     watch: {
-      startDate: 'handleStartChange',
+      startDate: function () {
+        this.handleStartChange()
+      },
       eventArray: function () {
         this.getPassedInEventArray()
       },
@@ -340,6 +358,8 @@
           vertical-align middle
           padding-top .25em
           padding-left .25em
+          .inner-span
+            font-size 1.25em
       .calendar-day-current
         background-color $currentDayBackgroundColor
       .calendar-day-weekend

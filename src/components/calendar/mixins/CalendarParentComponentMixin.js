@@ -4,7 +4,7 @@ export default {
   props: {
     startDate: {
       type: [Object, Date],
-      default: () => { return new Date() }
+      default: () => { return DateTime.local() }
     },
     eventArray: {
       type: Array,
@@ -45,7 +45,8 @@ export default {
     dayDisplayStartHour: {
       type: Number,
       default: 7
-    }
+    },
+    fullComponentRef: String
   },
   mounted () {}
 }

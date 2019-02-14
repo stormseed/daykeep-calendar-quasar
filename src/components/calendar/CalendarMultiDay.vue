@@ -144,8 +144,7 @@
       scrollHeight: {
         type: String,
         default: 'auto'
-      },
-      fullComponentRef: String
+      }
     },
     components: {
       CalendarEvent,
@@ -225,20 +224,19 @@
           this.scrollToFirstDay()
         })
       },
-      handleNavMove: function (unitType, amount) {
-        this.moveTimePeriod(unitType, amount)
+      // handleNavMove: function (unitType, amount) {
+      handleNavMove: function (params) {
+        // this.moveTimePeriod(unitType, amount)
+        this.moveTimePeriod(params)
         this.$emit(
           this.eventRef + ':navMovePeriod',
-          {
-            unitType: unitType,
-            amount: amount
-          }
+          params
         )
         let payload = this.getMultiDayDisplayDates(
           this.buildWeekDateArray()
         )
-        payload['moveUnit'] = unitType
-        payload['moveAmount'] = amount
+        payload['moveUnit'] = params.unitType
+        payload['moveAmount'] = params.amount
         this.triggerDisplayChange(
           this.eventRef,
           payload
@@ -276,6 +274,12 @@
         this.handleNavMove
       )
       this.$root.$on(
+        // this.eventRef + ':moveToSingleDay',
+        this.fullComponentRef + ':moveToSingleDay',
+        // this.switchToSingleDay
+        this.handleDateChange
+      )
+      this.$root.$on(
         'click-event-' + this.eventRef,
         this.handleEventDetailEvent
       )
@@ -285,7 +289,9 @@
       )
     },
     watch: {
-      startDate: 'handleStartChange',
+      startDate: function (newVal, oldVal) {
+        this.handleStartChange()
+      },
       eventArray: 'getPassedInEventArray',
       parsedEvents: 'getPassedInParsedEvents'
     }
