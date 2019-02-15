@@ -5,7 +5,7 @@
     @click="handleClick"
   >
     <template v-if="renderStyle === 'singleLine' || isAllDayEvent() || (renderStyle === 'doubleLine' && eventDuration() < 45)">
-      <template v-if="!eventHasPreviousDay() || (firstDayOfWeek && eventHasPreviousDay())">
+      <template v-if="!eventHasPreviousDay() || ((firstDayOfWeek || isLeftmostColumn) && eventHasPreviousDay())">
         <div v-if="isEmptySlot()" class="calendar-event-summary">
           &nbsp;
         </div>
@@ -59,7 +59,6 @@
     EventPropsMixin
   } from './mixins'
   import dashHas from 'lodash.has'
-  // const { DateTime } = require('luxon')
   export default {
     name: 'CalendarEvent',
     mixins: [CalendarMixin, CalendarEventMixin, EventPropsMixin],
@@ -73,6 +72,10 @@
       renderStyle: {
         type: String,
         default: 'singleLine'
+      },
+      isLeftmostColumn: {
+        type: Boolean,
+        default: false
       }
     },
     components: {
@@ -175,7 +178,7 @@
     height 100%
     padding 2px
     text-overflow clip
-    border-radius .25em
+    border-radius 5px
     margin 1px 0
     font-size 0.8em
     cursor pointer

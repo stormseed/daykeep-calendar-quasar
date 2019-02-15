@@ -224,9 +224,7 @@
           this.scrollToFirstDay()
         })
       },
-      // handleNavMove: function (unitType, amount) {
       handleNavMove: function (params) {
-        // this.moveTimePeriod(unitType, amount)
         this.moveTimePeriod(params)
         this.$emit(
           this.eventRef + ':navMovePeriod',
@@ -274,9 +272,7 @@
         this.handleNavMove
       )
       this.$root.$on(
-        // this.eventRef + ':moveToSingleDay',
         this.fullComponentRef + ':moveToSingleDay',
-        // this.switchToSingleDay
         this.handleDateChange
       )
       this.$root.$on(

@@ -45,6 +45,7 @@
             v-if="isCurrentDate(thisDay.dateObject)"
             :class="{
               'calendar-day-number': true,
+              'calendar-day-number-current': true,
               'cursor-pointer': calendarDaysAreClickable
             }"
           >
@@ -56,10 +57,6 @@
             >
               <span class="inner-span">{{ thisDay.dateObject.day }}</span>
             </q-btn>
-            <!--<quantity-bubble-->
-              <!--:quantity="thisDay.dateObject.day"-->
-              <!--:offset="false"-->
-            <!--/>-->
           </div>
           <div
             v-else
@@ -76,7 +73,6 @@
             >
               <span class="inner-span">{{ thisDay.dateObject.day }}</span>
             </q-btn>
-            <!--{{ thisDay.dateObject.day }}-->
           </div>
           <div class="calendar-day-content">
             <template v-if="hasAnyEvents(thisDay.dateObject)">
@@ -358,6 +354,9 @@
           vertical-align middle
           padding-top .25em
           padding-left .25em
+          .inner-span
+            font-size 1.5em
+        .calendar-day-number-current
           .inner-span
             font-size 1.25em
       .calendar-day-current

@@ -211,7 +211,14 @@ export default {
     setTimePeriod: function (params) {
       this.workingDate = params.dateObject
     },
-    handleDateChange: function (dateObject) {
+    handleDateChange: function (params) {
+      let dateObject = null
+      if (dashHas(params, 'dateObject')) {
+        dateObject = params.dateObject
+      }
+      else {
+        dateObject = params
+      }
       this.workingDate = this.makeDT(dateObject)
       this.triggerDisplayChange(
         this.eventRef,

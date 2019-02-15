@@ -1,8 +1,4 @@
 import dashHas from 'lodash.has'
-// import DateTime from 'luxon'
-// import {
-//   date
-// } from 'quasar'
 const defaultParsed = {
   byAllDayStartDate: {},
   byAllDayObject: {},
@@ -339,101 +335,12 @@ export default {
       return returnArray
     },
 
-    // OLDparseDateEvents: function (eventArray) {
-    //   this.newParseDateEvents(eventArray)
-    //   // thanks @Jasqui and @kdmon
-    //   let overlapArray = [] // We are going to parse the events first as how they overlap between each other
-    //
-    //   for (let eventId of eventArray) {
-    //     let thisEvent = this.parsed.byId[eventId]
-    //     let thisEventInOverlapArray = false
-    //
-    //     let thisEventStart = thisEvent.start.dateObject
-    //     let thisEventEnd = thisEvent.end.dateObject
-    //
-    //     // We iterate the overlapArray to check if the current event is in any array of those
-    //     for (let ovIndex in overlapArray) {
-    //       thisEventInOverlapArray = overlapArray[ovIndex].overlapped.find(ov => ov.id === eventId)
-    //
-    //       if (thisEventInOverlapArray) { // If we did find it, we break out of the loop
-    //         break
-    //       }
-    //
-    //       // console.debug('overlapArray = ', overlapArray)
-    //       let overlapMinStart = overlapArray[ovIndex].start
-    //       let overlapMaxEnd = overlapArray[ovIndex].end
-    //
-    //       // We check if the event date range start or end is between the range defined in the overlap object.
-    //       // We also check if it happens to be an event that is longer than that date range and contains it.
-    //       // If any of this is true, we proceed to add it in the overlapArray
-    //
-    //       console.debug(
-    //         'thisEventStart = %s, thisEventEnd = %s',
-    //         thisEventStart.toLocaleString(DateTime.TIME_SIMPLE),
-    //         thisEventEnd.toLocaleString(DateTime.TIME_SIMPLE)
-    //       )
-    //       console.debug(
-    //         'overlapMinStart = %s, overlapMaxEnd = %s',
-    //         overlapMinStart.toLocaleString(DateTime.TIME_SIMPLE),
-    //         overlapMaxEnd.toLocaleString(DateTime.TIME_SIMPLE)
-    //       )
-    //       if (
-    //         (this.dateIsBetween(thisEventStart, overlapMinStart, overlapMaxEnd)) ||
-    //         (this.dateIsBetween(thisEventEnd, overlapMinStart, overlapMaxEnd)) ||
-    //         (thisEventStart <= overlapMinStart && thisEventEnd >= overlapMaxEnd)
-    //       ) {
-    //         overlapArray[ovIndex].overlapped.push({
-    //           id: thisEvent.id,
-    //           start: thisEvent.start.dateObject,
-    //           end: thisEvent.end.dateObject
-    //         })
-    //
-    //         let startDates = overlapArray[ovIndex].overlapped.map(ov => ov.start)
-    //         let endDates = overlapArray[ovIndex].overlapped.map(ov => ov.end)
-    //         console.debug('startDate, endDates = ', startDates, endDates)
-    //
-    //         // Now we update the range of the overlap object by getting the minimum start date and the max end date.
-    //         // overlapArray[ovIndex].start = new Date(date.getMinDate(...startDates))
-    //         // overlapArray[ovIndex].end = new Date(date.getMaxDate(...endDates))
-    //         overlapArray[ovIndex].start = this.dateGetMin(...startDates)
-    //         overlapArray[ovIndex].end = this.dateGetMax(...endDates)
-    //         thisEventInOverlapArray = true
-    //         break
-    //       }
-    //     }
-    //
-    //     if (!thisEventInOverlapArray) { // If we didnt find it or it didnt meet the requirements to be added to an overlap object, we create a new object
-    //       overlapArray.push({
-    //         start: thisEvent.start.dateObject,
-    //         end: thisEvent.end.dateObject,
-    //         overlapped: [{
-    //           id: thisEvent.id,
-    //           start: thisEvent.start.dateObject,
-    //           end: thisEvent.end.dateObject
-    //         }]
-    //       })
-    //     }
-    //   }
-    //
-    //   console.debug('overlapArray = ', overlapArray, eventArray)
-    //   // Now we go through all the overlaps and set their numberOfOverlaps and overlapIterations
-    //   overlapArray.forEach(ov => {
-    //     ov.overlapped.forEach((overlappedEvent, index) => {
-    //       let thisEvent = this.parsed.byId[overlappedEvent.id]
-    //       thisEvent.numberOfOverlaps = ov.overlapped.length - 1
-    //       // TODO: check to see if we can squeeze this in on an existing column / iteration
-    //       thisEvent.overlapIteration = index + 1
-    //     })
-    //   })
-    // },
-
     parseDateEvents: function (eventArray) {
       let columnArray = [[]]
       for (let eventId of eventArray) {
         let thisEvent = this.parsed.byId[eventId]
         let foundAColumn = false
         for (let columnIndex in columnArray) {
-          // console.debug('columnIndex = ', columnIndex, columnArray)
           if (this.hasSlotForEvent(thisEvent, columnArray[columnIndex])) {
             columnArray[columnIndex].push(thisEvent)
             foundAColumn = true
@@ -451,24 +358,21 @@ export default {
           thisEvent.overlapIteration = parseInt(columnIndex) + 1
         }
       }
-      // console.debug('newParseDateEvents has ', columnArray)
     },
     hasSlotForEvent: function (checkEvent, existingEvents = []) {
-      // console.debug('hasSlotForEvent, checkEvent = ', checkEvent)
       let slotAvailable = true
       for (let thisEvent of existingEvents) {
-        // console.debug('thisEvent = ', thisEvent)
         if (
           // case 1: top of checkEvent overlaps bottom of thisEvent
           checkEvent.start.dateObject >= thisEvent.start.dateObject &&
-          checkEvent.start.dateObject <= thisEvent.end.dateObject
+          checkEvent.start.dateObject < thisEvent.end.dateObject
         ) {
           slotAvailable = false
           break
         }
         else if (
           // case 2: bottom of checkEvent overlaps top of thisEvent
-          checkEvent.end.dateObject >= thisEvent.start.dateObject &&
+          checkEvent.end.dateObject > thisEvent.start.dateObject &&
           checkEvent.end.dateObject <= thisEvent.end.dateObject
         ) {
           slotAvailable = false
@@ -493,36 +397,6 @@ export default {
       }
       return slotAvailable
     },
-    // dateIsBetween: function (dateTarget, dateFrom, dateTo, options = {inclusiveFrom: false, inclusiveTo: false}) {
-    //   return (
-    //     (dateTarget > dateFrom || (options.inclusiveFrom && dateTarget === dateFrom)) &&
-    //     (dateTarget < dateTo || (options.inclusiveTo && dateTarget === dateTo))
-    //   )
-    // },
-    // dateGetMin: function (...dateArray) {
-    //   // console.debug('dateGetMin received ', dateArray, typeof dateArray, typeof [1, 2, 3])
-    //   return this.dateGetMinMax(dateArray, 'min')
-    // },
-    // dateGetMax: function (...dateArray) {
-    //   return this.dateGetMinMax(dateArray, 'max')
-    // },
-    // dateGetMinMax: function (dateArray, whichOne = 'min') {
-    //   let returnDate = null
-    //   // let _this = this
-    //   // console.debug('dateArray = ', dateArray)
-    //   dateArray.forEach(function (thisDate) {
-    //     if (
-    //       returnDate === null ||
-    //       // (whichOne === 'min' && _this.makeDT(thisDate) < returnDate) ||
-    //       // (whichOne === 'max' && _this.makeDT(thisDate) > returnDate)
-    //       (whichOne === 'min' && thisDate < returnDate) ||
-    //       (whichOne === 'max' && thisDate > returnDate)
-    //     ) {
-    //       returnDate = thisDate
-    //     }
-    //   })
-    //   return returnDate
-    // },
 
     parseGetDurationMinutes: function (eventObj) {
       if (eventObj.start.isAllDay) {

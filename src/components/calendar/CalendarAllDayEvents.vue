@@ -20,6 +20,7 @@
         :has-next-day="thisEvent.hasNext"
         :force-all-day="true"
         :allow-editing="allowEditing"
+        :is-leftmost-column="(index === 0)"
       />
     </div>
   </div>

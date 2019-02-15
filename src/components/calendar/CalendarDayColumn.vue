@@ -268,6 +268,16 @@
       border-top $borderThin
     .calendar-day-event-overlap
       margin-left 1px
+      ::after
+        position absolute
+        top -1px
+        left -1px
+        width: calc(100% + 2px)
+        height: calc(100% + 2px)
+        content ''
+        border-radius 5px
+        border 1px solid white
+        box-sizing border-box
     .calendar-day-event-overlap-first
       margin-left 0
     .current-time-line
