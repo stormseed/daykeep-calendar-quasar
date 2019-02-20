@@ -1,5 +1,5 @@
 // this file contains shared properties for Calendar, CalendarAgenda, CalendarMonth and CalendarMultiday
-const { DateTime } = require('luxon')
+import DateTime from 'luxon/src/datetime'
 export default {
   props: {
     startDate: {

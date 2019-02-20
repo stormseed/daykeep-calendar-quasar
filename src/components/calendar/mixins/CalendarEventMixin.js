@@ -1,11 +1,14 @@
 import dashHas from 'lodash.has'
+import DateTime from 'luxon/src/datetime'
+import Interval from 'luxon/src/interval'
 const defaultParsed = {
   byAllDayStartDate: {},
   byAllDayObject: {},
   byStartDate: {},
   byId: {}
 }
-const { DateTime } = require('luxon')
+// const { DateTime } = require('luxon')
+const gridBlockSize = 5 // the number here is how many minutes for each block to use when calculating overlaps
 export default {
   computed: {},
   methods: {
@@ -337,8 +340,20 @@ export default {
 
     parseDateEvents: function (eventArray) {
       let columnArray = [[]]
+      let gridTimeMap = new Map()
       for (let eventId of eventArray) {
         let thisEvent = this.parsed.byId[eventId]
+
+        let gridTimes = this.getGridTimeSlots(thisEvent)
+        for (let gridCounter = gridTimes.start; gridCounter <= gridTimes.end; gridCounter++) {
+          if (gridTimeMap.has(gridCounter)) {
+            gridTimeMap.set(gridCounter, gridTimeMap.get(gridCounter) + 1)
+          }
+          else {
+            gridTimeMap.set(gridCounter, 1)
+          }
+        }
+
         let foundAColumn = false
         for (let columnIndex in columnArray) {
           if (this.hasSlotForEvent(thisEvent, columnArray[columnIndex])) {
@@ -351,13 +366,43 @@ export default {
           columnArray.push([thisEvent])
         }
       }
-      let numberOfColumns = columnArray.length
+      // let numberOfColumns = columnArray.length
       for (let columnIndex in columnArray) {
         for (let thisEvent of columnArray[columnIndex]) {
-          thisEvent.numberOfOverlaps = numberOfColumns - 1
+          // thisEvent.numberOfOverlaps = numberOfColumns - 1
+          thisEvent.numberOfOverlaps = this.getMaxOfGrid(thisEvent, gridTimeMap) - 1
           thisEvent.overlapIteration = parseInt(columnIndex) + 1
         }
       }
+      // make column count corrections for overlapping events that overlap with other events. Confusing.
+      for (let eventId of eventArray) {
+        let thisEvent = this.parsed.byId[eventId]
+        thisEvent.numberOfOverlaps = this.getMaxOverlapsForEvent(thisEvent, eventArray)
+      }
+    },
+    eventsOverlap: function (event1, event2) {
+      // const interval1 = this.getIntervalFromEvent(event1)
+      // const interval2 = this.getIntervalFromEvent(event2)
+      // return interval1.overlaps(interval2)
+      return this.getIntervalFromEvent(event1).overlaps(this.getIntervalFromEvent(event2))
+    },
+    getIntervalFromEvent: function (thisEvent) {
+      return Interval.fromDateTimes(
+        thisEvent.start.dateObject,
+        thisEvent.end.dateObject
+      )
+    },
+    getMaxOverlapsForEvent: function (testEvent, eventArray) {
+      let maxOverlaps = testEvent.numberOfOverlaps
+      for (let eventId of eventArray) {
+        const thisEvent = this.parsed.byId[eventId]
+        if (this.eventsOverlap(testEvent, thisEvent)) {
+          if (thisEvent.numberOfOverlaps > testEvent.numberOfOverlaps) {
+            maxOverlaps = thisEvent.numberOfOverlaps
+          }
+        }
+      }
+      return maxOverlaps
     },
     hasSlotForEvent: function (checkEvent, existingEvents = []) {
       let slotAvailable = true
@@ -396,6 +441,34 @@ export default {
         }
       }
       return slotAvailable
+    },
+
+    getGridTimeSlots: function (thisEvent) {
+      return {
+        start: this.getGridTime(thisEvent.start.dateObject, false),
+        end: this.getGridTime(thisEvent.end.dateObject, true) - 1
+      }
+    },
+    getGridTime: function (dateObject, roundUp = false) {
+      dateObject = this.makeDT(dateObject) // just in case
+      const gridCalc = ((dateObject.hour * 60) + dateObject.minute) / gridBlockSize
+      if (roundUp) {
+        return Math.ceil(gridCalc)
+      }
+      else {
+        return Math.floor(gridCalc)
+      }
+    },
+    getMaxOfGrid: function (thisEvent, gridTimeMap) {
+      // TODO: there's probably a fancier Collections way to do this
+      let max = 0
+      const gridTimes = this.getGridTimeSlots(thisEvent)
+      for (let gridCounter = gridTimes.start; gridCounter <= gridTimes.end; gridCounter++) {
+        if (gridTimeMap.has(gridCounter) && gridTimeMap.get(gridCounter) > max) {
+          max = gridTimeMap.get(gridCounter)
+        }
+      }
+      return max
     },
 
     parseGetDurationMinutes: function (eventObj) {

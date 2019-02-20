@@ -135,7 +135,7 @@
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarEventDetail from './CalendarEventDetail'
-  const { DateTime } = require('luxon')
+  import DateTime from 'luxon/src/datetime'
   export default {
     name: 'CalendarMonth',
     components: {

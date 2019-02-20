@@ -1,5 +1,5 @@
 import dashHas from 'lodash.has'
-const { DateTime } = require('luxon')
+import DateTime from 'luxon/src/datetime'
 export default {
   computed: {},
   methods: {

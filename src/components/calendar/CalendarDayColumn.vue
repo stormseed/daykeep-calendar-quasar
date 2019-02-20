@@ -45,7 +45,7 @@
   import {
     CalendarMixin
   } from './mixins'
-  const { DateTime } = require('luxon')
+  import DateTime from 'luxon/src/datetime'
   export default {
     name: 'CalendarDayColumn',
     props: {

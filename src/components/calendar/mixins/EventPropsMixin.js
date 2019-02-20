@@ -1,4 +1,4 @@
-const { DateTime } = require('luxon')
+import DateTime from 'luxon/src/datetime'
 export default {
   props: {
     eventObject: {

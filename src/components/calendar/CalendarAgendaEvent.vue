@@ -53,7 +53,7 @@
     QBtn,
     QTooltip
   } from 'quasar'
-  const { DateTime } = require('luxon')
+  import DateTime from 'luxon/src/datetime'
   export default {
     name: 'CalendarAgendaEvent',
     mixins: [CalendarMixin, CalendarEventMixin, EventPropsMixin],
