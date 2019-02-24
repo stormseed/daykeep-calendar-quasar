@@ -1,7 +1,7 @@
 {
   "name": "quasar-calendar",
-  "version": "0.3.4",
-  "description": "A full display calendar for the Quasar vue.js framework",
+  "version": "1.0.0",
+  "description": "A full display calendar for the Quasar Vue.js framework",
   "keywords": [
     "vue",
     "quasar",
@@ -26,7 +26,8 @@
   ],
   "dependencies": {
     "lodash.has": "^4.5.2",
-    "luxon": "^1.10.0"
+    "luxon": "^1.10.0",
+    "quasar-framework": "^0.17.19"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
@@ -40,9 +41,8 @@
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.1.0",
     "eslint-plugin-vue": "^4.5.0",
-    "quasar-cli": "^0.17.19"
+    "quasar-cli": "^0.17.19",
+    "strip-ansi": "^3.0.1"
   },
-  "peerDependencies": {
-    "quasar-framework": "^0.17.19"
-  }
+  "peerDependencies": {}
 }
