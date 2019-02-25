@@ -12,23 +12,24 @@
 
     <!-- events -->
     <template v-if="dateEvents.length > 0">
-      <div
-        v-for="eventObject in dateEvents"
-        v-if="!eventObject.start.isAllDay && !eventObject.timeSpansMultipleDays"
-        :key="makeDT(workingDate).toISODate() + getEventIdString(eventObject)"
-        :class="calculateDayEventClass(eventObject)"
-        :style="calculateDayEventStyle(eventObject)"
-      >
-        <calendar-event
-          :event-object="eventObject"
-          :event-ref="eventRef"
-          :calendar-locale="calendarLocale"
-          :calendar-timezone="calendarTimezone"
-          :prevent-event-detail="preventEventDetail"
-          :allow-editing="allowEditing"
-          render-style="doubleLine"
-        />
-      </div>
+      <template v-for="eventObject in dateEvents">
+        <div
+          v-if="!eventObject.start.isAllDay && !eventObject.timeSpansMultipleDays"
+          :key="makeDT(workingDate).toISODate() + getEventIdString(eventObject)"
+          :class="calculateDayEventClass(eventObject)"
+          :style="calculateDayEventStyle(eventObject)"
+        >
+          <calendar-event
+            :event-object="eventObject"
+            :event-ref="eventRef"
+            :calendar-locale="calendarLocale"
+            :calendar-timezone="calendarTimezone"
+            :prevent-event-detail="preventEventDetail"
+            :allow-editing="allowEditing"
+            render-style="doubleLine"
+          />
+        </div>
+      </template>
     </template>
 
     <!-- current time -->
@@ -284,6 +285,5 @@
       position absolute
       border 1px solid red
       width 100%
-
 
 </style>

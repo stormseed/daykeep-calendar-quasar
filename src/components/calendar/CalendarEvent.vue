@@ -50,10 +50,6 @@
 
 <script>
   import {
-    QBtn,
-    QTooltip
-  } from 'quasar'
-  import {
     CalendarMixin,
     CalendarEventMixin,
     EventPropsMixin
@@ -78,10 +74,7 @@
         default: false
       }
     },
-    components: {
-      QBtn,
-      QTooltip
-    },
+    components: {},
     data () {
       return {}
     },

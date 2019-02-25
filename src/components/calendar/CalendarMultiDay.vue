@@ -97,7 +97,6 @@
     CalendarEventMixin,
     CalendarParentComponentMixin
   } from './mixins'
-  import CalendarEvent from './CalendarEvent'
   import CalendarDayColumn from './CalendarDayColumn'
   import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
   import CalendarDayLabels from './CalendarDayLabels'
@@ -105,8 +104,6 @@
   import CalendarAllDayEvents from './CalendarAllDayEvents'
   import CalendarEventDetail from './CalendarEventDetail'
   import {
-    QBtn,
-    QTooltip,
     QScrollArea,
     scroll
   } from 'quasar'
@@ -147,15 +144,12 @@
       }
     },
     components: {
-      CalendarEvent,
       CalendarDayColumn,
       CalendarTimeLabelColumn,
       CalendarDayLabels,
       CalendarHeaderNav,
       CalendarAllDayEvents,
       CalendarEventDetail,
-      QBtn,
-      QTooltip,
       QScrollArea
     },
     data () {

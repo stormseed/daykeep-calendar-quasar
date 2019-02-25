@@ -150,8 +150,8 @@ export default {
       }
       if (sundayFirstDayOfWeek) {
         return {
-          first: this.dateAdjustWeekday(this.workingDate, -1).minus({days: 1}),
-          last: this.dateAdjustWeekday(this.workingDate, numberOfDays).minus({days: 1})
+          first: this.dateAdjustWeekday(this.workingDate, -1).minus({ days: 1 }),
+          last: this.dateAdjustWeekday(this.workingDate, numberOfDays).minus({ days: 1 })
         }
       }
       else {
@@ -166,7 +166,7 @@ export default {
       let returnArray = []
       for (let counter = 0; counter <= numberOfDays - 1; counter++) {
         returnArray.push(
-          this.makeDT(bookendDates.first).plus({days: counter})
+          this.makeDT(bookendDates.first).plus({ days: counter })
         )
       }
       return returnArray
@@ -246,7 +246,7 @@ export default {
     },
     getWeekNumber (thisDateObject, useSundayStart) {
       if (useSundayStart) {
-        return this.makeDT(thisDateObject).plus({days: 1}).weekNumber
+        return this.makeDT(thisDateObject).plus({ days: 1 }).weekNumber
       }
       else {
         return this.makeDT(thisDateObject).weekNumber

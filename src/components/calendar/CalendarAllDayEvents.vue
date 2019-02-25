@@ -8,20 +8,21 @@
         'max-width': cellWidth
       }"
     >
-      <calendar-event
-        v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))"
-        :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + getEventIdString(thisEvent)"
-        v-if="thisEvent.start.isAllDay || thisEvent.timeSpansMultipleDays"
-        :event-object="thisEvent"
-        :show-time="thisEvent.timeSpansMultipleDays"
-        :event-ref="eventRef"
-        :prevent-event-detail="preventEventDetail"
-        :has-previous-day="thisEvent.hasPrev"
-        :has-next-day="thisEvent.hasNext"
-        :force-all-day="true"
-        :allow-editing="allowEditing"
-        :is-leftmost-column="(index === 0)"
-      />
+      <template v-for="thisEvent in dateGetEvents(addDaysToDate(workingDate, addDays - 1))">
+        <calendar-event
+          v-if="thisEvent.start.isAllDay || thisEvent.timeSpansMultipleDays"
+          :key="makeDT(addDaysToDate(workingDate, addDays - 1)).toISODate() + getEventIdString(thisEvent)"
+          :event-object="thisEvent"
+          :show-time="thisEvent.timeSpansMultipleDays"
+          :event-ref="eventRef"
+          :prevent-event-detail="preventEventDetail"
+          :has-previous-day="thisEvent.hasPrev"
+          :has-next-day="thisEvent.hasNext"
+          :force-all-day="true"
+          :allow-editing="allowEditing"
+          :is-leftmost-column="(index === 0)"
+        />
+      </template>
     </div>
   </div>
 </template>

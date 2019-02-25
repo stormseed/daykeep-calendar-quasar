@@ -48,16 +48,17 @@
               </div>
             </div>
             <div class="col row calendar-agenda-events">
-              <calendar-agenda-event
-                v-if="dateGetEvents(forwardDate, true)"
-                v-for="thisEvent in dateGetEvents(forwardDate)"
-                :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
-                :event-object="thisEvent"
-                :event-ref="eventRef"
-                :calendar-locale="calendarLocale"
-                :calendar-timezone="calendarTimezone"
-                :allow-editing="allowEditing"
-              />
+              <template v-if="dateGetEvents(forwardDate, true)">
+                <calendar-agenda-event
+                  v-for="thisEvent in dateGetEvents(forwardDate)"
+                  :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
+                  :event-object="thisEvent"
+                  :event-ref="eventRef"
+                  :calendar-locale="calendarLocale"
+                  :calendar-timezone="calendarTimezone"
+                  :allow-editing="allowEditing"
+                />
+              </template>
             </div>
           </div>
         </div>
@@ -106,25 +107,26 @@
               </div>
             </div>
             <div class="col row calendar-agenda-events">
-              <div
-                class="full-width"
-                v-if="dateGetEvents(forwardDate)"
-                v-for="thisEvent in dateGetEvents(forwardDate, true)"
-                :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
-              >
-                <calendar-agenda-event
-                  v-if="!thisEvent.timeSpansOvernight || makeDT(thisEvent.start.dateObject).toISODate() === makeDT(forwardDate).toISODate()"
-                  :event-object="thisEvent"
-                  :prevent-event-detail="preventEventDetail"
-                  :event-ref="eventRef"
-                  :calendar-locale="calendarLocale"
-                  :calendar-timezone="calendarTimezone"
-                  :allow-editing="allowEditing"
-                  :render-html="renderHtml"
-                  agenda-style="dot"
-                  :forward-date="forwardDate"
-                />
-              </div>
+              <template v-if="dateGetEvents(forwardDate)">
+                <div
+                  class="full-width"
+                  v-for="thisEvent in dateGetEvents(forwardDate, true)"
+                  :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
+                >
+                  <calendar-agenda-event
+                    v-if="!thisEvent.timeSpansOvernight || makeDT(thisEvent.start.dateObject).toISODate() === makeDT(forwardDate).toISODate()"
+                    :event-object="thisEvent"
+                    :prevent-event-detail="preventEventDetail"
+                    :event-ref="eventRef"
+                    :calendar-locale="calendarLocale"
+                    :calendar-timezone="calendarTimezone"
+                    :allow-editing="allowEditing"
+                    :render-html="renderHtml"
+                    agenda-style="dot"
+                    :forward-date="forwardDate"
+                  />
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -156,9 +158,6 @@
   import CalendarEventDetail from './CalendarEventDetail'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import {
-    QBtn,
-    QTooltip,
-    QScrollArea,
     QInfiniteScroll,
     QSpinnerDots
   } from 'quasar'
@@ -168,9 +167,6 @@
       CalendarAgendaEvent,
       CalendarEventDetail,
       CalendarHeaderNav,
-      QBtn,
-      QTooltip,
-      QScrollArea,
       QInfiniteScroll,
       QSpinnerDots
     },
@@ -210,7 +206,7 @@
     },
     methods: {
       getDaysForwardDate: function (daysForward) {
-        return this.makeDT(this.workingDate).plus({days: daysForward})
+        return this.makeDT(this.workingDate).plus({ days: daysForward })
       },
       isFirstOfMonth: function (thisDate) {
         return this.makeDT(thisDate).day === 1
@@ -231,7 +227,7 @@
       },
       getWeekTitle: function (firstDate) {
         firstDate = this.makeDT(firstDate)
-        let lastDate = firstDate.plus({days: 6})
+        let lastDate = firstDate.plus({ days: 6 })
         if (firstDate.month === lastDate.month) {
           return this.formatDate(firstDate, 'MMM d - ') + this.formatDate(lastDate, 'd')
         }

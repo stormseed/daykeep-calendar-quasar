@@ -49,11 +49,6 @@
     CalendarEventMixin,
     EventPropsMixin
   } from './mixins'
-  import {
-    QBtn,
-    QTooltip
-  } from 'quasar'
-  import DateTime from 'luxon/src/datetime'
   export default {
     name: 'CalendarAgendaEvent',
     mixins: [CalendarMixin, CalendarEventMixin, EventPropsMixin],
@@ -64,10 +59,7 @@
       },
       forwardDate: [Object, Date]
     },
-    components: {
-      QBtn,
-      QTooltip
-    },
+    components: {},
     data () {
       return {}
     },

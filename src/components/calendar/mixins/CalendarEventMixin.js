@@ -248,7 +248,7 @@ export default {
       }
       this.parsed[listName][thisDate].push(whatToPush)
     },
-    eventIsContinuedFromPreviousDay(id, thisDayObject) {
+    eventIsContinuedFromPreviousDay (id, thisDayObject) {
       const isoDate = this.makeDT(thisDayObject).toISODate()
       return (
         dashHas(this.parsed['byContinuedNextDay'], isoDate) &&

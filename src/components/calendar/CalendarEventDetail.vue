@@ -1,6 +1,6 @@
 <template>
 
-  <q-modal
+  <q-dialog
     v-model="modalIsOpen"
     class="calendar-event-detail"
     @hide="__close()"
@@ -63,19 +63,18 @@
 
         <!-- date / time -->
         <q-item multiline>
-          <q-item-side>
-            <q-item-tile icon="access_time"/>
-          </q-item-side>
+          <q-item-section avatar>
+            <q-icon name="access_time"/>
+          </q-item-section>
 
           <!-- edit mode -->
-          <q-item-main v-if="isEditingAllowed && inEditMode">
+          <q-item-section v-if="isEditingAllowed && inEditMode">
 
             <div class="row items-center gutter-xs">
               <div>
                 <q-field>
-                  <q-datetime
+                  <q-date
                     v-model="startDateObject"
-                    type="date"
                     inverted-light
                     :color="fieldColor"
                     class="no-shadow"
@@ -87,7 +86,7 @@
 
               <div v-if="!editEventObject.start.isAllDay">
                 <q-field>
-                  <q-datetime
+                  <q-time
                     v-model="startTimeObject"
                     type="time"
                     inverted-light
@@ -100,9 +99,8 @@
               <div>to</div>
               <div>
                 <q-field>
-                  <q-datetime
+                  <q-date
                     v-model="endDateObject"
-                    type="date"
                     inverted-light
                     :color="fieldColor"
                     class="no-shadow"
@@ -114,9 +112,8 @@
 
               <div v-if="!editEventObject.start.isAllDay">
                 <q-field>
-                  <q-datetime
+                  <q-time
                     v-model="endTimeObject"
-                    type="time"
                     inverted-light
                     :color="fieldColor"
                     class="no-shadow"
@@ -137,10 +134,10 @@
               />
             </q-field>
 
-          </q-item-main>
+          </q-item-section>
 
           <!-- display mode -->
-          <q-item-main v-else>
+          <q-item-section v-else>
             <div
               v-if="eventObject.start && eventObject.start.dateObject"
               class="ced-list-title"
@@ -162,18 +159,19 @@
                 eventObject.start.isAllDay !== true"
               class="ced-list-subtitle"
             >
-              {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true)
-              }}
+              {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true) }}
               -
               {{ formatDate(eventObject.end.dateObject, 'TIME_SIMPLE', true) }}
             </div>
-          </q-item-main>
+          </q-item-section>
         </q-item>
 
         <!-- location -->
         <q-item v-if="isEditingAllowed && inEditMode">
-          <q-item-side icon="location_on" />
-          <q-item-main class="ced-list-title">
+          <q-item-section avatar>
+            <q-icon name="location_on" />
+          </q-item-section>
+          <q-item-section class="ced-list-title">
             <q-input
               v-model="editEventObject.location"
               float-label="Location"
@@ -181,33 +179,38 @@
               :color="fieldColor"
               class="no-shadow"
             />
-          </q-item-main>
+          </q-item-section>
         </q-item>
         <q-item v-else-if="textExists('location')">
-          <q-item-side icon="location_on" />
-          <q-item-main class="ced-list-title">
+          <q-item-section avatar>
+            <q-icon name="location_on" />
+          </q-item-section>
+          <q-item-section class="ced-list-title">
             {{ eventObject.location }}
-          </q-item-main>
+          </q-item-section>
         </q-item>
 
         <!-- resources -->
         <q-item
           v-if="countResources > 0"
         >
-          <q-item-side>
-            <q-item-tile icon="business"/>
-          </q-item-side>
-          <q-item-main>
-            <q-item
-              dense
-              v-for="thisAttendee in eventObject.attendees"
-              :key="thisAttendee.id"
-              v-if="thisAttendee.resource"
-              class="ced-nested-item"
-            >
-              {{ thisAttendee.displayName }}
-            </q-item>
-          </q-item-main>
+          <q-item-section avatar>
+            <q-icon name="business"/>
+          </q-item-section>
+          <q-item-section>
+            <template v-if="thisAttendee.resource">
+              <template v-if="thisAttendee.resource">
+                <q-item
+                  dense
+                  v-for="thisAttendee in eventObject.attendees"
+                  :key="thisAttendee.id"
+                  class="ced-nested-item"
+                >
+                  {{ thisAttendee.displayName }}
+                </q-item>
+              </template>
+            </template>
+          </q-item-section>
         </q-item>
 
         <!-- attendees -->
@@ -215,49 +218,51 @@
           multiline
           v-if="countAttendees > 0"
         >
-          <q-item-side icon="people">
-            <!--<q-item-tile icon="people" />-->
-          </q-item-side>
-          <q-item-main class="ced-list-title">
+          <q-item-section avatar>
+            <q-icon name="people" />
+          </q-item-section>
+          <q-item-section class="ced-list-title">
 
-            <q-item-tile>
+            <q-item-section>
               {{ countAttendees }} guest<template v-if="countAttendees > 1">s</template>
-            </q-item-tile>
+            </q-item-section>
 
             <!-- guest list -->
-            <q-item-tile>
-              <q-item
-                dense
-                v-for="thisAttendee in eventObject.attendees"
-                :key="thisAttendee.id"
-                v-if="!thisAttendee.resource"
-                class="ced-nested-item"
-              >
-                <q-item-side
-                  inverted
-                  icon="person"
-                  class="ced-small-inverted-icon"
-                />
-                <q-item-main class="ced-list-title">
-                  <template v-if="thisAttendee.displayName && thisAttendee.displayName.length > 0">
-                    {{ thisAttendee.displayName }}
-                  </template>
-                  <template v-else>
-                    {{ thisAttendee.email }}
-                  </template>
-                </q-item-main>
-              </q-item>
-            </q-item-tile>
+            <q-item-section>
+              <template v-if="!thisAttendee.resource">
+                <q-item
+                  dense
+                  v-for="thisAttendee in eventObject.attendees"
+                  :key="thisAttendee.id"
+                  class="ced-nested-item"
+                >
+                  <q-item-section
+                    avatar
+                    inverted
+                    class="ced-small-inverted-icon"
+                  />
+                  <q-icon name="person" />
+                  <q-item-section class="ced-list-title">
+                    <template v-if="thisAttendee.displayName && thisAttendee.displayName.length > 0">
+                      {{ thisAttendee.displayName }}
+                    </template>
+                    <template v-else>
+                      {{ thisAttendee.email }}
+                    </template>
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-item-section>
 
-          </q-item-main>
+          </q-item-section>
         </q-item>
 
         <!-- description -->
         <q-item v-if="isEditingAllowed && inEditMode">
-          <q-item-side>
-            <q-item-tile icon="format_align_left"/>
-          </q-item-side>
-          <q-item-main>
+          <q-item-section avatar>
+            <q-icon name="format_align_left"/>
+          </q-item-section>
+          <q-item-section>
             <q-field v-if="renderHtml">
               <q-editor
                 v-model="editEventObject.description"
@@ -277,23 +282,23 @@
               />
             </q-field>
 
-          </q-item-main>
+          </q-item-section>
         </q-item>
         <q-item
           v-else-if="textExists('description')"
           multiline
         >
-          <q-item-side>
-            <q-item-tile icon="format_align_left"/>
-          </q-item-side>
-          <q-item-main class="ced-list-title">
+          <q-item-section avatar>
+            <q-icon icon="format_align_left"/>
+          </q-item-section>
+          <q-item-section class="ced-list-title">
             <template v-if="renderHtml">
               <div v-html="eventObject.description"></div>
             </template>
             <template v-else>
               {{ eventObject.description }}
             </template>
-          </q-item-main>
+          </q-item-section>
         </q-item>
 
       </q-list>
@@ -323,7 +328,7 @@
 
     </div>
 
-  </q-modal>
+  </q-dialog>
 
 </template>
 
@@ -332,15 +337,14 @@
   import {
     QList,
     QItem,
-    QItemSide,
-    QItemTile,
-    QItemMain,
-    QModal,
-    QBtn,
+    QItemSection,
     QIcon,
+    QDialog,
+    QBtn,
     QField,
     QCheckbox,
-    QDatetime,
+    QDate,
+    QTime,
     QInput,
     QEditor
   } from 'quasar'
@@ -360,15 +364,14 @@
     components: {
       QList,
       QItem,
-      QItemSide,
-      QItemTile,
-      QItemMain,
-      QModal,
-      QBtn,
+      QItemSection,
       QIcon,
+      QDialog,
+      QBtn,
       QField,
       QCheckbox,
-      QDatetime,
+      QDate,
+      QTime,
       QInput,
       QEditor
     },
@@ -409,13 +412,14 @@
         return count
       },
       getTopColorClasses: function () {
-        return this.addCssColorClasses({
-          'ced-top': true,
-          'q-pr-md': true,
-          'q-py-md': true,
-          'relative-position': true
-        },
-        this.eventObject)
+        return this.addCssColorClasses(
+          {
+            'ced-top': true,
+            'q-pr-md': true,
+            'q-py-md': true,
+            'relative-position': true
+          },
+          this.eventObject)
       },
       getEventStyle: function () {
         return {

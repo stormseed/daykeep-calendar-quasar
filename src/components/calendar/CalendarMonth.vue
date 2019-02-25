@@ -77,24 +77,26 @@
           <div class="calendar-day-content">
             <template v-if="hasAnyEvents(thisDay.dateObject)">
               <div
-                v-if="!eventIsContinuedFromPreviousDay(thisEvent.id, thisDay.dateObject)"
                 v-for="thisEvent in monthGetDateEvents(thisDay.dateObject)"
                 :key="thisEvent.id"
               >
-                <calendar-event
-                  :event-object="thisEvent"
-                  :month-style="true"
-                  :event-ref="eventRef"
-                  :prevent-event-detail="preventEventDetail"
-                  :current-calendar-day="thisDay.dateObject"
-                  :has-previous-day="thisEvent.hasPrev"
-                  :has-next-day="thisEvent.hasNext"
-                  :first-day-of-week="(weekDayIndex === 0)"
-                  :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
-                  :allow-editing="allowEditing"
-                  @click="handleCalendarEventClick"
-                  render-style="singleLine"
-                />
+                <template v-if="!eventIsContinuedFromPreviousDay(thisEvent.id, thisDay.dateObject)">
+                  <calendar-event
+                    :event-object="thisEvent"
+                    :month-style="true"
+                    :event-ref="eventRef"
+                    :prevent-event-detail="preventEventDetail"
+                    :current-calendar-day="thisDay.dateObject"
+                    :has-previous-day="thisEvent.hasPrev"
+                    :has-next-day="thisEvent.hasNext"
+                    :first-day-of-week="(weekDayIndex === 0)"
+                    :last-day-of-week="(weekDayIndex === (thisWeek.length -1))"
+                    :allow-editing="allowEditing"
+                    @click="handleCalendarEventClick"
+                    render-style="singleLine"
+                  />
+                </template>
+
               </div>
             </template>
           </div>
@@ -123,14 +125,8 @@
     CalendarParentComponentMixin
   } from './mixins'
   import {
-    QBtn,
-    QTooltip,
-    QTabs,
-    QTab,
-    QTabPane,
-    QScrollArea
+    QBtn
   } from 'quasar'
-  import QuantityBubble from './QuantityBubble'
   import CalendarEvent from './CalendarEvent'
   import CalendarDayLabels from './CalendarDayLabels'
   import CalendarHeaderNav from './CalendarHeaderNav'
@@ -139,17 +135,11 @@
   export default {
     name: 'CalendarMonth',
     components: {
-      QuantityBubble,
       CalendarEvent,
       CalendarDayLabels,
       CalendarHeaderNav,
       CalendarEventDetail,
-      QBtn,
-      QTooltip,
-      QTabs,
-      QTab,
-      QTabPane,
-      QScrollArea
+      QBtn
     },
     mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
     props: {},

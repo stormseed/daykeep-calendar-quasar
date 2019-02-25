@@ -2,45 +2,87 @@
 
 module.exports = function (ctx) {
   return {
+    boot: [],
     plugins: [],
     css: [
       'app.styl'
     ],
     extras: [
-      ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons'
+      'roboto-font',
+      'material-icons' // optional, you are not bound to it
+      // 'ionicons-v4',
+      // 'mdi-v3',
+      // 'fontawesome-v5',
+      // 'eva-icons'
     ],
+    framework: 'all', // --- includes everything; for dev only!
+    // framework: {
+    //   components: [
+    //     'QLayout',
+    //     'QHeader',
+    //     'QDrawer',
+    //     'QPageContainer',
+    //     'QPage',
+    //     'QToolbar',
+    //     'QToolbarTitle',
+    //     'QBtn',
+    //     'QIcon',
+    //     'QList',
+    //     'QItem',
+    //     'QItemSection',
+    //     'QItemLabel'
+    //   ],
+    //
+    //   directives: [
+    //     'Ripple'
+    //   ],
+    //
+    //   // Quasar plugins
+    //   plugins: [
+    //     'Notify'
+    //   ]
+    //
+    //   // iconSet: 'ionicons-v4'
+    //   // lang: 'de' // Quasar language
+    // },
     supportIE: false,
-    vendor: {
-      add: [],
-      remove: []
-    },
     build: {
       scopeHoisting: true,
-      vueRouterMode: 'history',
+      // vueRouterMode: 'history',
       // gzip: true,
       // analyze: true,
       // extractCSS: false,
       // useNotifier: false,
-      publicPath: '/quasar-calendar',
-      distDir: 'docs',
+
+      // publicPath: '/quasar-calendar',
+      // distDir: 'docs',
+
+      // extendWebpack (cfg) {
+      //   cfg.module.rules.push({
+      //     enforce: 'pre',
+      //     test: /\.(js|vue)$/,
+      //     loader: 'eslint-loader',
+      //     exclude: /(node_modules|quasar)/
+      //   })
+      // }
       extendWebpack (cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /(node_modules|quasar)/
+          exclude: /node_modules/
         })
       }
     },
-    // devServer: {
-    //   // https: true,
-    //   port: 8084,
-    //   open: true // opens browser window automatically
-    // },
-    framework: 'all', // --- includes everything; for dev only!
+    devServer: {
+      // https: true,
+      port: 8084,
+      open: false // opens browser window automatically
+    },
+    ssr: {
+      pwa: false
+    },
     pwa: {
-      cacheExt: 'js,html,css,ttf,eot,otf,woff,woff2,json,svg,gif,jpg,jpeg,png,wav,ogg,webm,flac,aac,mp4,mp3',
       manifest: {
         // name: 'Quasar App',
         // short_name: 'Quasar-PWA',

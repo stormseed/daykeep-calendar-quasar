@@ -1,39 +1,66 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+
   parserOptions: {
+    parser: 'babel-eslint',
     sourceType: 'module'
   },
+
   env: {
     browser: true
   },
-  // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
+
   extends: [
-    'standard'
+    // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
+    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
+    'plugin:vue/essential',
+    '@vue/standard'
   ],
+
   // required to lint *.vue files
   plugins: [
-    'html',
-    'import'
+    'vue'
   ],
+
   globals: {
+    'ga': true, // Google Analytics
     'cordova': true,
-    'DEV': true,
-    'PROD': true,
-    '__THEME': true
+    '__statics': true,
+    'process': true
   },
+
   // add your custom rules here
-  'rules': {
+  rules: {
+    // allow async-await
+    'generator-star-spacing': 'off',
     // allow paren-less arrow functions
-    'arrow-parens': 0,
-    'one-var': 0,
-    'import/first': 0,
-    'import/named': 2,
-    'import/namespace': 2,
-    'import/default': 2,
-    'import/export': 2,
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }]
-  }
+    'arrow-parens': 'off',
+    'one-var': 'off',
+
+    'import/first': 'off',
+    'import/named': 'error',
+    'import/namespace': 'error',
+    'import/default': 'error',
+    'import/export': 'error',
+    'import/extensions': 'off',
+    'import/no-unresolved': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'prefer-promise-reject-errors': 'off',
+
+    'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }],
+    'vue/script-indent': ["error", 2, { 'baseIndent': 1 }],
+
+    // allow console.log during development only
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    // allow debugger during development only
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+  },
+  "overrides": [
+    {
+      "files": ["*.vue"],
+      "rules": {
+        "indent": "off"
+      }
+    }
+  ]
 }

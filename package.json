@@ -1,6 +1,7 @@
 {
   "name": "quasar-calendar",
   "version": "1.0.0",
+  "productName": "Quasar Calendar",
   "description": "A full display calendar for the Quasar Vue.js framework",
   "keywords": [
     "vue",
@@ -24,25 +25,39 @@
     "src/**/*styl",
     "package.json"
   ],
+  "scripts": {
+    "lint": "eslint --ext .js,.vue src",
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "build:pwa": "quasar build -m pwa"
+  },
   "dependencies": {
+    "@quasar/extras": "^1.0.0",
     "lodash.has": "^4.5.2",
     "luxon": "^1.10.0",
-    "quasar-framework": "^0.17.19"
+    "quasar": "^1.0.0-beta.4"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-friendly-formatter": "^4.0.1",
-    "eslint-loader": "^2.0.0",
-    "eslint-plugin-html": "^4.0.3",
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.1.0",
-    "eslint-plugin-vue": "^4.5.0",
-    "quasar-cli": "^0.17.19",
-    "strip-ansi": "^3.0.1"
+    "@quasar/app": "^1.0.0-beta.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.10.0",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-vue": "^5.0.0",
+    "strip-ansi": "=3.0.1"
   },
-  "peerDependencies": {}
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
+  "resolutions": {
+    "ajv": "6.8.1"
+  }
 }

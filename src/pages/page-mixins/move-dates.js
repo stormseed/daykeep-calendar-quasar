@@ -19,7 +19,6 @@ export default {
       }
     },
     adjustStartEndDates: function (eventItem, numDays) {
-
       let daysDiff = 0
       if (dashHas(eventItem.start, 'dateTime') && dashHas(eventItem.end, 'dateTime')) {
         // console.debug('has dateTime')
