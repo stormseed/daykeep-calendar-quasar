@@ -200,6 +200,9 @@ In addition, each individual components have the following properties:
 | `num-days` | Number | The number of days the multi-day calendar. A value of `1` will change the header to be more appropriate for a single day. |
 | `nav-days` | Number | This is how many days the previous / next navigation buttons will jump. |
 | `force-start-of-week` | Boolean | Default is `false`. This is appropriate if you have a week display (7 days) that you want to always start on the first day of the week. |
+| `day-cell-height` | Number | Default is `5`. How high in units (units defined below) an hour should be. |
+| `day-cell-height-unit` | String | Default is `rem`. When combined with the `day-cell-height` above, this will determine the CSS-based height of an hour in a day. |
+| `show-half-hours` | Boolean | Default is `false`. Show ticks and labels for half hour segments. |
 
 ### CalendarAgenda
 

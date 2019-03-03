@@ -180,12 +180,14 @@ export default {
       }
       return returnArray
     },
-    formatTimeFromNumber: function (hourNumber) {
+    formatTimeFromNumber: function (hourNumber, minuteNumber = 0) {
       // TODO: this should be able to handle 24 hour and alternate time formats
-      let tempDate = this.makeDT(DateTime.fromObject({ hour: hourNumber }))
+      let tempDate = this.makeDT(DateTime.fromObject({ hour: hourNumber, minute: minuteNumber }))
       let localeFormattedHour = tempDate.toLocaleString(DateTime.TIME_SIMPLE)
+      if (minuteNumber === 0 && localeFormattedHour.includes('M')) {
+        localeFormattedHour = localeFormattedHour.replace(/:[0-9][0-9]/, '')
+      }
       return localeFormattedHour
-        .replace(/:[0-9][0-9]/, '')
         .replace(' ', '')
         .toLowerCase()
     },

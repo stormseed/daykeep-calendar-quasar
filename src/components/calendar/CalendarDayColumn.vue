@@ -1,14 +1,24 @@
 <template>
   <div :class="columnCss">
     <!-- underlying cells -->
-    <div
+    <template
       v-for="thisHour in 24"
-      :key="thisHour"
-      :style="getCellStyle"
-      :id="getDayHourId(eventRef, workingDate, thisHour - 1)"
     >
-      <div class="calendar-day-time-content"></div>
-    </div>
+      <div
+        :key="thisHour"
+        :style="getCellStyle"
+        :id="getDayHourId(eventRef, workingDate, thisHour - 1)"
+      >
+        <div class="calendar-day-time-content"></div>
+      </div>
+      <div
+        v-if="showHalfHours"
+        :style="getCellStyle"
+        :key="thisHour"
+      >
+        <div class="calendar-day-time-content-half"></div>
+      </div>
+    </template>
 
     <!-- events -->
     <template v-if="dateEvents.length > 0">
@@ -86,6 +96,10 @@
       allowEditing: {
         type: Boolean,
         default: false
+      },
+      showHalfHours: {
+        type: Boolean,
+        default: false
       }
     },
     components: {
@@ -118,6 +132,9 @@
       },
       getCellStyle: function () {
         let thisHeight = this.dayCellHeight + this.dayCellHeightUnit
+        if (this.showHalfHours) {
+          thisHeight = (this.dayCellHeight / 2) + this.dayCellHeightUnit
+        }
         return {
           height: thisHeight,
           'max-height': thisHeight
@@ -185,14 +202,6 @@
         return style
       },
       calculateDayEventPosition: function (startDateObject, endDateObject) {
-        // let startMidnight = date.adjustDate(startDateObject, {
-        //   hours: 0,
-        //   minutes: 0,
-        //   seconds: 0,
-        //   milliseconds: 0
-        // })
-        // let topMinuteCount = date.getDateDiff(startDateObject, startMidnight, 'minutes')
-        // let heightMinuteCount = date.getDateDiff(endDateObject, startDateObject, 'minutes')
         let startMidnight = startDateObject.set({
           hours: 0,
           minutes: 0,
@@ -202,6 +211,14 @@
         let topMinuteCount = startDateObject.diff(startMidnight).as('minutes')
         let heightMinuteCount = endDateObject.diff(startDateObject).as('minutes')
         let sizePerMinute = this.dayCellHeight / 60
+        console.debug('dayEventPosition = ', {
+          start: startDateObject.toISO(),
+          topMinuteCount: topMinuteCount,
+          heightMinuteCount: heightMinuteCount,
+          sizePerMinute: sizePerMinute,
+          top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,
+          height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
+        })
         return {
           top: (topMinuteCount * sizePerMinute) + this.dayCellHeightUnit,
           height: (heightMinuteCount * sizePerMinute) + this.dayCellHeightUnit
@@ -267,6 +284,8 @@
       border-right $borderOuter
     .calendar-day-time-content
       border-top $borderThin
+    .calendar-day-time-content-half
+      border-top $borderThinner
     .calendar-day-event-overlap
       margin-left 1px
       ::after

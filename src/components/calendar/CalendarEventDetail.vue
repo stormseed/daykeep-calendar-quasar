@@ -333,17 +333,19 @@
         >
           <div>
             <q-btn
-              color="warning"
+              :color="eventColor"
               icon="cancel"
               label="Cancel"
+              flat
               @click="__close()"
             />
           </div>
           <div>
             <q-btn
-              color="positive"
+              :color="eventColor"
               icon="check"
               label="Save"
+              flat
               @click="__save()"
             />
           </div>
@@ -439,7 +441,6 @@
     },
     computed: {
       countAttendees: function () {
-        console.debug('countAttendees called')
         if (!dashHas(this.eventObject, 'attendees')) {
           return 0
         }

@@ -56,6 +56,9 @@
         <div class="calendar-day row">
           <calendar-time-label-column
             :calendar-locale="calendarLocale"
+            :day-cell-height="dayCellHeight"
+            :day-cell-height-unit="dayCellHeightUnit"
+            :show-half-hours="showHalfHours"
           />
           <div class="calendar-multiple-days col row">
             <calendar-day-column
@@ -70,6 +73,9 @@
               :calendar-locale="calendarLocale"
               :calendar-timezone="calendarTimezone"
               :allow-editing="allowEditing"
+              :day-cell-height="dayCellHeight"
+              :day-cell-height-unit="dayCellHeightUnit"
+              :show-half-hours="showHalfHours"
             />
           </div>
         </div>
@@ -141,6 +147,10 @@
       scrollHeight: {
         type: String,
         default: 'auto'
+      },
+      showHalfHours: {
+        type: Boolean,
+        default: false
       }
     },
     components: {
@@ -299,6 +309,7 @@
         font-size 1.25em
         font-weight bold
     .calendar-day
+      margin-top 10px
       .calendar-day-column-label
         width $dayTimeLabelWidth
       .calendar-day-column-content

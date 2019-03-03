@@ -59,6 +59,9 @@
               <calendar-multi-day
                   :event-array="eventArray"
                   scrollHeight="400px"
+                  day-cell-height="7"
+                  day-cell-height-unit="rem"
+                  :show-half-hours="true"
               />
           </q-card-section>
       </q-card>
@@ -117,7 +120,7 @@
         showCards: {
           fullCalendar: true,
           month: false,
-          week: false,
+          week: true,
           agenda: false
         }
       }
