@@ -2,9 +2,9 @@
   <div class="calendar-test">
     <q-tabs
       v-model="currentTab"
-      class="calendar-tabs"
+      class="text-primary calendar-tabs"
       ref="fullCalendarTabs"
-      inverted
+      align="left"
     >
       <q-tab
         name="tab-month"
@@ -37,9 +37,10 @@
 
     <q-tab-panels
       v-model="currentTab"
+      class="calendar-tab-panels"
       animated
     >
-      <q-tab-panel name="tab-month" class="calendar-tab-pane-month">
+      <q-tab-panel name="tab-month" class="calendar-tab-panel-month">
         <calendar-month
           :ref="'month-' + thisRefName"
           :start-date="workingDate"
@@ -54,7 +55,7 @@
 
         />
       </q-tab-panel>
-      <q-tab-panel name="tab-week-component" class="calendar-tab-pane-week">
+      <q-tab-panel name="tab-week-component" class="calendar-tab-panel-week">
         <calendar-multi-day
           :ref="'week-' + thisRefName"
           :start-date="workingDate"
@@ -73,7 +74,7 @@
 
         />
       </q-tab-panel>
-      <q-tab-panel name="tab-days-component" class="calendar-tab-pane-week">
+      <q-tab-panel name="tab-days-component" class="calendar-tab-panel-week">
         <calendar-multi-day
           :ref="'days-' + thisRefName"
           :start-date="workingDate"
@@ -92,7 +93,7 @@
 
         />
       </q-tab-panel>
-      <q-tab-panel name="tab-single-day-component" class="calendar-tab-pane-week">
+      <q-tab-panel name="tab-single-day-component" class="calendar-tab-panel-week">
         <calendar-multi-day
           :ref="'day-' + thisRefName"
           :start-date="workingDate"
@@ -111,7 +112,7 @@
 
         />
       </q-tab-panel>
-      <q-tab-panel name="tab-agenda" class="calendar-tab-pane-agenda">
+      <q-tab-panel name="tab-agenda" class="calendar-tab-panel-agenda">
         <calendar-agenda
           :ref="'agenda-' + thisRefName"
           :start-date="workingDate"
@@ -246,13 +247,13 @@
 <style lang="stylus">
   @import 'calendar.vars.styl'
 
-  .calendar-tabs
-    .calendar-tab-pane-day,
-    .calendar-tab-pane-week
+  .calendar-tab-panels
+    .calendar-tab-panel-day,
+    .calendar-tab-panel-week
       height 60vh
       max-height 60vh
       overflow hidden
-    .q-tab-pane
+    .q-tab-panel
       border none
 
 </style>

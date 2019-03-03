@@ -2,10 +2,11 @@
 
   <q-dialog
     v-model="modalIsOpen"
-    class="calendar-event-detail"
+    class="NOcalendar-event-detail"
     @hide="__close()"
     @escape-key="__close()"
   >
+    <!--
     <div :class="getTopColorClasses">
       <div class="absolute-top-right row justify-end items-start ced-toolbar">
         <q-btn
@@ -24,7 +25,7 @@
         </div>
         <q-input
           v-model="editEventObject.summary"
-          float-label="Summary"
+          stack-label="Summary"
           inverted-light
           :color="fieldColor"
           class="no-shadow"
@@ -53,280 +54,303 @@
       </div>
 
     </div>
+    -->
 
-    <div class="ced-content">
-      <div
-        v-if="isEditingAllowed && !inEditMode"
-        class="ced-edit-button-content-spacer"
-      ></div>
-      <q-list no-border>
+    <q-card class="calendar-event-detail">
+      <q-toolbar>
+        <q-toolbar-title>
+          <!--{{ eventObject.summary }}-->
+        </q-toolbar-title>
 
-        <!-- date / time -->
-        <q-item multiline>
-          <q-item-section avatar>
-            <q-icon name="access_time"/>
-          </q-item-section>
+        <q-btn
+          v-if="isEditingAllowed && !inEditMode"
+          flat
+          round
+          dense
+          icon="edit"
+          @click="startEditMode"
+        />
+        <div class="ced-close-button-left-spacer"></div>
+        <q-btn
+          flat
+          round
+          dense
+          icon="close"
+          v-close-dialog
+        />
+      </q-toolbar>
 
-          <!-- edit mode -->
-          <q-item-section v-if="isEditingAllowed && inEditMode">
+      <q-card-section class="ced-q-card-main">
+        <div class="ced-content">
+          <q-list no-border>
 
-            <div class="row items-center gutter-xs">
-              <div>
-                <q-field>
-                  <q-date
-                    v-model="startDateObject"
-                    inverted-light
-                    :color="fieldColor"
-                    class="no-shadow"
-                    format="MMM D, YYYY"
-                  />
-                </q-field>
-
-              </div>
-
-              <div v-if="!editEventObject.start.isAllDay">
-                <q-field>
-                  <q-time
-                    v-model="startTimeObject"
-                    type="time"
-                    inverted-light
-                    :color="fieldColor"
-                    class="no-shadow"
-                  />
-                </q-field>
-
-              </div>
-              <div>to</div>
-              <div>
-                <q-field>
-                  <q-date
-                    v-model="endDateObject"
-                    inverted-light
-                    :color="fieldColor"
-                    class="no-shadow"
-                    format="MMM D, YYYY"
-                  />
-                </q-field>
-
-              </div>
-
-              <div v-if="!editEventObject.start.isAllDay">
-                <q-field>
-                  <q-time
-                    v-model="endTimeObject"
-                    inverted-light
-                    :color="fieldColor"
-                    class="no-shadow"
-                  />
-                </q-field>
-
-              </div>
-
-            </div>
-
-            <!-- all-day -->
-            <q-field>
-              <q-checkbox
-                label="All day"
-                v-model="editEventObject.start.isAllDay"
-                @input="$forceUpdate()"
-                :toggle-indeterminate="false"
-              />
-            </q-field>
-
-          </q-item-section>
-
-          <!-- display mode -->
-          <q-item-section v-else>
-            <div
-              v-if="eventObject.start && eventObject.start.dateObject"
-              class="ced-list-title"
-            >
-              {{ formatDate(eventObject.start.dateObject, 'DATE_HUGE', true) }}
-              <template
-                v-if="eventObject.end &&
-                  eventObject.end.dateObject &&
-                  eventObject.start.isAllDay &&
-                  formatDate(eventObject.start.dateObject, 'DATE_SHORT', true) !== formatDate(eventObject.end.dateObject, 'DATE_SHORT', true)"
+            <!-- title -->
+            <q-item>
+              <!-- left side color bar -->
+              <q-item-section
+                avatar
+                class="ced-avatar-column"
               >
-                -
-                {{ formatDate(eventObject.end.dateObject, 'DATE_HUGE', true) }}
-              </template>
-            </div>
-            <div
-              v-if="eventObject.end &&
-                eventObject.end.dateObject &&
-                eventObject.start.isAllDay !== true"
-              class="ced-list-subtitle"
-            >
-              {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true) }}
-              -
-              {{ formatDate(eventObject.end.dateObject, 'TIME_SIMPLE', true) }}
-            </div>
-          </q-item-section>
-        </q-item>
-
-        <!-- location -->
-        <q-item v-if="isEditingAllowed && inEditMode">
-          <q-item-section avatar>
-            <q-icon name="location_on" />
-          </q-item-section>
-          <q-item-section class="ced-list-title">
-            <q-input
-              v-model="editEventObject.location"
-              float-label="Location"
-              inverted-light
-              :color="fieldColor"
-              class="no-shadow"
-            />
-          </q-item-section>
-        </q-item>
-        <q-item v-else-if="textExists('location')">
-          <q-item-section avatar>
-            <q-icon name="location_on" />
-          </q-item-section>
-          <q-item-section class="ced-list-title">
-            {{ eventObject.location }}
-          </q-item-section>
-        </q-item>
-
-        <!-- resources -->
-        <q-item
-          v-if="countResources > 0"
-        >
-          <q-item-section avatar>
-            <q-icon name="business"/>
-          </q-item-section>
-          <q-item-section>
-            <template v-if="thisAttendee.resource">
-              <template v-if="thisAttendee.resource">
-                <q-item
-                  dense
-                  v-for="thisAttendee in eventObject.attendees"
-                  :key="thisAttendee.id"
-                  class="ced-nested-item"
+                <div :class="getTopColorClasses"></div>
+              </q-item-section>
+              <q-item-section class="NOrow">
+                <div
+                  v-if="isEditingAllowed && inEditMode"
+                  class="ced-top-title ced-event-title"
                 >
-                  {{ thisAttendee.displayName }}
-                </q-item>
-              </template>
-            </template>
-          </q-item-section>
-        </q-item>
-
-        <!-- attendees -->
-        <q-item
-          multiline
-          v-if="countAttendees > 0"
-        >
-          <q-item-section avatar>
-            <q-icon name="people" />
-          </q-item-section>
-          <q-item-section class="ced-list-title">
-
-            <q-item-section>
-              {{ countAttendees }} guest<template v-if="countAttendees > 1">s</template>
-            </q-item-section>
-
-            <!-- guest list -->
-            <q-item-section>
-              <template v-if="!thisAttendee.resource">
-                <q-item
-                  dense
-                  v-for="thisAttendee in eventObject.attendees"
-                  :key="thisAttendee.id"
-                  class="ced-nested-item"
-                >
-                  <q-item-section
-                    avatar
-                    inverted
-                    class="ced-small-inverted-icon"
+                  <q-input
+                    v-model="editEventObject.summary"
+                    label="Summary"
+                    stack-label
+                    filled
+                    bottom-slots
                   />
-                  <q-icon name="person" />
-                  <q-item-section class="ced-list-title">
+                </div>
+                <div
+                  v-else
+                  class="ced-event-title"
+                >
+                  {{ eventObject.summary }}
+                </div>
+
+                <!-- date/time edit mode -->
+                <template v-if="isEditingAllowed && inEditMode">
+                  <div class="row items-center q-gutter-x-md no-wrap">
+                    <field-date
+                      v-model="startDateObject"
+                      label="Start date"
+                      stack-label
+                    />
+                    <template v-if="!editEventObject.start.isAllDay">
+                      <field-time
+                        v-model="startTimeObject"
+                        label="Time"
+                        stack-label
+                      />
+                    </template>
+                  </div>
+                  <div class="row items-center q-gutter-x-md no-wrap">
+                    <field-date
+                      label="End date"
+                      stack-label
+                      v-model="endDateObject"
+                    />
+                    <template v-if="!editEventObject.start.isAllDay">
+                      <field-time
+                        v-model="endTimeObject"
+                        label="Time"
+                        stack-label
+                      />
+                    </template>
+                  </div>
+                  <!-- all-day -->
+                  <q-checkbox
+                    label="All day"
+                    v-model="editEventObject.start.isAllDay"
+                    @input="$forceUpdate()"
+                    :toggle-indeterminate="false"
+                  />
+                </template>
+                <!-- date/time display mode -->
+                <template v-else>
+                  <div
+                    v-if="eventObject.start && eventObject.start.dateObject"
+                    class="ced-list-title"
+                  >
+                    {{ formatDate(eventObject.start.dateObject, 'DATE_HUGE', true) }}
+                    <template
+                      v-if="eventObject.end &&
+                        eventObject.end.dateObject &&
+                        eventObject.start.isAllDay &&
+                        formatDate(eventObject.start.dateObject, 'DATE_SHORT', true) !== formatDate(eventObject.end.dateObject, 'DATE_SHORT', true)"
+                    >
+                      -
+                      {{ formatDate(eventObject.end.dateObject, 'DATE_HUGE', true) }}
+                    </template>
+                  </div>
+                  <div
+                    v-if="eventObject.end &&
+                      eventObject.end.dateObject &&
+                      eventObject.start.isAllDay !== true"
+                    class="ced-list-subtitle"
+                  >
+                    {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true) }}
+                    -
+                    {{ formatDate(eventObject.end.dateObject, 'TIME_SIMPLE', true) }}
+                  </div>
+                </template>
+
+                <!-- date / time -->
+              </q-item-section>
+            </q-item>
+
+            <!-- location -->
+            <q-item v-if="isEditingAllowed && inEditMode">
+              <q-item-section avatar>
+                <q-icon
+                  name="location_on"
+                  :color="eventColor"
+                />
+              </q-item-section>
+              <q-item-section class="ced-list-title">
+                <q-input
+                  v-model="editEventObject.location"
+                  label="Location"
+                  stack-label
+                  filled
+                />
+              </q-item-section>
+            </q-item>
+            <q-item v-else-if="textExists('location')">
+              <q-item-section avatar>
+                <q-icon
+                  name="location_on"
+                  :color="eventColor"
+                />
+              </q-item-section>
+              <q-item-section class="ced-list-title">
+                {{ eventObject.location }}
+              </q-item-section>
+            </q-item>
+
+            <!-- resources -->
+            <q-item
+              v-if="countResources > 0"
+            >
+              <q-item-section avatar>
+                <q-icon
+                  name="business"
+                  :color="eventColor"
+                />
+              </q-item-section>
+              <q-item-section>
+                <div
+                  v-for="thisAttendee in eventObject.attendees"
+                  :key="thisAttendee.id"
+                >
+                  <q-item
+                    dense
+                    v-if="dashHas(thisAttendee, 'resource') && thisAttendee.resource"
+                    class="ced-nested-item"
+                  >
+                    {{ thisAttendee.displayName }}
+                  </q-item>
+                </div>
+              </q-item-section>
+            </q-item>
+
+            <!-- attendees -->
+            <q-item
+              multiline
+              v-if="countAttendees > 0"
+            >
+              <q-item-section avatar>
+                <q-icon
+                  name="people"
+                  :color="eventColor"
+                />
+              </q-item-section>
+              <q-item-section class="ced-list-title">
+
+                <div>
+                  {{ countAttendees }} guest<template v-if="countAttendees > 1">s</template>
+                </div>
+
+                <!-- guest list -->
+                <div class="row">
+                <template
+                  v-for="thisAttendee in eventObject.attendees"
+                >
+                  <q-chip
+                    :key="thisAttendee.id"
+                    v-if="!(dashHas(thisAttendee, 'resource') && thisAttendee.resource)"
+                  >
+                    <q-avatar icon="person" :color="eventColor" />
                     <template v-if="thisAttendee.displayName && thisAttendee.displayName.length > 0">
                       {{ thisAttendee.displayName }}
                     </template>
                     <template v-else>
                       {{ thisAttendee.email }}
                     </template>
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-item-section>
+                  </q-chip>
+                </template>
+                </div>
 
-          </q-item-section>
-        </q-item>
+              </q-item-section>
+            </q-item>
 
-        <!-- description -->
-        <q-item v-if="isEditingAllowed && inEditMode">
-          <q-item-section avatar>
-            <q-icon name="format_align_left"/>
-          </q-item-section>
-          <q-item-section>
-            <q-field v-if="renderHtml">
-              <q-editor
-                v-model="editEventObject.description"
-                float-label="Description"
-                inverted-light
-                :color="fieldColor"
-                class="no-shadow"
-              />
-            </q-field>
-            <q-field v-else>
-              <q-input
-                v-model="editEventObject.description"
-                float-label="Description"
-                inverted-light
-                :color="fieldColor"
-                class="no-shadow"
-              />
-            </q-field>
+            <!-- description -->
+            <q-item v-if="isEditingAllowed && inEditMode">
+              <q-item-section avatar>
+                <q-icon
+                  name="format_align_left"
+                  :color="eventColor"
+                />
+              </q-item-section>
+              <q-item-section>
+                <template v-if="renderHtml">
+                  <q-editor v-model="editEventObject.description"/>
+                </template>
+                <template v-else>
+                  <q-input
+                    v-model="editEventObject.description"
+                    label="Description"
+                    stack-label
+                    type="textarea"
+                    filled
+                  />
+                </template>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-else-if="textExists('description')"
+              multiline
+            >
+              <q-item-section avatar>
+                <q-icon
+                  name="format_align_left"
+                  :color="eventColor"
+                />
+              </q-item-section>
+              <q-item-section class="ced-list-title">
+                <template v-if="renderHtml">
+                  <div v-html="eventObject.description"></div>
+                </template>
+                <template v-else>
+                  {{ eventObject.description }}
+                </template>
+              </q-item-section>
+            </q-item>
 
-          </q-item-section>
-        </q-item>
-        <q-item
-          v-else-if="textExists('description')"
-          multiline
+          </q-list>
+        </div>
+
+        <!-- editing close buttons -->
+        <div
+          v-if="isEditingAllowed && inEditMode"
+          class="row justify-end q-pa-md q-gutter-sm"
         >
-          <q-item-section avatar>
-            <q-icon icon="format_align_left"/>
-          </q-item-section>
-          <q-item-section class="ced-list-title">
-            <template v-if="renderHtml">
-              <div v-html="eventObject.description"></div>
-            </template>
-            <template v-else>
-              {{ eventObject.description }}
-            </template>
-          </q-item-section>
-        </q-item>
+          <div>
+            <q-btn
+              color="warning"
+              icon="cancel"
+              label="Cancel"
+              @click="__close()"
+            />
+          </div>
+          <div>
+            <q-btn
+              color="positive"
+              icon="check"
+              label="Save"
+              @click="__save()"
+            />
+          </div>
 
-      </q-list>
-    </div>
+        </div>
+      </q-card-section>
 
-    <!-- editing close buttons -->
-    <div
-      v-if="isEditingAllowed && inEditMode"
-      class="row justify-end q-pa-md gutter-sm"
-    >
-      <div>
-        <q-btn
-          color="warning"
-          icon="cancel"
-          label="Cancel"
-          @click="__close()"
-        />
-      </div>
-      <div>
-        <q-btn
-          color="positive"
-          icon="check"
-          label="Save"
-          @click="__save()"
-        />
-      </div>
-
-    </div>
+    </q-card>
 
   </q-dialog>
 
@@ -338,19 +362,31 @@
     QList,
     QItem,
     QItemSection,
+    QAvatar,
+    QChip,
     QIcon,
     QDialog,
+    CloseDialog,
+    QCard,
+    QCardSection,
+    QToolbar,
+    QToolbarTitle,
+    // QPopupProxy,
     QBtn,
-    QField,
+    // QField,
     QCheckbox,
-    QDate,
-    QTime,
+    // QDate,
+    // QTime,
     QInput,
     QEditor
   } from 'quasar'
   import {
     CalendarMixin, EventPropsMixin
   } from './mixins'
+  import {
+    FieldDate,
+    FieldTime
+  } from './fields'
   import DateTime from 'luxon/src/datetime'
   export default {
     name: 'CalendarEventDetail',
@@ -365,15 +401,27 @@
       QList,
       QItem,
       QItemSection,
+      QAvatar,
+      QChip,
       QIcon,
       QDialog,
+      QCard,
+      QCardSection,
+      QToolbar,
+      QToolbarTitle,
+      // QPopupProxy,
       QBtn,
-      QField,
+      // QField,
       QCheckbox,
-      QDate,
-      QTime,
+      // QDate,
+      // QTime,
       QInput,
-      QEditor
+      QEditor,
+      FieldDate,
+      FieldTime
+    },
+    directives: {
+      CloseDialog
     },
     data () {
       return {
@@ -388,12 +436,13 @@
     },
     computed: {
       countAttendees: function () {
+        console.debug('countAttendees called')
         if (!dashHas(this.eventObject, 'attendees')) {
           return 0
         }
         let count = this.eventObject.attendees.length
         for (let thisAttendee of this.eventObject.attendees) {
-          if (thisAttendee.resource) {
+          if (dashHas(thisAttendee, 'resource') && thisAttendee.resource) {
             count--
           }
         }
@@ -405,7 +454,8 @@
         }
         let count = 0
         for (let thisAttendee of this.eventObject.attendees) {
-          if (thisAttendee.resource) {
+          console.debug('thisAttendee = ', thisAttendee)
+          if (dashHas(thisAttendee, 'resource') && thisAttendee.resource) {
             count++
           }
         }
@@ -414,12 +464,19 @@
       getTopColorClasses: function () {
         return this.addCssColorClasses(
           {
-            'ced-top': true,
+            'full-width': true,
+            'full-height': true,
             'q-pr-md': true,
-            'q-py-md': true,
-            'relative-position': true
+            // 'q-py-md': true,
+            // 'q-py-none': true,
+            // 'q-mt-sm': true,
+            'relative-position': true,
+            'ced-top': true
           },
           this.eventObject)
+      },
+      eventColor: function () {
+        return this.getEventColor(this.eventObject, 'color')
       },
       getEventStyle: function () {
         return {
@@ -445,6 +502,7 @@
 
     },
     methods: {
+      dashHas: dashHas,
       textExists: function (fieldLocation) {
         return (
           dashHas(this.eventObject, fieldLocation) &&
@@ -538,11 +596,22 @@
   $forcedLeftMargin = $topSidePadding + $listSideItemWidth + $listSideItemSpace
 
   .calendar-event-detail
+    max-width 80vw !important
+    .ced-close-button-left-spacer
+      width 16px
+    .ced-event-title
+      font-size 1.5em
+      font-weight 500
     .ced-list-title
       font-size 1em
     .ced-list-subtitle
       font-size .8em
       opacity 0.8
+    .ced-q-card-main
+      padding-top 0
+    .ced-avatar-column
+      min-width 40px
+      margin-right 16px
     .ced-top
       /*padding .25em 0 1em*/
       .ced-top-title
