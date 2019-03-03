@@ -245,17 +245,18 @@
               v-if="countAttendees > 0"
             >
               <q-item-section avatar>
-                <q-icon
-                  name="people"
-                  :color="eventColor"
-                />
+                <div class="relative-position ced-icon-div-with-badge">
+                  <q-icon
+                    name="people"
+                    :color="eventColor"
+                  >
+                  </q-icon>
+                  <q-badge color="red" floating transparent>
+                    {{ countAttendees }}
+                  </q-badge>
+                </div>
               </q-item-section>
               <q-item-section class="ced-list-title">
-
-                <div>
-                  {{ countAttendees }} guest<template v-if="countAttendees > 1">s</template>
-                </div>
-
                 <!-- guest list -->
                 <div class="row">
                 <template
@@ -365,6 +366,7 @@
     QAvatar,
     QChip,
     QIcon,
+    QBadge,
     QDialog,
     CloseDialog,
     QCard,
@@ -404,6 +406,7 @@
       QAvatar,
       QChip,
       QIcon,
+      QBadge,
       QDialog,
       QCard,
       QCardSection,
@@ -597,6 +600,9 @@
 
   .calendar-event-detail
     max-width 80vw !important
+    .ced-icon-div-with-badge
+      padding-right 5px
+      padding-top 5px
     .ced-close-button-left-spacer
       width 16px
     .ced-event-title
