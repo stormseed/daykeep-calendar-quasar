@@ -23,6 +23,10 @@
     "src/**/*js",
     "src/**/*vue",
     "src/**/*styl",
+    "component/index.js",
+    "component/**/*js",
+    "component/**/*vue",
+    "component/**/*styl",
     "package.json"
   ],
   "scripts": {
@@ -36,10 +40,10 @@
     "@quasar/extras": "^1.1.0",
     "lodash.has": "^4.5.2",
     "luxon": "^1.10.0",
-    "quasar": "^1.0.0-beta.8"
+    "quasar": "^1.0.0-beta.9"
   },
   "devDependencies": {
-    "@quasar/app": "^1.0.0-beta.9",
+    "@quasar/app": "^1.0.0-beta.10",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.10.0",

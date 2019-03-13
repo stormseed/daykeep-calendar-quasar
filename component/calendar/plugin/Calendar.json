@@ -1,0 +1,59 @@
+{
+  "mixins": [
+
+  ],
+
+  "injection": "$q.quasarCalendar",
+
+  "methods": {
+    "create": {
+      "desc": "INSERT DESCRIPTION HERE",
+      "params": {
+        "opts": {
+          "desc": "INSERT DESCRIPTION HERE",
+          "definition": {
+            "startDate": {
+              "type": ["Date","DateTime"],
+              "desc": "A JavaScript Date or Luxon DateTime object that passes in a starting display date for the calendar to display."
+            },
+            "sundayFirstDayOfWeek": {
+              "type": "Boolean",
+              "desc": "If true this will force month and week calendars to start on a Sunday instead of the standard Monday."
+            },
+            "calendarLocale": {
+              "type": "String",
+              "desc": "A string setting the locale. We use the Luxon package for this. This will default to the user's system setting.",
+              "examples": ["fr", "de-AT"]
+            },
+            "calendarTimezone": {
+              "type": "String",
+              "desc": "Manually set the timezone for the calendar. Many strings can be passed in including UTC or any valid IANA zone.",
+              "examples": ["UTC", "Australia/Brisbane"]
+            },
+            "eventRef": {
+              "type": "String",
+              "desc": "Give the calendar component a custom name so that events triggered on the global event bus can be watched. If none given a random name will be assigned.",
+              "examples": ["mycalendar1"]
+            },
+            "preventEventDetail": {
+              "type": "Boolean",
+              "desc": "Prevent the default event detail popup from appearing when an event is clicked in a calendar."
+            },
+            "allowEditing": {
+              "type": "Boolean",
+              "desc": "Allows for individual events to be edited."
+            },
+            "renderHtml": {
+              "type": "Boolean",
+              "desc": "Event descriptions render HTML tags and provide a WYSIWYG editor when editing. No HTML validation is performed so be sure to pass the data passed in does not present a security threat."
+            },
+            "dayDisplayStartHour": {
+              "type": "Number",
+              "desc": "Will scroll to a defined start hour when a day / multi-day component is rendered. Pass in the hour of the day from 0-23, the default being 7. Current has no effect on the CalendarAgenda component."
+            }
+          }
+        }
+      }
+    }
+  }
+}

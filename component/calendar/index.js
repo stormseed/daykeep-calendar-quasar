@@ -10,7 +10,6 @@ import CalendarHeaderNav from './CalendarHeaderNav'
 import CalendarMonth from './CalendarMonth'
 import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
 import CalendarMultiDay from './CalendarMultiDay'
-import QuantityBubble from './QuantityBubble'
 
 export {
   Calendar,
@@ -24,6 +23,5 @@ export {
   CalendarHeaderNav,
   CalendarMonth,
   CalendarTimeLabelColumn,
-  CalendarMultiDay,
-  QuantityBubble
+  CalendarMultiDay
 }

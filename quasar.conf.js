@@ -1,9 +1,15 @@
 // Configuration for your app
-
+const path = require('path')
 module.exports = function (ctx) {
   return {
     boot: [],
     plugins: [],
+    sourceFiles: {
+      rootComponent: 'demo/App.vue',
+      router: 'demo/router/index.js',
+      // store: 'src/store/index.js',
+      indexHtmlTemplate: 'demo/index.template.html',
+    },
     css: [
       'app.styl'
     ],
@@ -72,6 +78,15 @@ module.exports = function (ctx) {
           loader: 'eslint-loader',
           exclude: /node_modules/
         })
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias,
+          src: path.resolve(__dirname, './demo'),
+          components: path.resolve(__dirname, './component'),
+          layouts: path.resolve(__dirname, './demo/layouts'),
+          pages: path.resolve(__dirname, './demo/pages'),
+          assets: path.resolve(__dirname, './demo/assets'),
+          boot: path.resolve(__dirname, './demo/boot')
+        }
       }
     },
     devServer: {
