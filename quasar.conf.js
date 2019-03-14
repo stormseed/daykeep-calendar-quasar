@@ -13,6 +13,7 @@ module.exports = function (ctx) {
     css: [
       'app.styl'
     ],
+    animations: 'all',
     extras: [
       'roboto-font',
       'material-icons' // optional, you are not bound to it
