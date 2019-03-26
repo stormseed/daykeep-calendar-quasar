@@ -7,8 +7,8 @@ const defaultParsed = {
   byStartDate: {},
   byId: {}
 }
-// const { DateTime } = require('luxon')
 const gridBlockSize = 5 // the number here is how many minutes for each block to use when calculating overlaps
+// const debug = require('debug')('calendar:CalendarEventMixin')
 export default {
   computed: {},
   methods: {

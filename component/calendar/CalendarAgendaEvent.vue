@@ -49,6 +49,7 @@
     CalendarEventMixin,
     EventPropsMixin
   } from './mixins'
+  const debug = require('debug')('calendar:CalendarAgendaEvent')
   export default {
     name: 'CalendarAgendaEvent',
     mixins: [CalendarMixin, CalendarEventMixin, EventPropsMixin],
@@ -99,7 +100,9 @@
         this.triggerEventClick(this.eventObject, this.eventRef)
       }
     },
-    mounted () {}
+    mounted () {
+      debug('Component mounted')
+    }
   }
 </script>
 

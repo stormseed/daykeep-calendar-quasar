@@ -33,6 +33,7 @@
     CalendarEventMixin
   } from './mixins'
   import CalendarEvent from './CalendarEvent'
+  const debug = require('debug')('calendar:CalendarAllDayEvents')
   export default {
     name: 'CalendarAllDayEvents',
     props: {
@@ -85,6 +86,7 @@
       }
     },
     mounted () {
+      debug('Component mounted')
       this.mountSetDate()
     },
     updated () {

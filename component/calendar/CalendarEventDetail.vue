@@ -392,6 +392,7 @@
     FieldTime
   } from './fields'
   import DateTime from 'luxon/src/datetime'
+  const debug = require('debug')('calendar:CalendarEventDetail')
   export default {
     name: 'CalendarEventDetail',
     mixins: [CalendarMixin, EventPropsMixin],
@@ -458,7 +459,7 @@
         }
         let count = 0
         for (let thisAttendee of this.eventObject.attendees) {
-          console.debug('thisAttendee = ', thisAttendee)
+          debug('thisAttendee = ', thisAttendee)
           if (dashHas(thisAttendee, 'resource') && thisAttendee.resource) {
             count++
           }
@@ -587,7 +588,9 @@
         this.__close()
       }
     },
-    mounted () {}
+    mounted () {
+      debug('Component mounted')
+    }
   }
 </script>
 

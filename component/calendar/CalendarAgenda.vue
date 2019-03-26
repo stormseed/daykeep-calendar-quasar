@@ -161,6 +161,7 @@
     QInfiniteScroll,
     QSpinnerDots
   } from 'quasar'
+  const debug = require('debug')('calendar:CalendarAgenda')
   export default {
     name: 'CalendarAgenda',
     components: {
@@ -267,6 +268,7 @@
       }
     },
     mounted () {
+      debug('Component mounted')
       this.localNumDays = this.numDays
       this.doUpdate()
       this.handlePassedInEvents()

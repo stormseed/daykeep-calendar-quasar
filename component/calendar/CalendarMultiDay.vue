@@ -113,6 +113,7 @@
     QScrollArea,
     scroll
   } from 'quasar'
+  const debug = require('debug')('calendar:CalendarMultiDay')
   const { getScrollTarget, setScrollPosition } = scroll
   export default {
     name: 'CalendarMultiDay',
@@ -269,6 +270,7 @@
       }
     },
     mounted () {
+      debug('Component mounted')
       this.doUpdate()
       this.handlePassedInEvents()
       this.$root.$on(

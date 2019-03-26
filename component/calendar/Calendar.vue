@@ -149,6 +149,7 @@
     QTabPanel,
     QSeparator
   } from 'quasar'
+  const debug = require('debug')('calendar:Calendar')
   export default {
     name: 'Calendar',
     mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
@@ -226,6 +227,7 @@
       }
     },
     mounted () {
+      debug('Component mounted')
       this.mountSetDate()
       this.parseEventList()
       this.setupEventsHandling()

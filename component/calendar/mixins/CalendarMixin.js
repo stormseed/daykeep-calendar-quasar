@@ -1,5 +1,6 @@
 import dashHas from 'lodash.has'
 import DateTime from 'luxon/src/datetime'
+// const debug = require('debug')('calendar:CalendarMixin')
 export default {
   computed: {},
   methods: {

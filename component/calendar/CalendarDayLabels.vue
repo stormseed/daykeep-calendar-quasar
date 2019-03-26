@@ -31,6 +31,7 @@
     CalendarMixin
   } from './mixins'
   import DateTime from 'luxon/src/datetime'
+  const debug = require('debug')('calendar:CalendarDayLabels')
   export default {
     name: 'CalendarDayLabels',
     props: {
@@ -107,6 +108,7 @@
       }
     },
     mounted () {
+      debug('Component mounted')
       this.mountSetDate()
     },
     watch: {

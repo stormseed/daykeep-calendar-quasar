@@ -55,6 +55,7 @@
     EventPropsMixin
   } from './mixins'
   import dashHas from 'lodash.has'
+  const debug = require('debug')('calendar:CalendarEvent')
   export default {
     name: 'CalendarEvent',
     mixins: [CalendarMixin, CalendarEventMixin, EventPropsMixin],
@@ -158,7 +159,9 @@
         this.triggerEventClick(this.eventObject, this.eventRef)
       }
     },
-    mounted () {}
+    mounted () {
+      debug('Component mounted')
+    }
   }
 </script>
 

@@ -28,6 +28,7 @@
   import {
     QBtn
   } from 'quasar'
+  const debug = require('debug')('calendar:CalendarHeaderNav')
   export default {
     name: 'CalendarHeaderNav',
     props: {
@@ -63,7 +64,9 @@
         )
       }
     },
-    mounted () {}
+    mounted () {
+      debug('Component mounted')
+    }
   }
 </script>
 

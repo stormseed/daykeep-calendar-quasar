@@ -31,6 +31,7 @@
     CalendarMixin
   } from './mixins'
   import DateTime from 'luxon/src/datetime'
+  const debug = require('debug')('calendar:CalendarTimeLabelColumn')
   export default {
     name: 'CalendarTimeLabelColumn',
     props: {
@@ -67,7 +68,9 @@
       return {}
     },
     methods: {},
-    mounted () {}
+    mounted () {
+      debug('Component mounted')
+    }
   }
 </script>
 

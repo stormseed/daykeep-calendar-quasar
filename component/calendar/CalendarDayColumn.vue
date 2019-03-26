@@ -57,6 +57,7 @@
     CalendarMixin
   } from './mixins'
   import DateTime from 'luxon/src/datetime'
+  const debug = require('debug')('calendar:CalendarDayColumn')
   export default {
     name: 'CalendarDayColumn',
     props: {
@@ -211,7 +212,7 @@
         let topMinuteCount = startDateObject.diff(startMidnight).as('minutes')
         let heightMinuteCount = endDateObject.diff(startDateObject).as('minutes')
         let sizePerMinute = this.dayCellHeight / 60
-        console.debug('dayEventPosition = ', {
+        debug('dayEventPosition = ', {
           start: startDateObject.toISO(),
           topMinuteCount: topMinuteCount,
           heightMinuteCount: heightMinuteCount,
@@ -254,6 +255,7 @@
       }
     },
     mounted () {
+      debug('Component mounted')
       this.mountSetDate()
       this.startTimePositionInterval()
     },

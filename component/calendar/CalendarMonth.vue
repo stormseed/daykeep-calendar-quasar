@@ -132,6 +132,7 @@
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarEventDetail from './CalendarEventDetail'
   import DateTime from 'luxon/src/datetime'
+  const debug = require('debug')('calendar:CalendarMonth')
   export default {
     name: 'CalendarMonth',
     components: {
@@ -273,6 +274,7 @@
       }
     },
     mounted () {
+      debug('Component mounted')
       this.doUpdate()
       this.handlePassedInEvents()
       this.$root.$on(
