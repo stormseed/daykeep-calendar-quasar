@@ -11,3 +11,6 @@ cordova
 debug.log
 yarn.lock
 package-lock.json
+/.quasar
+.env
+.env.dev

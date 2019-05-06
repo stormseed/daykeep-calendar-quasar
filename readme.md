@@ -1,15 +1,19 @@
 # Quasar Calendar
-An event display calendar for the Quasar framework. This is still a work in progress project but we're putting in functionality and squashing bugs on a consistent basis.
+An event display calendar for the Quasar framework. 
 
-![screenshot](https://stormseed.github.io/quasar-calendar-demo/statics/quasar_calendar_snap.png)
+![screenshot](https://stormseed.github.io/quasar-calendar/statics/quasar_calendar_snap.png)
+
+Despite the name, Quasar Calendar is not an official Quasar plugin. There is a forthcoming Quasar application extension coming called [QCalendar (@quasar/qcalendar)](https://github.com/quasarframework/app-extension-qcalendar) that will be the official calendar plugin for the framework.
 
 ## Demo
 
 You can see a demo of the calendar components with event data at:
 
-[Quasar calendar demo](https://stormseed.github.io/quasar-calendar-demo)
+[Quasar calendar demo](https://stormseed.github.io/quasar-calendar)
 
 ## Setup
+
+Version 1.0.x of Quasar Calendar is intended to be used with [Quasar Framework v1](https://v1.quasar-framework.org/). For legacy versions of Quasar, you should use v0.3.x of Quasar Calendar.
 
 ```shell
 npm install quasar-calendar
@@ -200,11 +204,13 @@ In addition, each individual components have the following properties:
 | `num-days` | Number | The number of days the multi-day calendar. A value of `1` will change the header to be more appropriate for a single day. |
 | `nav-days` | Number | This is how many days the previous / next navigation buttons will jump. |
 | `force-start-of-week` | Boolean | Default is `false`. This is appropriate if you have a week display (7 days) that you want to always start on the first day of the week. |
+| `day-cell-height` | Number | Default is `5`. How high in units (units defined below) an hour should be. |
+| `day-cell-height-unit` | String | Default is `rem`. When combined with the `day-cell-height` above, this will determine the CSS-based height of an hour in a day. |
+| `show-half-hours` | Boolean | Default is `false`. Show ticks and labels for half hour segments. |
 
 ### CalendarAgenda
 
 | Vue Property | Type | Description |
 | --- | --- | --- |
 | `num-days` | Number | The number of days to initially display and also the number of additional days to load up when the user scrolls to the bottom of the agenda. |
-| `agenda-style` | String | Defaults to "dot". You can also set this as "block" to use an infinite scroll design that is meant for mobile use. |
 | `scroll-height` | String | Defaults to `200px`, this is meant to define the size of the "block" style. |

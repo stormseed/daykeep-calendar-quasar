@@ -1,33 +1,36 @@
 // Configuration for your app
+const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = function (ctx) {
   return {
-    plugins: [
-      'i18n',
-      'axios'
-    ],
-    css: [
-      // 'app.styl'
-    ],
-    extras: [
-      ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons'
-      // 'ionicons',
-      // 'mdi',
-      // 'fontawesome'
-    ],
-    supportIE: false,
-    vendor: {
-      add: [],
-      remove: []
+    boot: [],
+    plugins: [],
+    sourceFiles: {
+      rootComponent: 'demo/App.vue',
+      router: 'demo/router/index.js',
+      // store: 'src/store/index.js',
+      indexHtmlTemplate: 'demo/index.template.html',
     },
+    css: [
+      'app.styl'
+    ],
+    animations: 'all',
+    extras: [
+      'roboto-font',
+      'material-icons' // optional, you are not bound to it
+      // 'ionicons-v4',
+      // 'mdi-v3',
+      // 'fontawesome-v5',
+      // 'eva-icons'
+    ],
+    // framework: 'all', // --- includes everything; for dev only!
+    framework: {},
+    supportIE: false,
     build: {
+      publicPath: '/quasar-calendar',
+      distDir: 'docs',
       scopeHoisting: true,
-      vueRouterMode: 'history',
-      // gzip: true,
-      // analyze: true,
-      // extractCSS: false,
-      // useNotifier: false,
       extendWebpack (cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
@@ -35,46 +38,31 @@ module.exports = function (ctx) {
           loader: 'eslint-loader',
           exclude: /(node_modules|quasar)/
         })
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias,
+          src: path.resolve(__dirname, './demo'),
+          components: path.resolve(__dirname, './component'),
+          layouts: path.resolve(__dirname, './demo/layouts'),
+          pages: path.resolve(__dirname, './demo/pages'),
+          assets: path.resolve(__dirname, './demo/assets'),
+          boot: path.resolve(__dirname, './demo/boot')
+        }
+        cfg.plugins.push(
+          new CopyPlugin([
+            { from: 'demo/statics', to: 'statics' }
+          ])
+        )
       }
     },
-    // devServer: {
-    //   // https: true,
-    //   port: 8084,
-    //   open: true // opens browser window automatically
-    // },
-    framework: {
-      iconSet: 'material-icons'
+    devServer: {
+      // https: true,
+      port: 8084,
+      open: false // opens browser window automatically
     },
-    // framework: 'all', // --- includes everything; for dev only!
-    // framework: {
-    //   components: [
-    //     'QLayout',
-    //     'QLayoutHeader',
-    //     'QLayoutDrawer',
-    //     'QPageContainer',
-    //     'QPage',
-    //     'QToolbar',
-    //     'QToolbarTitle',
-    //     'QBtn',
-    //     'QIcon',
-    //     'QList',
-    //     'QListHeader',
-    //     'QItem',
-    //     'QItemMain',
-    //     'QItemSide'
-    //   ],
-    //   directives: [
-    //     'Ripple'
-    //   ],
-    //   plugins: [
-    //     'Notify'
-    //   ]
-    // },
-    // animations: 'all' --- includes all animations
-    animations: [
-    ],
+    ssr: {
+      pwa: false
+    },
     pwa: {
-      cacheExt: 'js,html,css,ttf,eot,otf,woff,woff2,json,svg,gif,jpg,jpeg,png,wav,ogg,webm,flac,aac,mp4,mp3',
       manifest: {
         // name: 'Quasar App',
         // short_name: 'Quasar-PWA',
@@ -82,53 +70,8 @@ module.exports = function (ctx) {
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
-        icons: [
-          {
-            'src': 'statics/icons/icon-128x128.png',
-            'sizes': '128x128',
-            'type': 'image/png'
-          },
-          {
-            'src': 'statics/icons/icon-192x192.png',
-            'sizes': '192x192',
-            'type': 'image/png'
-          },
-          {
-            'src': 'statics/icons/icon-256x256.png',
-            'sizes': '256x256',
-            'type': 'image/png'
-          },
-          {
-            'src': 'statics/icons/icon-384x384.png',
-            'sizes': '384x384',
-            'type': 'image/png'
-          },
-          {
-            'src': 'statics/icons/icon-512x512.png',
-            'sizes': '512x512',
-            'type': 'image/png'
-          }
-        ]
+        theme_color: '#027be3'
       }
-    },
-    cordova: {
-      // id: 'org.cordova.quasar.app'
-    },
-    electron: {
-      extendWebpack (cfg) {
-        // do something with cfg
-      },
-      packager: {
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
-
-        // Window only
-        // win32metadata: { ... }
-      }
-    },
+    }
   }
 }
