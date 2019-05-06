@@ -3,7 +3,7 @@ An event display calendar for the Quasar framework.
 
 ![screenshot](https://stormseed.github.io/quasar-calendar/statics/quasar_calendar_snap.png)
 
-Despite the name, Quasar Calendar is not an official Quasar plugin. There is a forthcoming Quasar application extension coming called [QCalendar (@quasar/qcalendar)](https://github.com/quasarframework/app-extension-qcalendar) that will be the official calendar plugin for the framework.
+Despite the name, Quasar Calendar is not an official Quasar plugin. There is a forthcoming Quasar application extension coming called [QCalendar (@quasar/qcalendar)](https://github.com/quasarframework/app-extension-qcalendar) that will be the official calendar plugin for the framework. We intend to keep this respository up to date until QCalendar is officially ready (and perhaps beyond).
 
 ## Demo
 
@@ -19,7 +19,7 @@ Version 1.0.x of Quasar Calendar is intended to be used with [Quasar Framework v
 npm install quasar-calendar
 ```
 
-Add Calendar to you .vue page similar to a a Quasar component
+Add Calendar to you .vue page similar to a Quasar component
 
 ```js
 import { Calendar } from 'quasar-calendar'
