@@ -218,7 +218,7 @@
       },
       switchToSingleDay: function (params) {
         this.setTimePeriod(params)
-        this.$refs.fullCalendarTabs.selectTab('tab-single-day-component')
+        this.currentTab = 'tab-single-day-component'
       },
       doUpdate: function () {
         this.mountSetDate()
