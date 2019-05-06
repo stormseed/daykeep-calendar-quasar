@@ -1,5 +1,7 @@
 // Configuration for your app
 const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
+
 module.exports = function (ctx) {
   return {
     boot: [],
@@ -23,61 +25,18 @@ module.exports = function (ctx) {
       // 'eva-icons'
     ],
     // framework: 'all', // --- includes everything; for dev only!
-    framework: {
-    //   components: [
-    //     'QLayout',
-    //     'QHeader',
-    //     'QDrawer',
-    //     'QPageContainer',
-    //     'QPage',
-    //     'QToolbar',
-    //     'QToolbarTitle',
-    //     'QBtn',
-    //     'QIcon',
-    //     'QList',
-    //     'QItem',
-    //     'QItemSection',
-    //     'QItemLabel'
-    //   ],
-    //
-    //   directives: [
-    //     'Ripple'
-    //   ],
-    //
-    //   // Quasar plugins
-    //   plugins: [
-    //     'Notify'
-    //   ]
-    //
-    //   // iconSet: 'ionicons-v4'
-    //   // lang: 'de' // Quasar language
-    },
+    framework: {},
     supportIE: false,
     build: {
+      publicPath: '/quasar-calendar',
+      distDir: 'docs',
       scopeHoisting: true,
-      // vueRouterMode: 'history',
-      // gzip: true,
-      // analyze: true,
-      // extractCSS: false,
-      // useNotifier: false,
-
-      // publicPath: '/quasar-calendar',
-      // distDir: 'docs',
-
-      // extendWebpack (cfg) {
-      //   cfg.module.rules.push({
-      //     enforce: 'pre',
-      //     test: /\.(js|vue)$/,
-      //     loader: 'eslint-loader',
-      //     exclude: /(node_modules|quasar)/
-      //   })
-      // }
       extendWebpack (cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /node_modules/
+          exclude: /(node_modules|quasar)/
         })
         cfg.resolve.alias = {
           ...cfg.resolve.alias,
@@ -88,6 +47,11 @@ module.exports = function (ctx) {
           assets: path.resolve(__dirname, './demo/assets'),
           boot: path.resolve(__dirname, './demo/boot')
         }
+        cfg.plugins.push(
+          new CopyPlugin([
+            { from: 'demo/statics', to: 'statics' }
+          ])
+        )
       }
     },
     devServer: {
@@ -106,7 +70,7 @@ module.exports = function (ctx) {
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#027be3'
       }
     }
   }

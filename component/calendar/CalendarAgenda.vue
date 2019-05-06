@@ -1,73 +1,7 @@
 <template>
   <div class="calendar-agenda column fit">
-    <!-- content block style -->
-    <q-infinite-scroll
-      v-if="agendaStyle === 'block'"
-      inline
-      :handler="loadMore"
-      :style="{ 'height': scrollHeight, 'overflow':'auto' }">
-      <div
-        v-for="daysForward in localNumDays"
-        :key="daysForward"
-      >
-        <div v-if="forwardDate = getDaysForwardDate(daysForward - 1)">
-
-          <!--month marker-->
-          <div
-            v-if="isFirstOfMonth(forwardDate)"
-            class="row calendar-agenda-month"
-            :style="{ 'padding-left': leftMargin }"
-          >
-            {{ formatDate(forwardDate, 'MMMM yyyy') }}
-          </div>
-
-          <!--week marker-->
-          <div
-            v-if="isFirstDayOfWeek(forwardDate)"
-            class="row calendar-agenda-week"
-            :style="{ 'margin-left': leftMargin }"
-          >
-            {{ getWeekTitle(forwardDate) }}
-          </div>
-
-          <!--individual day-->
-          <div
-            v-if="dateGetEvents(forwardDate).length > 0"
-            class="col row items-start calendar-agenda-day">
-            <div
-              class="col-auto calendar-agenda-side"
-              :style="{ 'width': leftMargin, 'max-width': leftMargin }"
-              :class="{ 'cursor-pointer': calendarDaysAreClickable }"
-              @click="handleDayClick(getDaysForwardDate(daysForward - 1))"
-            >
-              <div class="calendar-agenda-side-date">
-                {{ formatDate(forwardDate, 'd') }}
-              </div>
-              <div class="calendar-agenda-side-day">
-                {{ formatDate(forwardDate, 'EEE') }}
-              </div>
-            </div>
-            <div class="col row calendar-agenda-events">
-              <template v-if="dateGetEvents(forwardDate, true)">
-                <calendar-agenda-event
-                  v-for="thisEvent in dateGetEvents(forwardDate)"
-                  :key="makeDT(forwardDate).toISODate() + getEventIdString(thisEvent)"
-                  :event-object="thisEvent"
-                  :event-ref="eventRef"
-                  :calendar-locale="calendarLocale"
-                  :calendar-timezone="calendarTimezone"
-                  :allow-editing="allowEditing"
-                />
-              </template>
-            </div>
-          </div>
-        </div>
-      </div>
-      <q-spinner-dots slot="message" :size="40"/>
-    </q-infinite-scroll>
-
     <!-- content circle style -->
-    <div v-else>
+    <div>
       <!-- calendar header -->
       <calendar-header-nav
         time-period-unit="days"
