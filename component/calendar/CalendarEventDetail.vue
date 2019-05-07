@@ -649,5 +649,5 @@
       border-radius 50%
       min-width 24px
       .q-item-icon-inverted
-        background lighten($light, 25%)
+        background $grey-4
 </style>
