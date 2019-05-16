@@ -137,8 +137,9 @@
   import {
     CalendarMixin,
     CalendarEventMixin,
-    CalendarParentComponentMixin
-  } from './mixins'
+    CalendarParentComponentMixin,
+    CalendarTemplateMixin
+  } from '../../mixins'
   import CalendarMonth from './CalendarMonth'
   import CalendarMultiDay from './CalendarMultiDay'
   import CalendarAgenda from './CalendarAgenda'
@@ -149,28 +150,15 @@
     QTabPanel,
     QSeparator
   } from 'quasar'
-  const debug = require('debug')('calendar:Calendar')
+
   export default {
     name: 'Calendar',
-    mixins: [CalendarParentComponentMixin, CalendarMixin, CalendarEventMixin],
-    props: {
-      startDate: {
-        type: [Object, Date],
-        default: () => { return new Date() }
-      },
-      tabLabels: {
-        type: Object,
-        default: () => {
-          return {
-            month: 'Month',
-            week: 'Week',
-            threeDay: '3 Day',
-            day: 'Day',
-            agenda: 'Agenda'
-          }
-        }
-      }
-    },
+    mixins: [
+      CalendarParentComponentMixin,
+      CalendarMixin,
+      CalendarEventMixin,
+      CalendarTemplateMixin
+    ],
     components: {
       CalendarMonth,
       CalendarMultiDay,
@@ -180,74 +168,12 @@
       QTabPanels,
       QTabPanel,
       QSeparator
-    },
-    data () {
-      return {
-        dayCellHeight: 5,
-        dayCellHeightUnit: 'rem',
-        workingDate: new Date(),
-        parsed: {
-          byAllDayStartDate: {},
-          byStartDate: {},
-          byId: {}
-        },
-        currentTab: 'tab-month',
-        thisRefName: this.createRandomString()
-      }
-    },
-    computed: {},
-    methods: {
-      setupEventsHandling: function () {
-        this.$root.$on(
-          this.eventRef + ':navMovePeriod',
-          this.calPackageMoveTimePeriod
-        )
-        this.$root.$on(
-          this.eventRef + ':moveToSingleDay',
-          this.switchToSingleDay
-        )
-        this.$root.$on(
-          'update-event-' + this.eventRef,
-          this.handleEventUpdate
-        )
-      },
-      calPackageMoveTimePeriod: function (params) {
-        this.moveTimePeriod(params)
-        this.$emit(
-          'calendar' + ':navMovePeriod',
-          params
-        )
-      },
-      switchToSingleDay: function (params) {
-        this.setTimePeriod(params)
-        this.currentTab = 'tab-single-day-component'
-      },
-      doUpdate: function () {
-        this.mountSetDate()
-      }
-    },
-    mounted () {
-      debug('Component mounted')
-      this.mountSetDate()
-      this.parseEventList()
-      this.setupEventsHandling()
-    },
-    watch: {
-      startDate: function () {
-        this.handleStartChange()
-      },
-      eventArray: function () {
-        this.getPassedInEventArray()
-      },
-      parsedEvents: function () {
-        this.getPassedInParsedEvents()
-      }
     }
   }
 </script>
 
 <style lang="stylus">
-  @import 'calendar.vars.styl'
+  @import '../../styles-common/calendar.vars.styl'
 
   .calendar-tab-panels
     .calendar-tab-panel-day,

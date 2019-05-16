@@ -53,6 +53,8 @@ export default {
       )
     },
     handleEventDetailEvent: function (params, thisRef) {
+      console.debug('handleEventDetailEvent triggered, params = ', params)
+      console.debug(this)
       if (!this.preventEventDetail) {
         if (thisRef === undefined) {
           thisRef = 'defaultEventDetail'
@@ -60,6 +62,9 @@ export default {
         this.eventDetailEventObject = params
         if (dashHas(this.$refs, thisRef + '.__open')) {
           this.$refs[thisRef].__open()
+        }
+        else if (dashHas(this.$parent.$refs, thisRef + '.__open')) {
+          this.$parent.$refs[thisRef].__open()
         }
         else if (dashHas(this, thisRef + '.__open')) {
           this[thisRef].__open()
@@ -202,12 +207,26 @@ export default {
         .toLowerCase()
     },
     moveTimePeriod: function (params) {
+      console.debug('moveTimePeriod triggered, params = ', params)
       if (dashHas(params, 'absolute')) {
         this.workingDate = this.makeDT(params.absolute)
+      }
+      else if (dashHas(this, 'workingDate')) {
+        let paramObj = {}
+        paramObj[params.unitType] = params.amount
+        console.debug('this.workingDate = ', this.workingDate)
+        this.workingDate = this.workingDate.plus(paramObj)
+      }
+      else if (dashHas(this.$parent, 'workingDate')) {
+        let paramObj = {}
+        paramObj[params.unitType] = params.amount
+        // console.debug('this.workingDate = ', this.workingDate)
+        this.workingDate = this.$parent.workingDate.plus(paramObj)
       }
       else {
         let paramObj = {}
         paramObj[params.unitType] = params.amount
+        console.debug('this.workingDate = ', this.workingDate)
         this.workingDate = this.workingDate.plus(paramObj)
       }
     },

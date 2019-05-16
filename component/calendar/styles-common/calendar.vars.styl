@@ -1,0 +1,102 @@
+$grayLight = #bdbdbd
+$grayLighter = #eeeeee
+$grayLightest = #f5f5f5
+
+$sevenCellWidth = 14.285%
+$cellHeight = 8em
+$borderColor = $grayLight
+$borderThinColor = $grayLighter
+$borderOuter = 1px solid $borderColor
+$borderThin = 1px solid $borderThinColor
+$borderThinner = 1px dotted $borderThinColor
+$dayTimeLabelWidth = 4em
+$currentDayBackgroundColor = $grayLighter
+$weekendDayBackgroundColor = $grayLightest
+$whiteHighlightBackgroundColor = $grayLighter
+
+.flex-row, .flex-column, .flex
+  display flex
+  flex-wrap wrap
+  &.inline
+    display inline-flex
+
+.flex-row.reverse
+  flex-direction row-reverse
+
+.flex-column
+  flex-direction column
+  &.reverse
+    flex-direction column-reverse
+
+.flex-wrap
+  flex-wrap wrap
+.flex-no-wrap
+  flex-wrap nowrap
+.flex-reverse-wrap
+  flex-wrap wrap-reverse
+
+.flex-justify-
+  &start
+    justify-content flex-start
+  &end
+    justify-content flex-end
+  &center
+    justify-content center
+  &between
+    justify-content space-between
+  &around
+    justify-content space-around
+
+.flex-items-
+  &start
+    align-items flex-start
+  &end
+    align-items flex-end
+  &center
+    align-items center
+  &baseline
+    align-items baseline
+  &stretch
+    align-items stretch
+
+.flex-content-
+  &start
+    align-content flex-start
+  &end
+    align-content flex-end
+  &center
+    align-content center
+  &stretch
+    align-content stretch
+  &between
+    align-content space-between
+  &around
+    align-content space-around
+
+.flex-self-
+  &start
+    align-self flex-start
+  &end
+    align-self flex-end
+  &center
+    align-self center
+  &baseline
+    align-self baseline
+  &stretch
+    align-self stretch
+
+.flex-center
+  @extends .flex-items-center
+  @extends .flex-justify-center
+
+.flex-col
+  flex 10000 1 0
+  &-auto
+    flex 0 0 auto
+
+.fit
+  width 100% !important
+  height 100% !important
+
+.is-clickable
+  cursor pointer

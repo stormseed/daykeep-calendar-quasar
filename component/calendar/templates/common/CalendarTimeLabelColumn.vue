@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar-day-column-label col-auto">
+  <div class="calendar-day-column-label flex-col-auto">
     <template
       v-for="thisHour in 24"
     >
@@ -28,49 +28,16 @@
 
 <script>
   import {
-    CalendarMixin
-  } from './mixins'
-  import DateTime from 'luxon/src/datetime'
-  const debug = require('debug')('calendar:CalendarTimeLabelColumn')
+    CalendarMixin,
+    CalendarTimeLabelTemplateMixin
+  } from '../../mixins'
+
   export default {
     name: 'CalendarTimeLabelColumn',
-    props: {
-      dayCellHeight: {
-        type: Number,
-        default: 5
-      },
-      dayCellHeightUnit: {
-        type: String,
-        default: 'rem'
-      },
-      calendarLocale: {
-        type: String,
-        default: () => { return DateTime.local().locale }
-      },
-      showHalfHours: {
-        type: Boolean,
-        default: false
-      }
-    },
-    computed: {
-      calcDayCellHeight: function () {
-        if (this.showHalfHours) {
-          return (this.dayCellHeight / 2) + this.dayCellHeightUnit
-        }
-        else {
-          return this.dayCellHeight + this.dayCellHeightUnit
-        }
-      }
-    },
-    components: {},
-    mixins: [CalendarMixin],
-    data () {
-      return {}
-    },
-    methods: {},
-    mounted () {
-      debug('Component mounted')
-    }
+    mixins: [
+      CalendarMixin,
+      CalendarTimeLabelTemplateMixin
+    ]
   }
 </script>
 

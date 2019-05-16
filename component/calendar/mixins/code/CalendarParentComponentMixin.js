@@ -48,5 +48,10 @@ export default {
     },
     fullComponentRef: String
   },
+  methods: {
+    doUpdate: () => {
+      // this should be overridden
+    }
+  },
   mounted () {}
 }
