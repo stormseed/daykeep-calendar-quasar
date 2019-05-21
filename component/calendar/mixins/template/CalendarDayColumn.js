@@ -17,7 +17,7 @@ export default {
       default: 'flex-col'
     },
     dayCellHeight: {
-      type: Number,
+      type: [Number, String],
       default: 5
     },
     dayCellHeightUnit: {

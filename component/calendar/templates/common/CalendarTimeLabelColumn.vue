@@ -14,7 +14,7 @@
       </div>
       <div
         v-if="showHalfHours"
-        :key="thisHour"
+        :key="thisHour + 'half'"
         class="calendar-day-time cdcl-half-hour"
         :style="{ 'height': calcDayCellHeight, 'max-height': calcDayCellHeight }"
       >

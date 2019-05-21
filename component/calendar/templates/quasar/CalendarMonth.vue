@@ -79,6 +79,7 @@
 <style lang="stylus">
   @import '../../styles-common/calendar.vars.styl'
 
+  /*
   .calendar-month
 
     .calendar-time-width
@@ -127,5 +128,6 @@
         background-color $currentDayBackgroundColor
       .calendar-day-weekend
         background-color $weekendDayBackgroundColor
+   */
 
 </style>

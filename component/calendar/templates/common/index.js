@@ -6,6 +6,7 @@ import CalendarDayLabels from './CalendarDayLabels'
 import CalendarEvent from './CalendarEvent'
 import CalendarMonthInner from './CalendarMonthInner'
 import CalendarMultiDayContent from './CalendarMultiDayContent'
+// import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
 import CalendarTimeLabelColumn from './CalendarTimeLabelColumn'
 
 export {

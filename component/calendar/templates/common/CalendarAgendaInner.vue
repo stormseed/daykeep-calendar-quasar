@@ -3,16 +3,12 @@
     <!-- content circle style -->
     <div>
       <!-- calendar header -->
-<!--      <calendar-header-nav-->
-<!--        time-period-unit="days"-->
-<!--        :time-period-amount="1"-->
-<!--        :move-time-period-emit="eventRef + ':navMovePeriod'"-->
-<!--        :calendar-locale="calendarLocale"-->
-<!--      >-->
-<!--        {{ formatDate(workingDate, 'EEE, MMM d')}}-->
-<!--        - -->
-<!--        {{ formatDate(makeDT(workingDate).plus({ days: numJumpDays }), 'MMM d')}}-->
-<!--      </calendar-header-nav>-->
+      <slot
+        name="headernav"
+        :working-date="workingDate"
+        :event-ref="eventRef"
+        time-period-unit="month"
+      ></slot>
 
       <div
         v-for="daysForward in numJumpDays"
@@ -67,17 +63,17 @@
       </div>
     </div>
 
-<!--    <calendar-event-detail-->
-<!--      ref="defaultEventDetail"-->
-<!--      v-if="!preventEventDetail"-->
-<!--      :event-object="eventDetailEventObject"-->
-<!--      :prevent-event-detail="preventEventDetail"-->
-<!--      :event-ref="eventRef"-->
-<!--      :calendar-locale="calendarLocale"-->
-<!--      :calendar-timezone="calendarTimezone"-->
-<!--      :allow-editing="allowEditing"-->
-<!--      :render-html="renderHtml"-->
-<!--    />-->
+    <slot
+      name="eventdetail"
+      targetRef="defaultEventDetail"
+      :prevent-event-detail="preventEventDetail"
+      :event-object="eventDetailEventObject"
+      :calendar-locale="calendarLocale"
+      :calendar-timezone="calendarTimezone"
+      :event-ref="eventRef"
+      :allow-editing="allowEditing"
+      :render-html="renderHtml"
+    ></slot>
 
   </div>
 </template>

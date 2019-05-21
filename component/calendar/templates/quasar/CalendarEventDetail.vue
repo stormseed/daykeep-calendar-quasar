@@ -65,18 +65,23 @@
                 </div>
 
                 <!-- date/time edit mode -->
-                <template v-if="isEditingAllowed && inEditMode">
+                <div
+                  v-if="isEditingAllowed && inEditMode"
+                  class="flex-column q-gutter-y-md"
+                >
                   <div class="flex-row flex-items-center q-gutter-x-md flex-no-wrap">
                     <field-date
                       v-model="startDateObject"
                       label="Start date"
                       stack-label
+                      @input="checkEndAfterStart"
                     />
                     <template v-if="!editEventObject.start.isAllDay">
                       <field-time
                         v-model="startTimeObject"
                         label="Time"
                         stack-label
+                        @input="checkEndAfterStart"
                       />
                     </template>
                   </div>
@@ -101,9 +106,9 @@
                     @input="$forceUpdate()"
                     :toggle-indeterminate="false"
                   />
-                </template>
+                </div>
                 <!-- date/time display mode -->
-                <template v-else>
+                <div v-else>
                   <div
                     v-if="eventObject.start && eventObject.start.dateObject"
                     class="ced-list-title"
@@ -122,14 +127,14 @@
                   <div
                     v-if="eventObject.end &&
                       eventObject.end.dateObject &&
-                      eventObject.start.isAllDay !== true"
+                      !eventObject.start.isAllDay"
                     class="ced-list-subtitle"
                   >
                     {{ formatDate(eventObject.start.dateObject, 'TIME_SIMPLE', true) }}
                     -
                     {{ formatDate(eventObject.end.dateObject, 'TIME_SIMPLE', true) }}
                   </div>
-                </template>
+                </div>
 
                 <!-- date / time -->
               </q-item-section>
@@ -336,8 +341,8 @@
     CalendarEventDetailTemplateMixin
   } from '../../mixins'
   import {
-    FieldDate,
-    FieldTime
+    QuasarFieldDate as FieldDate,
+    QuasarFieldTime as FieldTime
   } from '../../fields'
 
   export default {
@@ -369,7 +374,7 @@
     },
     directives: {
       CloseDialog
-    },
+    }
   }
 </script>
 

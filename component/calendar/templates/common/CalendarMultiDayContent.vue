@@ -37,9 +37,11 @@
     CalendarMultiDayContentTemplateMixin
   } from '../../mixins'
   import {
-    CalendarDayColumn,
-    CalendarTimeLabelColumn
+    CalendarDayColumn
+    // CalendarTimeLabelColumn
   } from '../common'
+  // import time label column from common/index.js sometimes throws errors, so load by full path for now
+  import CalendarTimeLabelColumn from '../common/CalendarTimeLabelColumn'
 
   export default {
     name: 'CalendarMultiDayContent',

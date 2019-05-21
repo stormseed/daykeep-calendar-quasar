@@ -5,7 +5,7 @@ const debug = require('debug')('calendar:CalendarTimeLabelColumn')
 export default {
   props: {
     dayCellHeight: {
-      type: Number,
+      type: [Number, String],
       default: 5
     },
     dayCellHeightUnit: {

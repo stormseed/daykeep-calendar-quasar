@@ -56,6 +56,8 @@
       <calendar-multi-day-content
         :week-date-array="weekDateArray"
         :working-date="workingDate"
+        :num-days="numDays"
+        :nav-days="navDays"
         :parsed="parsed"
         :event-ref="eventRef"
         :prevent-event-detail="preventEventDetail"

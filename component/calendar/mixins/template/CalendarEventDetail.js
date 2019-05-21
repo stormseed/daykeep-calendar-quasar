@@ -85,10 +85,9 @@ export default {
       }
       return this.allowEditing
     }
-
   },
   methods: {
-    dashHas: dashHas,
+    dashHas: dashHas, // set this so we can easily use it in a template
     textExists: function (fieldLocation) {
       return (
         dashHas(this.eventObject, fieldLocation) &&
@@ -128,6 +127,33 @@ export default {
         this.endTimeObject = dateObj
       }
       this.inEditMode = true
+    },
+    checkEndAfterStart: function () {
+      let startDate = this.makeDT(this.startDateObject)
+      let endDate = this.makeDT(this.endDateObject)
+      let daysDiff = startDate.diff(endDate).as('days')
+      if (Math.floor(daysDiff) >= 0) {
+        endDate = endDate.set({
+          year: startDate.year,
+          month: startDate.month,
+          day: startDate.day
+        })
+        this.endDateObject = endDate.toJSDate()
+        // now check minutes
+        let startTime = this.makeDT(this.startTimeObject)
+        let endTime = this.makeDT(this.endTimeObject)
+        let minutesDiff = startTime.diff(endTime).as('minutes')
+        if (Math.floor(minutesDiff) > 0) {
+          endTime = endTime.set({
+            year: startDate.year,
+            month: startDate.month,
+            day: startDate.day,
+            hour: startTime.hour,
+            minute: startTime.minute
+          })
+        }
+        this.endTimeObject = endTime.toJSDate()
+      }
     },
     __save: function () {
       // convert elements back to parsed format

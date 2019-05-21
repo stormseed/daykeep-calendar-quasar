@@ -64,7 +64,7 @@ export default {
   computed: {
     dayCellWidth: function () {
       return this.calculateDayCellWidth(this.numDays)
-    },
+    }
     // getScrollStyle: function () {
     //   if (this.scrollStyle.length > 0) {
     //     return this.scrollStyle
