@@ -76,7 +76,7 @@
           round
           dense
           icon="close"
-          v-close-dialog
+          v-close-popup
         />
       </q-toolbar>
 
@@ -370,7 +370,7 @@
     QIcon,
     QBadge,
     QDialog,
-    CloseDialog,
+    ClosePopup,
     QCard,
     QCardSection,
     QToolbar,
@@ -427,7 +427,7 @@
       FieldTime
     },
     directives: {
-      CloseDialog
+      ClosePopup
     },
     data () {
       return {
