@@ -1,7 +1,7 @@
 {
-  "name": "quasar-calendar",
-  "version": "1.0.0-beta.1",
-  "productName": "Quasar Calendar",
+  "name": "@daykeep/calendar-quasar",
+  "version": "1.0.0-beta.2",
+  "productName": "Daykeep Calendar for Quasar",
   "description": "A full display calendar for the Quasar Vue.js framework",
   "keywords": [
     "vue",
@@ -9,24 +9,19 @@
     "quasar-framework",
     "calendar"
   ],
-  "bugs": "https://github.com/stormseed/quasar-calendar/issues",
+  "bugs": "https://github.com/stormseed/daykeep-calendar-quasar/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stormseed/quasar-calendar.git"
+    "url": "https://github.com/stormseed/daykeep-calendar-quasar.git"
   },
-  "homepage": "https://github.com/stormseed/quasar-calendar",
+  "homepage": "https://github.com/stormseed/daykeep-calendar-quasar",
   "author": "Chris Benjamin <cbenjamin@stormseed.com>",
   "license": "MIT",
   "main": "src/index.js",
   "files": [
-    "src/index.js",
-    "src/**/*js",
-    "src/**/*vue",
-    "src/**/*styl",
-    "component/index.js",
-    "component/**/*js",
-    "component/**/*vue",
-    "component/**/*styl",
+    "component",
+    "readme.md",
+    "LICENSE",
     "package.json"
   ],
   "scripts": {
@@ -37,13 +32,14 @@
     "build:pwa": "quasar build -m pwa"
   },
   "dependencies": {
+    "@daykeep/calendar-core": "^1.0.0-beta.4",
     "@quasar/extras": "1.1.2",
     "lodash.has": "^4.5.2",
-    "luxon": "1.13.1",
-    "quasar": "1.0.0-beta.22"
+    "luxon": "1.16.0",
+    "quasar": "1.0.0-rc.4"
   },
   "devDependencies": {
-    "@quasar/app": "1.0.0-beta.22",
+    "@quasar/app": "1.0.0-rc.6",
     "@quasar/quasar-app-extension-dotenv": "1.0.0-beta.10",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",

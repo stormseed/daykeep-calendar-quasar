@@ -14,6 +14,8 @@ module.exports = function (ctx) {
     },
     css: [
       'app.styl'
+      // 'component/calendar/styles-common/app.styl',
+      // 'component/calendar/styles-common/calendar.vars.styl'
     ],
     animations: 'all',
     extras: [

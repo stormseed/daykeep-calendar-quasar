@@ -27,7 +27,7 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <calendar
+          <daykeep-calendar
             :event-array="eventArray"
             :sunday-first-day-of-week="false"
             NOcalendar-locale="fr"
@@ -61,7 +61,7 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <calendar-month
+          <daykeep-calendar-month
             :event-array="eventArray"
             :sunday-first-day-of-week="false"
             calendar-locale="fr"
@@ -89,7 +89,7 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <calendar-multi-day
+          <daykeep-calendar-multi-day
             :event-array="eventArray"
             scrollHeight="400px"
             day-cell-height="7"
@@ -116,7 +116,7 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <calendar-agenda
+          <daykeep-calendar-agenda
             :event-array="eventArray"
             agenda-style="block"
             :sunday-first-day-of-week="true"
@@ -140,13 +140,15 @@
     QOptionGroup
   } from 'quasar'
   import {
-    Calendar,
-    CalendarMonth,
-    CalendarMultiDay,
-    CalendarAgenda
-  } from '../../component'
-  import { sampleEventArray } from './page-mixins/sample-data'
-  import MoveDates from './page-mixins/move-dates'
+    DaykeepCalendar,
+    DaykeepCalendarMonth,
+    DaykeepCalendarMultiDay,
+    DaykeepCalendarAgenda
+  } from '../../component/quasar'
+  import {
+    MoveDates,
+    sampleEventArray
+  } from '@daykeep/calendar-core/demo'
   export default {
     name: 'PageIndex',
     components: {
@@ -154,15 +156,15 @@
       QCard,
       QCardSection,
       QOptionGroup,
-      Calendar,
-      CalendarMonth,
-      CalendarMultiDay,
-      CalendarAgenda
+      DaykeepCalendar,
+      DaykeepCalendarMonth,
+      DaykeepCalendarMultiDay,
+      DaykeepCalendarAgenda
     },
     mixins: [ MoveDates ],
     data () {
       return {
-        eventArray: sampleEventArray, // in page-mixins/sample-data.js
+        eventArray: sampleEventArray, // in page-code-mixins/sample-data.js
         showCards: ['fullCalendar'],
         showCardOptions: [
           { label: 'Full calendar', value: 'fullCalendar' },

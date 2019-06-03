@@ -1,11 +1,43 @@
-import CalendarEventMixin from './CalendarEventMixin'
-import CalendarMixin from './CalendarMixin'
-import CalendarParentComponentMixin from './CalendarParentComponentMixin'
-import EventPropsMixin from './EventPropsMixin'
+import {
+  CalendarEventMixin,
+  CalendarMixin,
+  CalendarParentComponentMixin,
+  EventPropsMixin
+} from './code'
+import {
+  CalendarTemplateMixin,
+  CalendarAgendaTemplateMixin,
+  CalendarAgendaEventTemplateMixin,
+  CalendarAllDayEventsTemplateMixin,
+  CalendarDayColumnTemplateMixin,
+  CalendarDayLabelsTemplateMixin,
+  CalendarEventTemplateMixin,
+  CalendarEventDetailTemplateMixin,
+  CalendarHeaderNavTemplateMixin,
+  CalendarMonthTemplateMixin,
+  CalendarMonthInnerTemplateMixin,
+  CalendarMultiDayTemplateMixin,
+  CalendarMultiDayContentTemplateMixin,
+  CalendarTimeLabelTemplateMixin
+} from './template'
 
 export {
   CalendarEventMixin,
   CalendarMixin,
   CalendarParentComponentMixin,
-  EventPropsMixin
+  EventPropsMixin,
+  CalendarTemplateMixin,
+  CalendarAgendaTemplateMixin,
+  CalendarAgendaEventTemplateMixin,
+  CalendarAllDayEventsTemplateMixin,
+  CalendarDayColumnTemplateMixin,
+  CalendarDayLabelsTemplateMixin,
+  CalendarEventTemplateMixin,
+  CalendarEventDetailTemplateMixin,
+  CalendarHeaderNavTemplateMixin,
+  CalendarMonthTemplateMixin,
+  CalendarMonthInnerTemplateMixin,
+  CalendarMultiDayTemplateMixin,
+  CalendarMultiDayContentTemplateMixin,
+  CalendarTimeLabelTemplateMixin
 }

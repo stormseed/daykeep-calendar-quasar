@@ -1,10 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="glossy">
+    <q-header>
       <q-toolbar>
 
         <q-toolbar-title>
-          Quasar Calendar v{{ calendarVersion }}
+          {{ calendarAppName }} {{ calendarVersion }}
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -41,8 +41,11 @@
       }
     },
     computed: {
-      calendarVersion: function () {
-        return pckg.version
+      calendarVersion: () => {
+        return 'v' + pckg.version
+      },
+      calendarAppName: () => {
+        return pckg.productName
       }
     },
     methods: {
