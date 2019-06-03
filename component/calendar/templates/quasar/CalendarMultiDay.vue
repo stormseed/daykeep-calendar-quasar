@@ -87,23 +87,19 @@
 
 <script>
   import {
+    // mixins
     CalendarMixin,
     CalendarEventMixin,
     CalendarParentComponentMixin,
-    CalendarMultiDayTemplateMixin
-  } from '../../mixins'
-  import {
-    // CalendarDayColumn,
-    // CalendarTimeLabelColumn,
+    CalendarMultiDayTemplateMixin,
+    // components
     CalendarDayLabels,
     CalendarAllDayEvents,
     CalendarMultiDayContent
-  } from '../common'
+  } from '@daykeep/calendar-core'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarEventDetail from './CalendarEventDetail'
   import { QScrollArea } from 'quasar'
-
-  // const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     name: 'CalendarMultiDay',
@@ -115,8 +111,6 @@
     ],
     components: {
       CalendarMultiDayContent,
-      // CalendarDayColumn,
-      // CalendarTimeLabelColumn,
       CalendarDayLabels,
       CalendarHeaderNav,
       CalendarAllDayEvents,
@@ -127,7 +121,7 @@
 </script>
 
 <style lang="stylus">
-  @import '../../styles-common/calendar.vars.styl'
+  @import '~@daykeep/calendar-core/component/calendar/styles-common/calendar.vars.styl'
 
   .calendar-multi-day-component
     .calendar-time-margin

@@ -6,7 +6,7 @@ import {
   CalendarDayLabels,
   CalendarEvent,
   CalendarTimeLabelColumn
-} from '../common'
+} from '@daykeep/calendar-core'
 
 // framework specific templates
 import Calendar from './Calendar'

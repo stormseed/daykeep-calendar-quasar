@@ -44,28 +44,18 @@
     CalendarMixin,
     CalendarEventMixin,
     CalendarParentComponentMixin,
-    CalendarMonthTemplateMixin
-  } from '../../mixins'
-  import {
-    // CalendarEvent,
-    // CalendarDayLabels,
+    CalendarMonthTemplateMixin,
     CalendarMonthInner
-  } from '../common'
-  // import {
-  //   QBtn
-  // } from 'quasar'
+  } from '@daykeep/calendar-core'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarEventDetail from './CalendarEventDetail'
 
   export default {
     name: 'CalendarMonth',
     components: {
-      // CalendarEvent,
-      // CalendarDayLabels,
       CalendarHeaderNav,
       CalendarEventDetail,
       CalendarMonthInner
-      // QBtn
     },
     mixins: [
       CalendarParentComponentMixin,
@@ -77,57 +67,4 @@
 </script>
 
 <style lang="stylus">
-  @import '../../styles-common/calendar.vars.styl'
-
-  /*
-  .calendar-month
-
-    .calendar-time-width
-      width $dayTimeLabelWidth
-    .calendar-time-margin
-      margin-left $dayTimeLabelWidth
-
-    .calendar-header
-      .calendar-header-label
-        font-size 1.25em
-        font-weight bold
-    .calendar-content
-      padding 4px 12px
-      .calendar-cell
-        width $cellWidth
-        max-width $cellWidth
-        padding 0
-      .calendar-day-labels
-        .calendar-day-label
-          font-size 1.1em
-        .calendar-day-label-current
-          font-weight bold
-      .calendar-multi-day
-        border-bottom 1px solid $borderColor
-        :last-child
-          border-bottom none
-      .calendar-day
-        background-color none
-        height $cellHeight
-        max-height $cellHeight
-        overflow hidden
-        width $sevenCellWidth
-        .calendar-day-number
-          font-size 0.9em
-          height 2em
-          width 2em
-          vertical-align middle
-          padding-top .25em
-          padding-left .25em
-          .inner-span
-            font-size 1.5em
-        .calendar-day-number-current
-          .inner-span
-            font-size 1.25em
-      .calendar-day-current
-        background-color $currentDayBackgroundColor
-      .calendar-day-weekend
-        background-color $weekendDayBackgroundColor
-   */
-
 </style>

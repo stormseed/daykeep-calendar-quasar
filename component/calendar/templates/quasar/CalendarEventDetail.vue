@@ -27,7 +27,7 @@
           round
           dense
           icon="close"
-          v-close-dialog
+          v-close-popup
         />
       </q-toolbar>
 
@@ -325,7 +325,7 @@
     QIcon,
     QBadge,
     QDialog,
-    CloseDialog,
+    ClosePopup,
     QCard,
     QCardSection,
     QToolbar,
@@ -339,7 +339,7 @@
     CalendarMixin,
     EventPropsMixin,
     CalendarEventDetailTemplateMixin
-  } from '../../mixins'
+  } from '@daykeep/calendar-core'
   import {
     QuasarFieldDate as FieldDate,
     QuasarFieldTime as FieldTime
@@ -373,13 +373,13 @@
       FieldTime
     },
     directives: {
-      CloseDialog
+      ClosePopup
     }
   }
 </script>
 
 <style lang="stylus">
-  @import '../../styles-common/calendar.vars.styl'
+  @import '~@daykeep/calendar-core/component/calendar/styles-common/calendar.vars.styl'
 
   $topSidePadding = 16px
   $listSideItemWidth = 38px

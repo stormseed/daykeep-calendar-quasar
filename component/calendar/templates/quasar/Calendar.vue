@@ -139,7 +139,7 @@
     CalendarEventMixin,
     CalendarParentComponentMixin,
     CalendarTemplateMixin
-  } from '../../mixins'
+  } from '@daykeep/calendar-core'
   import CalendarMonth from './CalendarMonth'
   import CalendarMultiDay from './CalendarMultiDay'
   import CalendarAgenda from './CalendarAgenda'
@@ -173,7 +173,7 @@
 </script>
 
 <style lang="stylus">
-  @import '../../styles-common/calendar.vars.styl'
+  @import '~@daykeep/calendar-core/component/calendar/styles-common/calendar.vars.styl'
 
   .calendar-tab-panels
     .calendar-tab-panel-day,

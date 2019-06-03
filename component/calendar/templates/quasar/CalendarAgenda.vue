@@ -53,13 +53,11 @@
     CalendarMixin,
     CalendarEventMixin,
     CalendarParentComponentMixin,
-    CalendarAgendaTemplateMixin
-  } from '../../mixins'
+    CalendarAgendaTemplateMixin,
+    CalendarAgendaInner
+  } from '@daykeep/calendar-core'
   import CalendarHeaderNav from './CalendarHeaderNav'
   import CalendarEventDetail from './CalendarEventDetail'
-  import {
-    CalendarAgendaInner
-  } from '../common'
 
   export default {
     name: 'CalendarAgenda',
@@ -78,7 +76,7 @@
 </script>
 
 <style lang="stylus">
-  @import '../../styles-common/calendar.vars.styl'
+  @import '~@daykeep/calendar-core/component/calendar/styles-common/calendar.vars.styl'
 
   .calendar-tab-panels
     .calendar-tab-panel-day,
