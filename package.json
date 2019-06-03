@@ -1,5 +1,5 @@
 {
-  "name": "daykeep-calendar-quasar",
+  "name": "@daykeep/calendar-quasar",
   "version": "1.0.0-beta.2",
   "productName": "Daykeep Calendar for Quasar",
   "description": "A full display calendar for the Quasar Vue.js framework",
@@ -9,24 +9,19 @@
     "quasar-framework",
     "calendar"
   ],
-  "bugs": "https://github.com/stormseed/quasar-calendar/issues",
+  "bugs": "https://github.com/stormseed/daykeep-calendar-quasar/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stormseed/quasar-calendar.git"
+    "url": "https://github.com/stormseed/daykeep-calendar-quasar.git"
   },
-  "homepage": "https://github.com/stormseed/quasar-calendar",
+  "homepage": "https://github.com/stormseed/daykeep-calendar-quasar",
   "author": "Chris Benjamin <cbenjamin@stormseed.com>",
   "license": "MIT",
   "main": "src/index.js",
   "files": [
-    "src/index.js",
-    "src/**/*js",
-    "src/**/*vue",
-    "src/**/*styl",
-    "component/index.js",
-    "component/**/*js",
-    "component/**/*vue",
-    "component/**/*styl",
+    "component",
+    "readme.md",
+    "LICENSE",
     "package.json"
   ],
   "scripts": {

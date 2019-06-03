@@ -1,50 +1,50 @@
-# Quasar Calendar
+# Daykeep Calendar
 An event display calendar for the Quasar framework. 
 
-![screenshot](https://stormseed.github.io/quasar-calendar/statics/quasar_calendar_snap.png)
+![screenshot](https://stormseed.github.io/daykeep-calendar-quasar/statics/quasar_calendar_snap.png)
 
-Despite the name, Quasar Calendar is not an official Quasar plugin. There is a forthcoming Quasar application extension coming called [QCalendar (@quasar/qcalendar)](https://github.com/quasarframework/app-extension-qcalendar) that will be the official calendar plugin for the framework. We intend to keep this respository up to date until QCalendar is officially ready (and perhaps beyond).
+Formerly known as Quasar Calendar, **Daykeep Calendar for Quasar** is a Quasar-flavored Vue.js calendar component.
 
 ## Demo
 
 You can see a demo of the calendar components with event data at:
 
-[Quasar calendar demo](https://stormseed.github.io/quasar-calendar)
+[Daykeep Calendar for Quasar demo](https://stormseed.github.io/daykeep-calendar-quasar)
 
 ## Setup
 
-Version 1.0.x of Quasar Calendar is intended to be used with [Quasar Framework v1](https://v1.quasar-framework.org/). For legacy versions of Quasar, you should use v0.3.x of Quasar Calendar.
+Version 1.0.x of Daykeep Calendar is intended to be used with [Quasar Framework v1](https://v1.quasar-framework.org/). For legacy versions of Quasar, you should use v0.3.x of Quasar Calendar.
 
 ```shell
-npm install quasar-calendar
+yarn add @daykeep/calendar-quasar
 ```
 
-Add Calendar to you .vue page similar to a Quasar component
+Add Daykeep Calendar to your .vue page similar to a Quasar component
 
 ```js
-import { Calendar } from 'quasar-calendar'
+import { DaykeepCalendar } from '@daykeep/calendar-quasar'
 ```
 
 or import individual components
 
 ```js
 import {
-  CalendarMonth,
-  CalendarAgenda,
-  CalendarMultiDay
-} from 'quasar-calendar'
+  DaykeepCalendarMonth,
+  DaykeepCalendarAgenda,
+  DaykeepCalendarMultiDay
+} from '@daykeep/calendar-quasar'
 ```
 
 In your template, you can just put in a calendar viewer using the current date as the start date
 
 ```html
-<calendar />
+<daykeep-calendar />
 ```
 
 Or you can pass in parameters to customize
 
 ```html
-<calendar-month
+<daykeep-calendar-month
   :start-date="Date('2019-01-01')"
   :event-array="someEventObject"
   :sunday-first-day-of-week="true"
@@ -128,7 +128,7 @@ By default we use our own event detail popup when an event is clicked. You can o
 So to implement, be sure to have `prevent-event-detail` and `event-ref` set when you embed a calendar component:
 
 ```html
-<calendar
+<daykeep-calendar
   event-ref="MYCALENDAR"
   :prevent-event-detail="true"
   :event-array="someEventObject"
@@ -161,9 +161,9 @@ Only a subset of fields are currently editable:
 
 ## Calendar Month Day Click Events
 
-The `CalendarMonth` component triggers a "click-day-{eventRef}" event when a calendar cell is clicked. The event data is an object describing the day, with a `day`, `month`, and `year` property each set to the appropriate value for the selected day.
+The `DaykeepCalendarMonth` component triggers a "click-day-{eventRef}" event when a calendar cell is clicked. The event data is an object describing the day, with a `day`, `month`, and `year` property each set to the appropriate value for the selected day.
 
-So for a `<calendar-month>` component with a "MYCALENDAR" `event-ref`:
+So for a `<daykeep-calendar-month>` component with a "MYCALENDAR" `event-ref`:
 ```js
 this.$root.$on(
   'click-day-MYCALENDAR',
@@ -176,7 +176,7 @@ this.$root.$on(
 
 ## Individual Vue components
 
-The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `CalendarAgenda` share the following properties:
+The usable components of `DaykeepCalendar`, `DaykeepCalendarMonth`, `DaykeepCalendarMultiDay` and `DaykeepCalendarAgenda` share the following properties:
 
 | Vue Property | Type | Description |
 | --- | --- | --- |
@@ -192,12 +192,12 @@ The usable components of `Calendar`, `CalendarMonth`, `CalendarMultiDay` and `Ca
 
 In addition, each individual components have the following properties:
 
-### Calendar
+### DaykeepCalendar
 | Vue Property | Type | Description |
 | --- | --- | --- |
 | `tab-labels` | Object | Passing in an object with strings that will override the labels for the different calendar components. Set variables for `month`, `week`, `threeDay`, `day` and `agenda`. Eventually we will replace this with language files and will use the `calendar-locale` setting. |
 
-### CalendarMultiDay
+### DaykeepCalendarMultiDay
 
 | Vue Property | Type | Description |
 | --- | --- | --- |
@@ -208,7 +208,7 @@ In addition, each individual components have the following properties:
 | `day-cell-height-unit` | String | Default is `rem`. When combined with the `day-cell-height` above, this will determine the CSS-based height of an hour in a day. |
 | `show-half-hours` | Boolean | Default is `false`. Show ticks and labels for half hour segments. |
 
-### CalendarAgenda
+### DaykeepCalendarAgenda
 
 | Vue Property | Type | Description |
 | --- | --- | --- |
