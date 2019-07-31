@@ -53,8 +53,6 @@ export default {
       )
     },
     handleEventDetailEvent: function (params, thisRef) {
-      console.debug('handleEventDetailEvent triggered, params = ', params)
-      console.debug(this)
       if (!this.preventEventDetail) {
         if (thisRef === undefined) {
           thisRef = 'defaultEventDetail'

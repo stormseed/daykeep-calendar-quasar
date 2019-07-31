@@ -1,0 +1,69 @@
+{
+  "type": "component",
+  "props": {
+    "start-date": {
+      "type": [
+        "Date",
+        "DateTime"
+      ],
+      "desc": "A JavaScript Date or Luxon DateTime object that passes in a starting display date for the calendar to display."
+    },
+    "sunday-first-day-of-week": {
+      "type": "Boolean",
+      "desc": "If true this will force month and week calendars to start on a Sunday instead of the standard Monday."
+    },
+    "calendar-locale": {
+      "type": "String",
+      "desc": "A string setting the locale. We use the Luxon package for this and they describe how to set this at https://moment.github.io/luxon/docs/manual/intl.html. This will default to the user's system setting."
+    },
+    "calendar-timezone": {
+      "type": "String",
+      "desc": "Manually set the timezone for the calendar. Many strings can be passed in including 'UTC' or any valid [IANA zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). This is better explained [here](https://moment.github.io/luxon/docs/manual/zones.html)."
+  },
+ "event-ref": {
+   "type": "String",
+   "desc": "Give the calendar component a custom name so that events triggered on the global event bus can be watched."
+ },
+    "prevent-event-detail": {
+      "type": "Boolean",
+      "desc": "Prevent the default event detail popup from appearing when an event is clicked in a calendar."
+    },
+    "allow-editing": {
+      "type": "Boolean",
+      "desc": "Allows for individual events to be edited. See the editing section."
+    },
+    "render-html": {
+      "type": "Boolean",
+      "desc": "Event descriptions render HTML tags and provide a WYSIWYG editor when editing. No HTML validation is performed so be sure to pass the data passed in does not present a security threat."
+    },
+    "day-display-start-hour": {
+      "type": "Number",
+      "desc": "Will scroll to a defined start hour when a day / multi-day component is rendered. Pass in the hour of the day from 0-23, the default being '7'. Current has no effect on the 'CalendarAgenda' component."
+    },
+
+    "num-days": {
+      "type": "Number",
+      "desc": "The number of days the multi-day calendar. A value of `1` will change the header to be more appropriate for a single day."
+    },
+    "nav-days": {
+      "type": "Number",
+      "desc": "This is how many days the previous / next navigation buttons will jump."
+    },
+    "force-start-of-week": {
+      "type": "Boolean",
+      "desc": "Default is 'false'. This is appropriate if you have a week display (7 days) that you want to always start on the first day of the week."
+    },
+    "day-cell-height": {
+      "type": "Number",
+      "desc": "Default is '5'. How high in units (unit type defined by 'day-cell-height-unit') an hour should be."
+    },
+    "day-cell-height-unit": {
+      "type": "String",
+      "desc": "his is how many days the previous / next navigation buttons will jump."
+    },
+    "show-half-hours": {
+      "type": "Boolean",
+      "desc": "Default is `false`. Show ticks and labels for half hour segments."
+    }
+  }
+}
