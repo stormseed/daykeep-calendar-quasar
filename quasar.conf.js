@@ -30,7 +30,7 @@ module.exports = function (ctx) {
     framework: {},
     supportIE: false,
     build: {
-      publicPath: '/quasar-calendar',
+      publicPath: '/daykeep-calendar-quasar',
       distDir: 'docs',
       scopeHoisting: true,
       extendWebpack (cfg) {
