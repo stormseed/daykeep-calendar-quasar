@@ -52,6 +52,7 @@
           :calendar-timezone="calendarTimezone"
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
+          :render-html="renderHtml"
 
         />
       </q-tab-panel>
@@ -71,6 +72,7 @@
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
           :day-display-start-hour="dayDisplayStartHour"
+          :render-html="renderHtml"
 
         />
       </q-tab-panel>
@@ -90,6 +92,7 @@
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
           :day-display-start-hour="dayDisplayStartHour"
+          :render-html="renderHtml"
 
         />
       </q-tab-panel>
@@ -109,6 +112,7 @@
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
           :day-display-start-hour="dayDisplayStartHour"
+          :render-html="renderHtml"
 
         />
       </q-tab-panel>
@@ -126,6 +130,7 @@
           :calendar-timezone="calendarTimezone"
           :prevent-event-detail="preventEventDetail"
           :allow-editing="allowEditing"
+          :render-html="renderHtml"
         />
       </q-tab-panel>
     </q-tab-panels>
