@@ -21,9 +21,13 @@ export default {
   },
   methods: {
     getEventStyle: function () {
+      //console.dir( this.eventObject );
       return {
         // 'background-color': this.backgroundColor,
         // 'color': this.textColor
+        
+        // staff color 
+        'background-color': this.eventObject.staff_color,
       }
     },
     getEventClass: function () {
@@ -98,6 +102,7 @@ export default {
     }
   },
   mounted () {
-    debug('Component mounted')
+    debug('Component mounted'); 
+    this.getEventStyle();
   }
 }
